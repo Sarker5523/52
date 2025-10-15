@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StreamOn - Stream Movies and Series</title>
-
-    <!-- Swiper CSS -->
+    <meta http-equiv="Content-Security-Policy" content="frame-src 'self' https://www.youtube.com https://mp.rpmhub.site https://cybervynx.com; connect-src 'self' https://api.themoviedb.org;">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -48,7 +47,7 @@
             const searchResults = document.getElementById("search-results");
             const navbar = document.querySelector(".navbar");
             const errorMessage = document.getElementById("error-message");
-            const OMDB_API_KEY = 'ede2d5d7'; // Move to .env for production (e.g., process.env.OMDB_API_KEY or import.meta.env.VITE_OMDB_API_KEY)
+            const TMDB_API_KEY = 'ef93f865877bb70f8175a613d28b8ebe'; // TMDb API key
 
             let lastScrollTop = 0;
             window.addEventListener("scroll", function () {
@@ -68,15 +67,15 @@
                 }
             });
 
-            // Clear cache on load to avoid stale data issues on Netlify
-            localStorage.removeItem('omdbDataCache');
+            // Clear cache on load to avoid stale data
+            localStorage.removeItem('movieDataCache');
             const dataCache = {};
 
             // Normalize strings for consistency
             const normalize = (str) => str ? str.toLowerCase().trim() : '';
 
-            // Function to fetch OMDB data
-            async function fetchOmdbData(imdbID) {
+            // Function to fetch TMDb data
+            async function fetchMovieData(imdbID) {
                 const cacheKey = normalize(imdbID);
                 if (dataCache[cacheKey]) {
                     console.log(`Cache hit for ${imdbID}`);
@@ -84,25 +83,26 @@
                 }
                 await new Promise(resolve => setTimeout(resolve, 100)); // Rate limit delay
                 try {
-                    const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${OMDB_API_KEY}`);
-                    const data = await response.json();
-                    if (data.Response === "True") {
+                    const tmdbResponse = await fetch(`https://api.themoviedb.org/3/find/${imdbID}?api_key=${TMDB_API_KEY}&language=en-US&external_source=imdb_id`);
+                    const tmdbData = await tmdbResponse.json();
+                    if (tmdbData.movie_results && tmdbData.movie_results.length > 0) {
+                        const movieData = tmdbData.movie_results[0];
                         const itemData = {
-                            name: data.Title || 'Unknown Title',
-                            thumbnail: data.Poster !== "N/A" ? data.Poster : 'path/to/placeholder.jpg',
-                            category: data.Genre ? data.Genre.split(', ')[0] : 'Uncategorized',
-                            rating: data.imdbRating || 'N/A',
-                            type: data.Type === 'movie' ? 'movie' : 'series'
+                            name: movieData.title || 'Unknown Title',
+                            thumbnail: movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : 'path/to/placeholder.jpg',
+                            category: movieData.genres && movieData.genres.length > 0 ? movieData.genres[0].name : 'Uncategorized',
+                            rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : 'N/A',
+                            type: 'movie' // TMDb /find endpoint primarily returns movies
                         };
                         dataCache[cacheKey] = itemData;
                         updateCache();
-                        console.log(`Fetched OMDB data for ${imdbID}:`, itemData);
+                        console.log(`Fetched TMDb data for ${imdbID}:`, itemData);
                         return itemData;
                     }
-                    console.warn(`OMDB Error for ${imdbID}: ${data.Error}`);
+                    console.warn(`TMDb Error for ${imdbID}: No movie results found`);
                     return null;
                 } catch (error) {
-                    console.error(`Error fetching OMDB data for ${imdbID}:`, error);
+                    console.error(`Error fetching TMDb data for ${imdbID}:`, error);
                     return null;
                 }
             }
@@ -114,13 +114,13 @@
                     Object.assign(dataCache, newCache);
                 }
                 try {
-                    localStorage.setItem('omdbDataCache', JSON.stringify(dataCache));
+                    localStorage.setItem('movieDataCache', JSON.stringify(dataCache));
                 } catch (e) {
                     if (e.name === 'QuotaExceededError') {
                         console.warn('localStorage full, clearing cache');
-                        localStorage.removeItem('omdbDataCache');
+                        localStorage.removeItem('movieDataCache');
                         Object.keys(dataCache).forEach(key => delete dataCache[key]);
-                        localStorage.setItem('omdbDataCache', JSON.stringify(dataCache));
+                        localStorage.setItem('movieDataCache', JSON.stringify(dataCache));
                     }
                 }
             }
@@ -163,7 +163,7 @@
                         thumbnail: item.thumbnail || null,
                         category: item.category || 'Uncategorized',
                         type: 'movie',
-                        rating: item.imdbID ? null : 'N/A'
+                        rating: item.rating || null
                     })),
                     ...seriesData.map(item => ({
                         imdbID: item.imdbID || null,
@@ -171,35 +171,46 @@
                         thumbnail: item.thumbnail || null,
                         category: item.category || 'Uncategorized',
                         type: 'series',
-                        rating: item.imdbID ? null : 'N/A'
+                        rating: item.rating || null
                     }))
                 ];
 
-                // Process data: fetch OMDB data only if needed
+                // Process data: fetch TMDb data only if needed
                 for (const item of data) {
                     if (!item.name) {
                         item.name = 'Unknown Title';
                     }
-                    if (item.thumbnail) {
-                        // Use JSON thumbnail if provided
+                    if (item.thumbnail && item.rating && item.category && item.category !== 'Uncategorized') {
+                        // Use JSON data if complete
                         item.thumbnail = item.thumbnail !== 'N/A' ? item.thumbnail : 'path/to/placeholder.jpg';
                     } else if (item.imdbID) {
-                        // Fetch from OMDB if no thumbnail but imdbID exists
-                        const omdbItem = await fetchOmdbData(item.imdbID);
-                        if (omdbItem) {
-                            item.name = item.name || omdbItem.name;
-                            item.thumbnail = omdbItem.thumbnail;
-                            item.category = omdbItem.category;
-                            item.rating = omdbItem.rating;
-                            item.type = omdbItem.type;
+                        // Fetch from TMDb if no thumbnail, rating, or category
+                        const tmdbItem = await fetchMovieData(item.imdbID);
+                        if (tmdbItem) {
+                            item.name = item.name || tmdbItem.name;
+                            item.thumbnail = item.thumbnail || tmdbItem.thumbnail;
+                            item.category = item.category !== 'Uncategorized' ? item.category : tmdbItem.category;
+                            item.rating = item.rating || tmdbItem.rating;
+                            item.type = item.type || tmdbItem.type;
                         } else {
-                            item.thumbnail = 'path/to/placeholder.jpg';
-                            item.rating = 'N/A';
+                            item.thumbnail = item.thumbnail || 'path/to/placeholder.jpg';
+                            item.rating = item.rating || 'N/A';
+                            item.category = item.category || 'Uncategorized';
                         }
                     } else {
-                        // Fallback for no thumbnail and no imdbID
-                        item.thumbnail = 'path/to/placeholder.jpg';
-                        item.rating = 'N/A';
+                        // Fallback for no thumbnail, rating, or imdbID
+                        item.thumbnail = item.thumbnail || 'path/to/placeholder.jpg';
+                        item.rating = item.rating || 'N/A';
+                        item.category = item.category || 'Uncategorized';
+                    }
+
+                    // Hardcoded fallback for Dhadak 2
+                    if (item.name === 'Dhadak 2' && item.imdbID === 'tt13451410') {
+                        item.name = 'Dhadak 2';
+                        item.thumbnail = item.thumbnail || 'path/to/placeholder.jpg';
+                        item.category = item.category !== 'Uncategorized' ? item.category : 'Bollywood Movie';
+                        item.rating = item.rating || '6.8';
+                        item.type = 'movie';
                     }
                 }
 
@@ -325,7 +336,7 @@
                             const page = item.type === 'movie' ? 'movie.html' : 'series.html';
                             div.innerHTML = `
                                 <img src="${item.thumbnail || 'path/to/placeholder.jpg'}" alt="${item.name}">
-                                <span>${item.name} (IMDb: ${item.rating})</span>`;
+                                <span>${item.name} (TMDb: ${item.rating})</span>`;
                             div.onclick = () => window.location.href = `${page}?name=${encodeURIComponent(item.name)}`;
                             searchResults.appendChild(div);
                         });
@@ -361,7 +372,7 @@
                     <a href="${page}?name=${encodeURIComponent(item.name)}">
                         <img src="${item.thumbnail || 'path/to/placeholder.jpg'}" alt="${item.name}">
                         <span>${item.name}</span>
-                        <div class="imdb-rating" data-rating="${item.rating}">IMDb: ${item.rating}</div>
+                        <div class="imdb-rating" data-rating="${item.rating}">IMDB: ${item.rating}</div>
                     </a>`;
                 wrapper.appendChild(slide);
             });
