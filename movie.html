@@ -52,11 +52,11 @@
         </div>
       </div>
       <h3>Director</h3>
-      <div id="director" class="director"></div> <!-- Changed to div -->
+      <div id="director" class="director"></div>
       <h3>Main Cast</h3>
       <div id="main-cast" class="cast-list"></div>
       <h3>Categories</h3>
-      <div id="imdb-categories" class="imdb-categories"></div> <!-- New category section -->
+      <div id="imdb-categories" class="imdb-categories"></div>
     </div>
   </div>
 
@@ -78,40 +78,45 @@
     const ratingValue = document.getElementById("rating-value");
     const movieInfo = document.getElementById("movie-info");
     const moviePlot = document.getElementById("movie-plot");
-    const director = document.getElementById("director"); // Updated to reference div
+    const director = document.getElementById("director");
     const mainCast = document.getElementById("main-cast");
-    const imdbCategories = document.getElementById("imdb-categories"); // New category reference
+    const imdbCategories = document.getElementById("imdb-categories");
 
-    const OMDB_API_KEY = 'ede2d5d7'; // Your OMDB API key
-    const ratingCache = JSON.parse(localStorage.getItem('imdbRatingCache')) || {};
+    const OMDB_API_KEY = 'ede2d5d7'; // Move to .env for production (e.g., process.env.OMDB_API_KEY or import.meta.env.VITE_OMDB_API_KEY)
+    // Clear cache on load to avoid stale data issues on Netlify
+    localStorage.removeItem('imdbRatingCache');
+    const ratingCache = {};
 
     // Helper to normalize strings
     const normalize = (str) => str.toLowerCase().trim();
 
     // Fetch IMDb data
     async function fetchImdbData(title) {
-      const cacheKey = title;
+      const cacheKey = normalize(title);
       if (ratingCache[cacheKey]) {
+        console.log(`Cache hit for ${title}`);
         return ratingCache[cacheKey];
       }
       try {
-        const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${OMDB_API_KEY}`);
+        const response = await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}&plot=full`);
         const data = await response.json();
         if (data.Response === "True") {
           const imdbData = {
             rating: data.imdbRating || 'N/A',
-            plot: data.Plot || '',
+            plot: data.Plot || 'N/A',
             director: data.Director || 'N/A',
-            actors: data.Actors ? data.Actors.split(', ').slice(0, 5) : [], // Top 5 main cast
-            genre: data.Genre || 'N/A' // Added genre for categories
+            actors: data.Actors ? data.Actors.split(', ').slice(0, 5) : [],
+            genre: data.Genre || 'N/A'
           };
           ratingCache[cacheKey] = imdbData;
           localStorage.setItem('imdbRatingCache', JSON.stringify(ratingCache));
+          console.log(`Fetched OMDB data for ${title}:`, imdbData);
           return imdbData;
         }
+        console.warn(`OMDB Error for ${title}: ${data.Error}`);
         return null;
       } catch (error) {
-        console.error('Error fetching IMDb data:', error);
+        console.error(`Error fetching IMDb data for ${title}:`, error);
         return null;
       }
     }
@@ -153,31 +158,41 @@
       document.getElementById("video-title").innerText = video.name || "Untitled";
       document.title = video.name || "Video";
 
-      // Fetch and display IMDb data
-      const imdbData = await fetchImdbData(video.name);
-      if (imdbData) {
-        const rating = parseFloat(imdbData.rating);
-        if (!isNaN(rating) && rating > 0) {
-          const percentage = (rating / 10) * 100;
-          ratingCircle.style.setProperty('--percentage', `${percentage}%`);
-          ratingValue.textContent = imdbData.rating;
-          imdbRatingCircle.style.display = "flex";
-        } else {
-          imdbRatingCircle.style.display = "none";
-        }
+      // Fetch IMDb data if imdbID exists; otherwise, use defaults
+      let imdbData = null;
+      if (video.imdbID) {
+        imdbData = await fetchImdbData(video.name);
+      }
+      if (!imdbData) {
+        imdbData = {
+          rating: 'N/A',
+          plot: 'N/A',
+          director: 'N/A',
+          actors: [],
+          genre: video.category || 'N/A'
+        };
+      }
 
-        // Display plot
-        moviePlot.textContent = imdbData.plot;
+      // Display rating
+      const rating = parseFloat(imdbData.rating);
+      if (!isNaN(rating) && rating > 0) {
+        const percentage = (rating / 10) * 100;
+        ratingCircle.style.setProperty('--percentage', `${percentage}%`);
+        ratingValue.textContent = imdbData.rating;
+        imdbRatingCircle.style.display = "flex";
+      } else {
+        imdbRatingCircle.style.display = "none";
+      }
 
-        // Display director (non-clickable div)
-        if (imdbData.director !== 'N/A') {
-          director.textContent = imdbData.director;
-        } else {
-          director.textContent = 'N/A';
-        }
+      // Display plot
+      moviePlot.textContent = imdbData.plot;
 
-        // Display main cast (clickable links to IMDb)
-        mainCast.innerHTML = '';
+      // Display director
+      director.textContent = imdbData.director;
+
+      // Display main cast
+      mainCast.innerHTML = '';
+      if (imdbData.actors.length > 0) {
         imdbData.actors.forEach(actor => {
           const link = document.createElement('a');
           link.className = 'clickable-link';
@@ -186,19 +201,14 @@
           link.target = '_blank';
           mainCast.appendChild(link);
         });
-
-        // Display IMDb categories
-        if (imdbData.genre !== 'N/A') {
-          imdbCategories.textContent = imdbData.genre;
-        } else {
-          imdbCategories.textContent = 'N/A';
-        }
-
-        movieInfo.style.display = "block";
       } else {
-        movieInfo.style.display = "none";
-        imdbRatingCircle.style.display = "none";
+        mainCast.textContent = 'N/A';
       }
+
+      // Display IMDb categories
+      imdbCategories.textContent = imdbData.genre;
+
+      movieInfo.style.display = "block";
 
       // Load sources
       const sources = Array.isArray(video.sources) ? video.sources : [];
@@ -234,7 +244,11 @@
     // Load categories for dropdown
     async function loadCategories() {
       try {
-        const data = await fetch("movies.json").then((res) => res.json()).catch(() => []);
+        const data = await fetch("movies.json").then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch movies.json');
+          return res.json();
+        }).catch(() => []);
+        console.log('Movies data:', data);
         const categories = [...new Set(data.map((row) => row.category).filter(Boolean))];
         categoryList.innerHTML = "";
         categories.forEach((category) => {
@@ -257,7 +271,11 @@
       }
 
       try {
-        const moviesData = await fetch("movies.json").then((res) => res.json());
+        const moviesData = await fetch("movies.json").then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch movies.json');
+          return res.json();
+        });
+        console.log('Movies data:', moviesData);
         const movie = moviesData.find((v) => normalize(v.name) === normalize(movieNameParam));
 
         if (movie) {
@@ -282,7 +300,10 @@
       }
 
       try {
-        const data = await fetch("movies.json").then((res) => res.json()).catch(() => []);
+        const data = await fetch("movies.json").then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch movies.json');
+          return res.json();
+        }).catch(() => []);
         const filteredVideos = data.filter(
           (video) =>
             video.name.toLowerCase().includes(query) &&
@@ -293,12 +314,24 @@
         searchResultsContainer.style.display = "block";
         searchResultsContainer.innerHTML = "";
 
-        filteredVideos.slice(0, 5).forEach((video) => {
+        // Fetch ratings for search results
+        const searchResultsWithRatings = await Promise.all(
+          filteredVideos.slice(0, 5).map(async (video) => {
+            let rating = 'N/A';
+            if (video.imdbID) {
+              const imdbData = await fetchImdbData(video.name);
+              rating = imdbData ? imdbData.rating : 'N/A';
+            }
+            return { ...video, rating };
+          })
+        );
+
+        searchResultsWithRatings.forEach((video) => {
           const suggestionItem = document.createElement("div");
           suggestionItem.classList.add("search-suggestion");
           suggestionItem.innerHTML = `
             <img src="${video.thumbnail}" alt="${video.name}" />
-            <span>${video.name}</span>
+            <span>${video.name} (IMDb: ${video.rating})</span>
           `;
           suggestionItem.addEventListener("click", () => {
             window.location.href = `movie.html?name=${encodeURIComponent(video.name)}`;
