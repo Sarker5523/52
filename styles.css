@@ -1,0 +1,719 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #222 url('stardust.png') repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  color: white;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.5));
+  padding: 15px 30px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  transition: top 0.3s ease-in-out;
+  position: relative;
+  z-index: 1000;
+}
+
+.navbar.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links a,
+.dropdown {
+  margin-left: 20px;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5));
+  color: white;
+  top: 50px;
+  left: auto;
+  min-width: 150px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  transition: background 0.3s;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+  color: #000;
+}
+
+.search-container {
+  position: relative;
+  margin-left: 20px;
+}
+
+.search-box {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid white;
+  font-size: 1em;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+  color: white;
+  width: 150px;
+}
+
+.search-results {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5));
+  color: white;
+  width: 180px;
+  font-size: 0.95em;
+  max-height: 250px;
+  overflow-y: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.search-results div {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.search-results div:hover {
+  background: #ddd;
+  color: #000;
+}
+
+.search-results img {
+  width: 50px;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.search-results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background-color: #00ab41;
+  border-radius: 4px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.video-container,
+.trailer-container,
+.video-details {
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 60%;
+}
+
+.iframe-container {
+  width: 100%;
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 1px 50px rgba(3, 3, 3, 0.8);
+}
+
+.iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 10px;
+}
+
+.video-details {
+  border-radius: 15px;
+  box-shadow: 0 1px 50px rgba(3, 3, 3, 0.8);
+  background: linear-gradient(to bottom, rgba(43, 43, 43, 0.8), rgba(0, 0, 0, 0.5));
+  padding: 20px;
+  text-align: left; /* Left-align content */
+}
+
+.video-details h2 {
+  font-size: 24px;
+  margin: 0;
+  padding-bottom: 1px;
+  border-bottom: 1px solid #444;
+  text-align: center; /* Keep title centered */
+}
+
+.season-selection {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.season-selection label {
+  font-size: 1.2em;
+}
+
+.season-dropdown {
+  background: linear-gradient(to right, #111, #222);
+  color: #ffffff;
+  border: 1px solid #00ab41;
+  border-radius: 6px;
+  padding: 8px 40px 8px 12px;
+  font-size: 1rem;
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  text-align: left;
+  box-shadow: 0 2px 10px rgba(0, 171, 65, 0.2);
+  transition: border 0.3s ease;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%2300ff9c' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+.season-dropdown::-ms-expand {
+  display: none;
+}
+
+.season-dropdown:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 255, 156, 0.5);
+}
+
+.season-dropdown:hover {
+  border-color: #00ff9c;
+  background: linear-gradient(to right, #1a1a1a, #333);
+}
+
+.season-dropdown option {
+  background-color: #222;
+  color: #00ff9c;
+}
+
+.episode-list {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center; /* Keep source buttons centered */
+  flex-wrap: wrap;
+  font-size: 18px;
+  width: 100%;
+}
+
+.episode-list button {
+  background: linear-gradient(to bottom, rgba(43, 43, 43, 0.8), rgba(0, 0, 0, 0.5));
+  color: #00ab41;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.episode-list button:hover {
+  background: linear-gradient(to bottom, #00ab41, #023a32);
+  color: #000;
+  transform: translateY(-4px);
+}
+
+.episode-list button.active {
+  background: linear-gradient(to bottom, #00ab41, #023a32);
+  color: #000;
+}
+
+.trailer-container {
+  width: 100%;
+  margin: 20px auto;
+}
+
+.trailer-title-container {
+  background: linear-gradient(to bottom, rgba(43, 43, 43, 0.8), rgba(0, 0, 0, 0.5));
+  border-radius: 15px;
+  box-shadow: 0 1px 50px rgba(3, 3, 3, 0.8);
+  padding: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+}
+
+.trailer-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2em;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-bottom: 3px solid #00ab41;
+  padding-bottom: 8px;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 8px rgba(0, 171, 65, 0.5);
+  transition: transform 0.3s ease, opacity 0.5s ease;
+  opacity: 0;
+  transform: translateY(10px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trailer-title::before {
+  content: '\25B6';
+  color: #00ab41;
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+.trailer-title.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.trailer-title:hover {
+  text-shadow: 0 0 12px rgba(0, 171, 65, 0.8);
+  transform: scale(1.02);
+}
+
+.trailer-episode-info {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2em;
+  color: #fff;
+  margin: 5px 0 0 0;
+  text-shadow: 0 0 8px rgba(0, 171, 65, 0.5);
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+
+.trailer-episode-info.visible {
+  opacity: 1;
+}
+
+.trailer-iframe-container {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 1px 50px rgba(3, 3, 3, 0.8);
+}
+
+.trailer-iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 10px;
+}
+
+.trailer-iframe-container p {
+  color: #fff;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.category-section {
+  margin: 20px;
+}
+
+.category-section h2 {
+  font-size: 1.5em;
+  color: white;
+  display: inline-block;
+}
+
+.view-all-button {
+  border: 1px solid #00ab41;
+  box-shadow: 0 2px 10px rgba(0, 171, 65, 0.2);
+  background: linear-gradient(to bottom, rgba(43, 43, 43, 0.8), rgba(0, 0, 0, 0.5));
+  color: #ffffff;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.view-all-button:hover {
+  border-color: #00ff9c;
+  background: linear-gradient(to right, #1a1a1a, #333);
+}
+
+.swiper {
+  overflow: hidden;
+}
+
+.swiper-wrapper {
+  display: flex;
+  transition-timing-function: linear !important;
+}
+
+.swiper-slide {
+  width: 200px;
+  flex-shrink: 0;
+  margin-right: 15px;
+}
+
+:root {
+  --card-radius: 8px;
+}
+
+.video-item {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.video-item img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: var(--card-radius);
+  object-fit: cover;
+}
+
+.video-item span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  font-size: 1em;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.video-item .imdb-rating {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #f5c518;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.video-item .imdb-rating[data-rating="N/A"] {
+  display: none;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 25px;
+  color: white;
+  font-weight: bold;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  width: 36px;
+  height: 36px;
+  background: rgba(252, 252, 252, 0.4);
+  border-radius: 50%;
+  padding: 0;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.788);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  transition: background 0.3s ease;
+  box-sizing: border-box;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.swiper-pagination-bullet {
+  background: white;
+}
+
+/* IMDb Rating Circle and Movie Info */
+.imdb-rating-circle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  justify-content: flex-end; /* Right-align rating beside plot */
+}
+
+.rating-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: conic-gradient(#f5c518 var(--percentage), #333 var(--percentage));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5c518;
+  font-weight: bold;
+  font-size: 14px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(245, 197, 24, 0.3);
+}
+
+.rating-circle::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #222;
+}
+
+.rating-circle span {
+  position: relative;
+  z-index: 1;
+}
+
+.rating-text {
+  font-size: 14px;
+  color: #f5c518;
+}
+
+.movie-info {
+  margin: 10px 0;
+  text-align: left; /* Left-align Plot, Director, Cast */
+}
+
+.movie-info h3 {
+  margin: 0 0 8px 0;
+  color: #00ab41;
+}
+
+.movie-info p {
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+.plot-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.plot-text {
+  flex: 1;
+}
+
+.director-link,
+.cast-list a {
+  color: white; /* Plain white text */
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.director-link:hover,
+.cast-list a:hover {
+  text-decoration: underline; /* Simple underline on hover */
+}
+
+.cast-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.search-suggestion {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  gap: 10px;
+}
+
+.search-suggestion img {
+  width: 50px;
+  height: 28px;
+  object-fit: cover;
+}
+
+@media (max-width: 600px) {
+  .nav-links a:first-child {
+    display: none;
+  }
+
+  .search-box {
+    width: 150px;
+    font-size: 0.9em;
+  }
+
+  .video-container,
+  .trailer-container,
+  .video-details {
+    max-width: 94%;
+    padding: 10px;
+  }
+
+  .video-details h2 {
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .iframe-container,
+  .trailer-iframe-container {
+    width: 94%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  }
+
+  .trailer-title-container {
+    max-width: 94%;
+  }
+
+  .trailer-title {
+    font-size: 1.4em;
+    letter-spacing: 1px;
+    padding-bottom: 6px;
+  }
+
+  .trailer-episode-info {
+    font-size: 1em;
+  }
+
+  .season-selection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .season-dropdown {
+    width: 100%;
+  }
+
+  .swiper-slide {
+    width: 140px;
+  }
+
+  .plot-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .imdb-rating-circle {
+    justify-content: flex-start; /* Left-align on mobile */
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1200px) {
+  .video-container,
+  .trailer-container {
+    max-width: 75%;
+    padding: 20px;
+  }
+
+  .video-details {
+    max-width: 70%;
+    padding: 10px;
+  }
+
+  .trailer-title-container,
+  .trailer-iframe-container {
+    max-width: 70%;
+  }
+
+  .trailer-title {
+    font-size: 1.8em;
+  }
+
+  .trailer-episode-info {
+    font-size: 1.1em;
+  }
+
+  .swiper-slide {
+    width: 140px;
+  }
+
+  .plot-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .imdb-rating-circle {
+    justify-content: flex-start; /* Left-align on tablets */
+  }
+}
+
+@media (min-width: 1201px) {
+  .video-container,
+  .video-details,
+  .trailer-container {
+    max-width: 60%;
+    padding: 20px;
+  }
+
+  .trailer-title-container,
+  .trailer-iframe-container {
+    max-width: 60%;
+  }
+}

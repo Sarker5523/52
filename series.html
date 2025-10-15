@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Series Details - StreamOn</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo" onclick="window.location.href = 'index.html'" role="button" aria-label="StreamOn Home">StreamOn</div>
+    <div class="nav-links">
+      <a href="index.html" aria-label="Home">Home</a>
+      <div class="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        Categories
+        <div class="dropdown-content" id="category-list"></div>
+      </div>
+      <div class="search-container">
+        <input type="text" id="search-box" class="search-box" placeholder="Search..." aria-label="Search series or movies">
+        <div id="search-results" class="search-results" role="listbox"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="video-container" id="video-container">
+    <div class="iframe-container" id="iframe-container" role="region" aria-label="Video player"></div>
+  </div>
+
+  <div class="video-details">
+    <h2 id="series-title" aria-live="polite"></h2>
+    <p id="season-episode-info" aria-live="polite"></p>
+    <div class="season-selection" id="season-selection">
+      <label id="season-label" for="season-dropdown">Select Season:</label>
+      <select id="season-dropdown" class="season-dropdown" aria-label="Select season"></select>
+    </div>
+    <div class="episode-list" id="episode-list" role="listbox"></div>
+  </div>
+
+  <div class="trailer-container" id="trailer-container">
+    <h2 class="trailer-title">Trailer</h2>
+    <div class="iframe-container" id="trailer-iframe-container" role="region" aria-label="Series trailer"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // DOM Elements
+      const elements = {
+        searchInput: document.getElementById('search-box'),
+        searchResults: document.getElementById('search-results'),
+        iframeContainer: document.getElementById('iframe-container'),
+        trailerContainer: document.getElementById('trailer-container'),
+        trailerIframe: document.getElementById('trailer-iframe-container'),
+        episodeList: document.getElementById('episode-list'),
+        categoryList: document.getElementById('category-list'),
+        seasonDropdown: document.getElementById('season-dropdown'),
+        seasonSelection: document.getElementById('season-selection'),
+        seriesTitle: document.getElementById('series-title'),
+        seasonEpisodeInfo: document.getElementById('season-episode-info'),
+        trailerTitle: document.querySelector('.trailer-title'),
+        navbar: document.querySelector('.navbar'),
+        dropdown: document.querySelector('.dropdown'),
+        dropdownContent: document.querySelector('.dropdown-content')
+      };
+
+      let allEpisodes = [];
+      let lastScrollTop = 0;
+      let currentSeries = null;
+
+      // Navbar Scroll Logic
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        elements.navbar.classList.toggle('fixed', scrollTop > lastScrollTop);
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+      });
+
+      // Dropdown Toggle
+      elements.dropdown.addEventListener('click', (event) => {
+        event.stopPropagation();
+        elements.dropdownContent.style.display = elements.dropdownContent.style.display === 'block' ? 'none' : 'block';
+        elements.dropdown.setAttribute('aria-expanded', elements.dropdownContent.style.display === 'block');
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!elements.dropdown.contains(event.target)) {
+          elements.dropdownContent.style.display = 'none';
+          elements.dropdown.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Fetch Data
+      Promise.all([
+        fetch('series.json').then(res => res.json()).catch(() => []),
+        fetch('movies.json').then(res => res.json()).catch(() => [])
+      ])
+        .then(([seriesData, moviesData]) => {
+          const data = [
+            ...seriesData.map(item => ({ ...item, type: 'series' })),
+            ...moviesData.map(item => ({ ...item, type: 'movie' }))
+          ];
+
+          // Populate Categories
+          const categories = [...new Set(data.map(item => item.category).filter(Boolean))];
+          elements.categoryList.innerHTML = categories.map(category =>
+            `<a href="category.html?category=${encodeURIComponent(category)}" role="option">${category}</a>`
+          ).join('');
+
+          // Get Series Name
+          const seriesName = new URLSearchParams(window.location.search).get('name');
+          const series = seriesData.find(s => s.name === seriesName);
+          currentSeries = series;
+
+          if (!series) {
+            elements.seriesTitle.textContent = 'Series not found';
+            elements.seasonEpisodeInfo.textContent = '';
+            document.title = 'Series not found - StreamOn';
+            return;
+          }
+
+          // Set Series Title
+          elements.seriesTitle.textContent = series.name;
+          document.title = `${series.name} - StreamOn`;
+
+          // Flatten Episodes
+          allEpisodes = series.seasons.flatMap((season, seasonIndex) =>
+            season.episodes.map((episode, episodeIndex) => ({
+              ...episode,
+              season_id: `season-${seasonIndex + 1}`,
+              season_name: season.season_name,
+              season_number: seasonIndex + 1,
+              episode_number: episode.episode_number || episodeIndex + 1, // Use episode_number if available, else index
+              trailer: season.trailer
+            }))
+          );
+
+          // Populate Seasons
+          const seasons = series.seasons.map((season, index) => ({
+            season_id: `season-${index + 1}`,
+            season_name: season.season_name,
+            season_number: index + 1,
+            trailer: season.trailer
+          }));
+
+          elements.seasonDropdown.innerHTML = seasons.map(season =>
+            `<option value="${season.season_id}">${season.season_name}</option>`
+          ).join('');
+
+          // Show/Hide Season Selection
+          elements.seasonSelection.style.display = seasons.length > 1 ? 'flex' : 'none';
+
+          // Load Initial Season
+          const initialSeason = seasons[0];
+          if (initialSeason) {
+            const initialEpisodes = allEpisodes.filter(ep => ep.season_id === initialSeason.season_id);
+            if (initialEpisodes.length > 0) {
+              loadVideo(initialEpisodes[0]);
+              loadEpisodes(initialEpisodes, initialEpisodes[0].episode_name);
+            }
+            loadTrailer(initialSeason.trailer, initialSeason.season_id);
+          }
+
+          // Season Change Handler
+          elements.seasonDropdown.addEventListener('change', () => {
+            const selectedSeasonId = elements.seasonDropdown.value;
+            const filteredEpisodes = allEpisodes.filter(ep => ep.season_id === selectedSeasonId);
+            if (filteredEpisodes.length > 0) {
+              loadVideo(filteredEpisodes[0]);
+              loadEpisodes(filteredEpisodes, filteredEpisodes[0].episode_name);
+              const selectedSeason = seasons.find(s => s.season_id === selectedSeasonId);
+              loadTrailer(selectedSeason?.trailer, selectedSeasonId);
+            }
+          });
+
+          // Search Functionality
+          elements.searchInput.addEventListener('input', () => {
+            const query = elements.searchInput.value.toLowerCase().trim();
+            elements.searchResults.style.display = 'none';
+            elements.searchResults.innerHTML = '';
+
+            if (query) {
+              const matches = data.filter(item =>
+                item.name.toLowerCase().includes(query) && item.thumbnail?.trim()
+              );
+              elements.searchResults.innerHTML = matches.slice(0, 5).map(item => {
+                const page = item.type === 'movie' ? 'movie.html' : 'series.html';
+                return `<div role="option" onclick="window.location.href='${page}?name=${encodeURIComponent(item.name)}'">
+                  <img src="${item.thumbnail}" alt="${item.name}">
+                  <span>${item.name}</span>
+                </div>`;
+              }).join('');
+              elements.searchResults.style.display = matches.length ? 'block' : 'none';
+            }
+          });
+
+          elements.searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              const query = elements.searchInput.value.trim();
+              if (query) window.location.href = `search-result.html?query=${encodeURIComponent(query)}`;
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error loading data:', error);
+          elements.seriesTitle.textContent = 'Error loading series';
+          elements.seasonEpisodeInfo.textContent = '';
+          document.title = 'Error - StreamOn';
+        });
+
+      // Load Video
+      function loadVideo(episode) {
+        if (!episode) {
+          elements.seriesTitle.textContent = currentSeries?.name || 'Series not found';
+          elements.seasonEpisodeInfo.textContent = 'Episode not found';
+          elements.iframeContainer.innerHTML = '';
+          elements.iframeContainer.style.display = 'none';
+          return;
+        }
+
+        // Set season and episode info
+        elements.seasonEpisodeInfo.textContent = `Season ${episode.season_number}, Episode ${episode.episode_number}`;
+        elements.iframeContainer.innerHTML = episode.embed_code || '';
+        elements.iframeContainer.style.display = episode.embed_code ? 'block' : 'none';
+
+        // Highlight Active Episode
+        const buttons = elements.episodeList.getElementsByTagName('button');
+        for (const button of buttons) {
+          button.classList.toggle('active', button.dataset.episodeName === episode.episode_name);
+        }
+
+        // Update page title
+        document.title = `${currentSeries.name} - Season ${episode.season_number}, Episode ${episode.episode_number} - StreamOn`;
+      }
+
+      // Load Episodes
+      function loadEpisodes(episodes, currentEpisodeName) {
+        elements.episodeList.innerHTML = episodes.map(episode =>
+          `<button data-episode-name="${episode.episode_name}" role="option" 
+            class="${episode.episode_name === currentEpisodeName ? 'active' : ''}">
+            ${episode.episode_name}
+          </button>`
+        ).join('');
+        elements.episodeList.querySelectorAll('button').forEach(button => {
+          button.addEventListener('click', () => loadVideo(episodes.find(ep => ep.episode_name === button.dataset.episodeName)));
+        });
+      }
+
+      // Load Trailer
+      function loadTrailer(trailerEmbed, seasonId) {
+        elements.trailerIframe.innerHTML = trailerEmbed || '<p>No trailer available</p>';
+        elements.trailerContainer.style.display = trailerEmbed ? 'block' : 'none';
+        if (trailerEmbed) {
+          setTimeout(() => {
+            elements.trailerTitle.classList.add('visible');
+          }, 10);
+        } else {
+          elements.trailerTitle.classList.remove('visible');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

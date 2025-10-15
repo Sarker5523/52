@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Video Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo" onclick="window.location.href = 'index.html'">StreamOn</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <div class="dropdown">
+        Categories
+        <div class="dropdown-content" id="category-list"></div>
+      </div>
+      <div class="search-container">
+        <input
+          type="text"
+          id="search-box"
+          class="search-box"
+          placeholder="Search..."
+          autocomplete="off"
+        />
+        <div id="search-results" class="search-results"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="video-container" id="video-container">
+    <div class="iframe-container" id="iframe-container" style="display: none;"></div>
+  </div>
+
+  <div class="video-details">
+    <h2 id="video-title"></h2>
+    <div id="source-selection" class="episode-list"></div>
+    <div class="movie-info" id="movie-info" style="display: none;">
+      <div class="plot-container">
+        <div class="plot-text">
+          <h3>Plot</h3>
+          <p id="movie-plot"></p>
+        </div>
+        <div class="imdb-rating-circle" id="imdb-rating-circle" style="display: none;">
+          <div class="rating-circle" id="rating-circle">
+            <span id="rating-value">0</span>
+          </div>
+          <span class="rating-text">IMDb Rating</span>
+        </div>
+      </div>
+      <h3>Director</h3>
+      <div id="director" class="director"></div> <!-- Changed to div -->
+      <h3>Main Cast</h3>
+      <div id="main-cast" class="cast-list"></div>
+      <h3>Categories</h3>
+      <div id="imdb-categories" class="imdb-categories"></div> <!-- New category section -->
+    </div>
+  </div>
+
+  <!-- Trailer Section -->
+  <div class="trailer-container" id="trailer-container" style="display: none;">
+    <div class="iframe-container" id="trailer-iframe-container"></div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById("search-box");
+    const searchResultsContainer = document.getElementById("search-results");
+    const iframeContainer = document.getElementById("iframe-container");
+    const trailerContainer = document.getElementById("trailer-container");
+    const trailerIframeContainer = document.getElementById("trailer-iframe-container");
+    const categoryList = document.getElementById("category-list");
+    const sourceSelection = document.getElementById("source-selection");
+    const imdbRatingCircle = document.getElementById("imdb-rating-circle");
+    const ratingCircle = document.getElementById("rating-circle");
+    const ratingValue = document.getElementById("rating-value");
+    const movieInfo = document.getElementById("movie-info");
+    const moviePlot = document.getElementById("movie-plot");
+    const director = document.getElementById("director"); // Updated to reference div
+    const mainCast = document.getElementById("main-cast");
+    const imdbCategories = document.getElementById("imdb-categories"); // New category reference
+
+    const OMDB_API_KEY = 'ede2d5d7'; // Your OMDB API key
+    const ratingCache = JSON.parse(localStorage.getItem('imdbRatingCache')) || {};
+
+    // Helper to normalize strings
+    const normalize = (str) => str.toLowerCase().trim();
+
+    // Fetch IMDb data
+    async function fetchImdbData(title) {
+      const cacheKey = title;
+      if (ratingCache[cacheKey]) {
+        return ratingCache[cacheKey];
+      }
+      try {
+        const response = await fetch(`http://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`);
+        const data = await response.json();
+        if (data.Response === "True") {
+          const imdbData = {
+            rating: data.imdbRating || 'N/A',
+            plot: data.Plot || '',
+            director: data.Director || 'N/A',
+            actors: data.Actors ? data.Actors.split(', ').slice(0, 5) : [], // Top 5 main cast
+            genre: data.Genre || 'N/A' // Added genre for categories
+          };
+          ratingCache[cacheKey] = imdbData;
+          localStorage.setItem('imdbRatingCache', JSON.stringify(ratingCache));
+          return imdbData;
+        }
+        return null;
+      } catch (error) {
+        console.error('Error fetching IMDb data:', error);
+        return null;
+      }
+    }
+
+    // Shared function to create selection buttons
+    function createSelectionButtons(container, items, itemKey, idKey, labelKey, clickHandler, activeId) {
+      container.innerHTML = "";
+      container.style.display = items.length > 0 ? "block" : "none";
+      items.forEach((item, idx) => {
+        const button = document.createElement("button");
+        button.innerText = item[labelKey] || `Source ${idx + 1}`;
+        button.dataset[idKey] = item[idKey] || item[labelKey] || idx;
+        button.onclick = () => {
+          clickHandler(item);
+          Array.from(container.getElementsByTagName("button")).forEach((btn) =>
+            btn.classList.remove("active")
+          );
+          button.classList.add("active");
+        };
+        if (button.dataset[idKey] === activeId) {
+          button.classList.add("active");
+        }
+        container.appendChild(button);
+      });
+    }
+
+    // Load video details
+    async function loadVideo(video) {
+      if (!video) {
+        document.getElementById("video-title").innerText = "Video not found";
+        iframeContainer.style.display = "none";
+        sourceSelection.style.display = "none";
+        trailerContainer.style.display = "none";
+        movieInfo.style.display = "none";
+        imdbRatingCircle.style.display = "none";
+        return;
+      }
+
+      document.getElementById("video-title").innerText = video.name || "Untitled";
+      document.title = video.name || "Video";
+
+      // Fetch and display IMDb data
+      const imdbData = await fetchImdbData(video.name);
+      if (imdbData) {
+        const rating = parseFloat(imdbData.rating);
+        if (!isNaN(rating) && rating > 0) {
+          const percentage = (rating / 10) * 100;
+          ratingCircle.style.setProperty('--percentage', `${percentage}%`);
+          ratingValue.textContent = imdbData.rating;
+          imdbRatingCircle.style.display = "flex";
+        } else {
+          imdbRatingCircle.style.display = "none";
+        }
+
+        // Display plot
+        moviePlot.textContent = imdbData.plot;
+
+        // Display director (non-clickable div)
+        if (imdbData.director !== 'N/A') {
+          director.textContent = imdbData.director;
+        } else {
+          director.textContent = 'N/A';
+        }
+
+        // Display main cast (clickable links to IMDb)
+        mainCast.innerHTML = '';
+        imdbData.actors.forEach(actor => {
+          const link = document.createElement('a');
+          link.className = 'clickable-link';
+          link.textContent = actor;
+          link.href = `https://www.imdb.com/find?q=${encodeURIComponent(actor)}&ref_=nv_sr_sm`;
+          link.target = '_blank';
+          mainCast.appendChild(link);
+        });
+
+        // Display IMDb categories
+        if (imdbData.genre !== 'N/A') {
+          imdbCategories.textContent = imdbData.genre;
+        } else {
+          imdbCategories.textContent = 'N/A';
+        }
+
+        movieInfo.style.display = "block";
+      } else {
+        movieInfo.style.display = "none";
+        imdbRatingCircle.style.display = "none";
+      }
+
+      // Load sources
+      const sources = Array.isArray(video.sources) ? video.sources : [];
+      createSelectionButtons(
+        sourceSelection,
+        sources,
+        "source",
+        "sourceId",
+        "label",
+        (source) => {
+          iframeContainer.innerHTML = source.embed_code || "";
+          iframeContainer.style.display = "block";
+        },
+        sources[0]?.label
+      );
+
+      if (sources.length > 0) {
+        iframeContainer.innerHTML = sources[0].embed_code || "";
+        iframeContainer.style.display = "block";
+      } else {
+        iframeContainer.style.display = "none";
+      }
+
+      // Load trailer
+      if (video.trailer) {
+        trailerIframeContainer.innerHTML = video.trailer;
+        trailerContainer.style.display = "block";
+      } else {
+        trailerContainer.style.display = "none";
+      }
+    }
+
+    // Load categories for dropdown
+    async function loadCategories() {
+      try {
+        const data = await fetch("movies.json").then((res) => res.json()).catch(() => []);
+        const categories = [...new Set(data.map((row) => row.category).filter(Boolean))];
+        categoryList.innerHTML = "";
+        categories.forEach((category) => {
+          const categoryItem = document.createElement("a");
+          categoryItem.textContent = category;
+          categoryItem.href = `category.html?category=${encodeURIComponent(category)}`;
+          categoryList.appendChild(categoryItem);
+        });
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    }
+
+    // Load movie data
+    async function loadMovie() {
+      const movieNameParam = new URLSearchParams(window.location.search).get("name");
+      if (!movieNameParam) {
+        document.getElementById("video-title").innerText = "Video name missing in URL";
+        return;
+      }
+
+      try {
+        const moviesData = await fetch("movies.json").then((res) => res.json());
+        const movie = moviesData.find((v) => normalize(v.name) === normalize(movieNameParam));
+
+        if (movie) {
+          console.log("Movie found:", movie);
+          await loadVideo(movie);
+        } else {
+          document.getElementById("video-title").innerText = "Video not found";
+        }
+      } catch (error) {
+        console.error("Error loading movie data:", error);
+        document.getElementById("video-title").innerText = "Error loading video";
+      }
+    }
+
+    // Handle search functionality
+    async function handleSearch() {
+      const query = searchInput.value.toLowerCase();
+      if (!query) {
+        searchResultsContainer.style.display = "none";
+        searchResultsContainer.innerHTML = "";
+        return;
+      }
+
+      try {
+        const data = await fetch("movies.json").then((res) => res.json()).catch(() => []);
+        const filteredVideos = data.filter(
+          (video) =>
+            video.name.toLowerCase().includes(query) &&
+            video.thumbnail &&
+            video.thumbnail.trim() !== ""
+        );
+
+        searchResultsContainer.style.display = "block";
+        searchResultsContainer.innerHTML = "";
+
+        filteredVideos.slice(0, 5).forEach((video) => {
+          const suggestionItem = document.createElement("div");
+          suggestionItem.classList.add("search-suggestion");
+          suggestionItem.innerHTML = `
+            <img src="${video.thumbnail}" alt="${video.name}" />
+            <span>${video.name}</span>
+          `;
+          suggestionItem.addEventListener("click", () => {
+            window.location.href = `movie.html?name=${encodeURIComponent(video.name)}`;
+          });
+          searchResultsContainer.appendChild(suggestionItem);
+        });
+
+        if (filteredVideos.length === 0) {
+          searchResultsContainer.innerHTML = `<div class="no-results">No results found</div>`;
+        }
+      } catch (error) {
+        console.error("Error during search:", error);
+        searchResultsContainer.innerHTML = `<div class="no-results">Error during search</div>`;
+      }
+    }
+
+    // Handle Enter key for search
+    function handleEnter(event) {
+      if (event.key === "Enter") {
+        const query = searchInput.value.trim();
+        if (query) {
+          window.location.href = `search-result.html?query=${encodeURIComponent(query)}`;
+        }
+      }
+    }
+
+    // Initialize page
+    async function initialize() {
+      await loadCategories();
+      await loadMovie();
+    }
+
+    // Event listeners
+    searchInput.addEventListener("input", handleSearch);
+    searchInput.addEventListener("keydown", handleEnter);
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const dropdown = document.querySelector(".dropdown");
+      const dropdownContent = document.querySelector(".dropdown-content");
+      const navbar = document.querySelector(".navbar");
+
+      let lastScrollTop = 0;
+      window.addEventListener("scroll", function () {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop) {
+          navbar.classList.add("fixed");
+        } else {
+          navbar.classList.remove("fixed");
+        }
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+      });
+
+      dropdown.addEventListener("click", function (event) {
+        event.stopPropagation();
+        dropdownContent.style.display =
+          dropdownContent.style.display === "block" ? "none" : "block";
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!dropdown.contains(event.target)) {
+          dropdownContent.style.display = "none";
+        }
+      });
+
+      initialize();
+    });
+  </script>
+</body>
+</html>
