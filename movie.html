@@ -12,10 +12,10 @@
 <body>
   <!-- Navbar -->
   <div class="navbar">
-    <div class="logo" onclick="window.location.href = 'index.html'">StreamOn</div>
+    <div class="logo" onclick="window.location.href = 'index.html'" role="button" aria-label="StreamOn Home">StreamOn</div>
     <div class="nav-links">
-      <a href="index.html">Home</a>
-      <div class="dropdown">
+      <a href="index.html" aria-label="Home">Home</a>
+      <div class="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
         Categories
         <div class="dropdown-content" id="category-list"></div>
       </div>
@@ -26,18 +26,19 @@
           class="search-box"
           placeholder="Search..."
           autocomplete="off"
+          aria-label="Search movies"
         />
-        <div id="search-results" class="search-results"></div>
+        <div id="search-results" class="search-results" role="listbox"></div>
       </div>
     </div>
   </div>
 
   <div class="video-container" id="video-container">
-    <div class="iframe-container" id="iframe-container" style="display: none;"></div>
+    <div class="iframe-container" id="iframe-container" style="display: none;" role="region" aria-label="Video player"></div>
   </div>
 
   <div class="video-details">
-    <h2 id="video-title"></h2>
+    <h2 id="video-title" aria-live="polite"></h2>
     <div id="source-selection" class="episode-list"></div>
     <div class="movie-info" id="movie-info" style="display: none;">
       <div class="plot-container">
@@ -56,14 +57,15 @@
       <div id="director" class="director"></div>
       <h3>Main Cast</h3>
       <div id="main-cast" class="cast-list"></div>
-      <h3>Categories</h3>
+      <h3>Genres</h3>
       <div id="imdb-categories" class="imdb-categories"></div>
     </div>
   </div>
 
   <!-- Trailer Section -->
   <div class="trailer-container" id="trailer-container" style="display: none;">
-    <div class="iframe-container" id="trailer-iframe-container"></div>
+    <h2 class="trailer-title">Trailer</h2>
+    <div class="iframe-container" id="trailer-iframe-container" role="region" aria-label="Movie trailer"></div>
   </div>
 
   <script>
@@ -72,6 +74,7 @@
     const iframeContainer = document.getElementById("iframe-container");
     const trailerContainer = document.getElementById("trailer-container");
     const trailerIframeContainer = document.getElementById("trailer-iframe-container");
+    const trailerTitle = document.querySelector(".trailer-title");
     const categoryList = document.getElementById("category-list");
     const sourceSelection = document.getElementById("source-selection");
     const imdbRatingCircle = document.getElementById("imdb-rating-circle");
@@ -83,81 +86,185 @@
     const mainCast = document.getElementById("main-cast");
     const imdbCategories = document.getElementById("imdb-categories");
 
-    const TMDB_API_KEY = 'ef93f865877bb70f8175a613d28b8ebe'; // TMDb API key
-    localStorage.removeItem('movieDataCache'); // Clear cache on load
-    const movieDataCache = {};
+    // Warning: Hardcoding API key is insecure; consider using a backend proxy
+    const TMDB_API_KEY = 'ef93f865877bb70f8175a613d28b8ebe';
+    let movieDataCache = JSON.parse(localStorage.getItem('movieDataCache')) || {};
+    let genreMap = null; // Cache for genre ID-to-name mapping
 
     // Helper to normalize strings
     const normalize = (str) => str.toLowerCase().trim();
 
-    // Fetch movie data from TMDb
+    // Debounce utility to limit API calls during typing
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Fetch genre list from TMDb
+    async function fetchGenreMap() {
+      if (genreMap) {
+        console.log('Using cached genre map:', genreMap);
+        return genreMap;
+      }
+      try {
+        console.log('Fetching TMDb genre list');
+        const response = await fetch(
+          `https://api.themoviedb.org/3/genre/movie/list?api_key=${TMDB_API_KEY}&language=en-US`
+        );
+        if (!response.ok) throw new Error(`TMDb genre list API error: ${response.status}`);
+        const data = await response.json();
+        genreMap = {};
+        data.genres.forEach(genre => {
+          genreMap[genre.id] = genre.name;
+        });
+        console.log('Fetched TMDb genre list:', genreMap);
+        return genreMap;
+      } catch (error) {
+        console.error('Error fetching TMDb genre list:', error);
+        return {};
+      }
+    }
+
+    // Fetch movie data from TMDb with retry logic
     async function fetchMovieData(movie) {
       const cacheKey = normalize(movie.name);
-      if (movieDataCache[cacheKey]) {
-        console.log(`Cache hit for ${movie.name}`);
+      if (movieDataCache[cacheKey] && movieDataCache[cacheKey].genre !== 'Unknown') {
+        console.log(`Cache hit for ${movie.name}:`, movieDataCache[cacheKey]);
         return movieDataCache[cacheKey];
       }
 
-      // Check if JSON contains complete data
-      if (movie.plot && movie.director && movie.actors && movie.genre && movie.rating) {
-        const movieData = {
-          rating: movie.rating || 'N/A',
-          plot: movie.plot || 'Plot not available',
-          director: movie.director || 'N/A',
-          actors: movie.actors || [],
-          genre: movie.genre || movie.category || 'N/A'
-        };
-        movieDataCache[cacheKey] = movieData;
-        localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
-        console.log(`Using JSON data for ${movie.name}:`, movieData);
-        return movieData;
+      // Fetch genre map
+      const genreMap = await fetchGenreMap();
+
+      // Always fetch fresh data from TMDb for genres
+      console.log(`Fetching fresh TMDb data for ${movie.name}`);
+      const maxRetries = 3;
+      let attempt = 0;
+
+      // Try TMDb with IMDb ID first
+      if (movie.imdbID) {
+        while (attempt < maxRetries) {
+          try {
+            console.log(`Fetching TMDb data for IMDb ID: ${movie.imdbID}, attempt ${attempt + 1}`);
+            const tmdbResponse = await fetch(
+              `https://api.themoviedb.org/3/find/${movie.imdbID}?api_key=${TMDB_API_KEY}&language=en-US&external_source=imdb_id`
+            );
+            if (tmdbResponse.status === 429) {
+              attempt++;
+              const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
+              console.log(`Rate limit hit, retrying after ${delay}ms`);
+              await new Promise(resolve => setTimeout(resolve, delay));
+              continue;
+            }
+            if (!tmdbResponse.ok) throw new Error(`TMDb API error: ${tmdbResponse.status}`);
+            const tmdbData = await tmdbResponse.json();
+            if (tmdbData.movie_results?.length > 0) {
+              const tmdbMovieId = tmdbData.movie_results[0].id;
+              console.log(`Found TMDb movie ID: ${tmdbMovieId}`);
+              // Fetch full movie details to ensure genres are included
+              const movieResponse = await fetch(
+                `https://api.themoviedb.org/3/movie/${tmdbMovieId}?api_key=${TMDB_API_KEY}&language=en-US`
+              );
+              if (!movieResponse.ok) throw new Error(`TMDb movie details API error: ${movieResponse.status}`);
+              const movieData = await movieResponse.json();
+              console.log(`TMDb movie details for ${movie.name}:`, movieData);
+              console.log(`TMDb genres:`, movieData.genres);
+              const creditsResponse = await fetch(
+                `https://api.themoviedb.org/3/movie/${tmdbMovieId}/credits?api_key=${TMDB_API_KEY}`
+              );
+              if (!creditsResponse.ok) throw new Error(`TMDb credits API error: ${creditsResponse.status}`);
+              const creditsData = await creditsResponse.json();
+              const movieInfo = {
+                rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : movie.rating || 'N/A',
+                plot: movieData.overview || movie.plot || 'Plot not available',
+                director: creditsData.crew?.find(crew => crew.job === 'Director')?.name || movie.director || 'N/A',
+                actors: creditsData.cast?.slice(0, 5).map(actor => actor.name) || movie.actors || [],
+                genre: movieData.genre_ids?.length > 0
+                  ? movieData.genre_ids.map(id => genreMap[id] || 'Unknown').filter(Boolean).join(', ')
+                  : movieData.genres?.length > 0
+                    ? movieData.genres.map(genre => genre.name).join(', ')
+                    : movie.genre || 'Unknown'
+              };
+              movieDataCache[cacheKey] = movieInfo;
+              localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
+              console.log(`Fetched TMDb data for ${movie.name}:`, movieInfo);
+              return movieInfo;
+            } else {
+              console.log(`No TMDb movie results for IMDb ID: ${movie.imdbID}`);
+            }
+          } catch (error) {
+            console.error(`TMDb Error for ${movie.name} (IMDb ID attempt ${attempt + 1}):`, error);
+            attempt++;
+            if (attempt === maxRetries) break;
+          }
+        }
       }
 
-      // Try TMDb with IMDb ID
+      // Fallback to search by title
       try {
-        const tmdbResponse = await fetch(`https://api.themoviedb.org/3/find/${movie.imdbID}?api_key=${TMDB_API_KEY}&language=en-US&external_source=imdb_id`);
-        const tmdbData = await tmdbResponse.json();
-        if (tmdbData.movie_results && tmdbData.movie_results.length > 0) {
-          const movieData = tmdbData.movie_results[0];
-          const tmdbCredits = await fetch(`https://api.themoviedb.org/3/movie/${movieData.id}/credits?api_key=${TMDB_API_KEY}`);
-          const creditsData = await tmdbCredits.json();
+        console.log(`Falling back to TMDb title search for: ${movie.name}`);
+        const encodedTitle = encodeURIComponent(movie.name.replace(/[^a-zA-Z0-9\s]/g, '')); // Clean title for search
+        const searchResponse = await fetch(
+          `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodedTitle}&language=en-US`
+        );
+        if (!searchResponse.ok) throw new Error(`TMDb search API error: ${searchResponse.status}`);
+        const searchData = await searchResponse.json();
+        if (searchData.results?.length > 0) {
+          const movieData = searchData.results[0];
+          console.log(`TMDb search results:`, movieData);
+          // Fetch full movie details to ensure genres are included
+          const movieResponse = await fetch(
+            `https://api.themoviedb.org/3/movie/${movieData.id}?api_key=${TMDB_API_KEY}&language=en-US`
+          );
+          if (!movieResponse.ok) throw new Error(`TMDb movie details API error: ${movieResponse.status}`);
+          const fullMovieData = await movieResponse.json();
+          console.log(`TMDb full movie details for ${movie.name}:`, fullMovieData);
+          console.log(`TMDb genres:`, fullMovieData.genres);
+          const creditsResponse = await fetch(
+            `https://api.themoviedb.org/3/movie/${movieData.id}/credits?api_key=${TMDB_API_KEY}`
+          );
+          if (!creditsResponse.ok) throw new Error(`TMDb credits API error: ${creditsResponse.status}`);
+          const creditsData = await creditsResponse.json();
           const movieInfo = {
-            rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : 'N/A',
-            plot: movieData.overview || 'Plot not available',
-            director: creditsData.crew.find(crew => crew.job === 'Director')?.name || 'N/A',
-            actors: creditsData.cast.slice(0, 5).map(actor => actor.name) || [],
-            genre: movieData.genres.map(genre => genre.name).join(', ') || movie.category || 'N/A'
+            rating: fullMovieData.vote_average ? fullMovieData.vote_average.toFixed(1) : movie.rating || 'N/A',
+            plot: fullMovieData.overview || movie.plot || 'Plot not available',
+            director: creditsData.crew?.find(crew => crew.job === 'Director')?.name || movie.director || 'N/A',
+            actors: creditsData.cast?.slice(0, 5).map(actor => actor.name) || movie.actors || [],
+            genre: fullMovieData.genre_ids?.length > 0
+              ? fullMovieData.genre_ids.map(id => genreMap[id] || 'Unknown').filter(Boolean).join(', ')
+              : fullMovieData.genres?.length > 0
+                ? fullMovieData.genres.map(genre => genre.name).join(', ')
+                : movie.genre || 'Unknown'
           };
           movieDataCache[cacheKey] = movieInfo;
           localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
-          console.log(`Fetched TMDb data for ${movie.name}:`, movieInfo);
+          console.log(`Fetched TMDb search data for ${movie.name}:`, movieInfo);
           return movieInfo;
+        } else {
+          console.log(`No TMDb search results for title: ${movie.name}`);
         }
       } catch (error) {
-        console.error(`TMDb Error for ${movie.name}:`, error);
+        console.error(`TMDb search error for ${movie.name}:`, error);
       }
 
-      // Hardcoded fallback for Dhadak 2
-      const fallbackData = {
-        "Dhadak 2": {
-          rating: "6.8",
-          plot: "Targeted for his caste, a first-year student at an elite college fights off vicious bullies and lethal threats to protect his dignity and forbidden love. The film revolves around a love story of 'unequals' set in a law college in central India, addressing caste discrimination and systemic hatred with rawness and realism.",
-          director: "Shazia Iqbal",
-          actors: ["Siddhant Chaturvedi", "Triptii Dimri", "Saurabh Sachdeva", "Zakir Hussain", "Vipin Sharma"],
-          genre: "Drama, Romance, Social Issues"
-        }
-      };
-
-      // Return fallback or default
-      const movieData = fallbackData[movie.name] || {
+      // Default fallback using movies.json data
+      const movieData = {
         rating: movie.rating || 'N/A',
         plot: movie.plot || 'Plot not available',
         director: movie.director || 'N/A',
         actors: movie.actors || [],
-        genre: movie.genre || movie.category || 'N/A'
+        genre: movie.genre || 'Unknown'
       };
       movieDataCache[cacheKey] = movieData;
       localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
+      console.log(`Using fallback data for ${movie.name}:`, movieData);
       return movieData;
     }
 
@@ -190,6 +297,7 @@
         iframeContainer.style.display = "none";
         sourceSelection.style.display = "none";
         trailerContainer.style.display = "none";
+        trailerTitle.classList.remove("visible");
         movieInfo.style.display = "none";
         imdbRatingCircle.style.display = "none";
         return;
@@ -199,16 +307,16 @@
       document.title = video.name || "Video";
 
       // Fetch movie data from TMDb
-      let movieData = video.imdbID ? await fetchMovieData(video) : null;
-      if (!movieData) {
-        movieData = {
-          rating: 'N/A',
-          plot: 'Plot not available',
-          director: 'N/A',
-          actors: [],
-          genre: video.category || 'N/A'
+      let movieData = await fetchMovieData(video).catch((error) => {
+        console.error(`Error fetching movie data for ${video.name}:`, error);
+        return {
+          rating: video.rating || 'N/A',
+          plot: video.plot || 'Plot not available',
+          director: video.director || 'N/A',
+          actors: video.actors || [],
+          genre: video.genre || 'Unknown'
         };
-      }
+      });
 
       // Display rating
       const rating = parseFloat(movieData.rating);
@@ -242,7 +350,7 @@
         mainCast.textContent = 'N/A';
       }
 
-      // Display categories
+      // Display genres
       imdbCategories.textContent = movieData.genre;
 
       movieInfo.style.display = "block";
@@ -269,12 +377,17 @@
         iframeContainer.style.display = "none";
       }
 
-      // Load trailer
+      // Load trailer (original logic)
       if (video.trailer) {
         trailerIframeContainer.innerHTML = video.trailer;
         trailerContainer.style.display = "block";
+        setTimeout(() => {
+          trailerTitle.classList.add("visible");
+        }, 10);
       } else {
+        trailerIframeContainer.innerHTML = '<p>No trailer available</p>';
         trailerContainer.style.display = "none";
+        trailerTitle.classList.remove("visible");
       }
     }
 
@@ -292,6 +405,7 @@
           const categoryItem = document.createElement("a");
           categoryItem.textContent = category;
           categoryItem.href = `category.html?category=${encodeURIComponent(category)}`;
+          categoryItem.setAttribute("role", "option");
           categoryList.appendChild(categoryItem);
         });
       } catch (error) {
@@ -354,18 +468,15 @@
         // Fetch ratings for search results
         const searchResultsWithRatings = await Promise.all(
           filteredVideos.slice(0, 5).map(async (video) => {
-            let rating = 'N/A';
-            if (video.imdbID) {
-              const movieData = await fetchMovieData(video);
-              rating = movieData.rating || 'N/A';
-            }
-            return { ...video, rating };
+            const movieData = await fetchMovieData(video);
+            return { ...video, rating: movieData.rating };
           })
         );
 
         searchResultsWithRatings.forEach((video) => {
           const suggestionItem = document.createElement("div");
           suggestionItem.classList.add("search-suggestion");
+          suggestionItem.setAttribute("role", "option");
           suggestionItem.innerHTML = `
             <img src="${video.thumbnail}" alt="${video.name}" />
             <span>${video.name} (TMDb: ${video.rating})</span>
@@ -402,7 +513,7 @@
     }
 
     // Event listeners
-    searchInput.addEventListener("input", handleSearch);
+    searchInput.addEventListener("input", debounce(handleSearch, 300));
     searchInput.addEventListener("keydown", handleEnter);
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -425,11 +536,13 @@
         event.stopPropagation();
         dropdownContent.style.display =
           dropdownContent.style.display === "block" ? "none" : "block";
+        dropdown.setAttribute("aria-expanded", dropdownContent.style.display === "block");
       });
 
       document.addEventListener("click", function (event) {
         if (!dropdown.contains(event.target)) {
           dropdownContent.style.display = "none";
+          dropdown.setAttribute("aria-expanded", "false");
         }
       });
 
