@@ -175,7 +175,7 @@ body {
   box-shadow: 0 1px 50px rgba(3, 3, 3, 0.8);
   background: linear-gradient(to bottom, rgba(43, 43, 43, 0.8), rgba(0, 0, 0, 0.5));
   padding: 20px;
-  text-align: left; /* Left-align content */
+  text-align: left;
 }
 
 .video-details h2 {
@@ -183,7 +183,7 @@ body {
   margin: 0;
   padding-bottom: 1px;
   border-bottom: 1px solid #444;
-  text-align: center; /* Keep title centered */
+  text-align: center;
 }
 
 .season-selection {
@@ -238,7 +238,7 @@ body {
 .episode-list {
   margin: 20px 0;
   display: flex;
-  justify-content: center; /* Keep source buttons centered */
+  justify-content: center;
   flex-wrap: wrap;
   font-size: 18px;
   width: 100%;
@@ -359,11 +359,11 @@ body {
   font-size: 1.2em;
 }
 
-.category-section {
+.genre-section { /* Updated from category-section */
   margin: 20px;
 }
 
-.category-section h2 {
+.genre-section h2 { /* Updated from category-section h2 */
   font-size: 1.5em;
   color: white;
   display: inline-block;
@@ -374,7 +374,7 @@ body {
   box-shadow: 0 2px 10px rgba(0, 171, 65, 0.2);
   background: linear-gradient(to bottom, rgba(43, 43, 43, 0.8), rgba(0, 0, 0, 0.5));
   color: #ffffff;
-  padding: 10px 20px;
+  padding: 5px 10px;
   margin: 5px;
   cursor: pointer;
   border-radius: 8px;
@@ -503,7 +503,7 @@ body {
   align-items: center;
   gap: 8px;
   margin: 10px 0;
-  justify-content: flex-end; /* Right-align rating beside plot */
+  justify-content: flex-end;
 }
 
 .rating-circle {
@@ -542,7 +542,7 @@ body {
 
 .movie-info {
   margin: 10px 0;
-  text-align: left; /* Left-align Plot, Director, Cast */
+  text-align: left;
 }
 
 .movie-info h3 {
@@ -566,16 +566,38 @@ body {
   flex: 1;
 }
 
-.director-link,
-.cast-list a {
-  color: white; /* Plain white text */
+.director {
+  color: white;
   text-decoration: none;
-  cursor: pointer;
+  cursor: default;
+  background: transparent;
+  border: 2px solid white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-.director-link:hover,
+.director:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.4);
+}
+
+.cast-list a {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  border: 2px solid white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
 .cast-list a:hover {
-  text-decoration: underline; /* Simple underline on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.4);
 }
 
 .cast-list {
@@ -583,6 +605,32 @@ body {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 5px;
+}
+
+.imdb-genres { /* Updated from imdb-categories */
+  color: #00ab41;
+  font-size: 1.1em;
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  text-shadow: 0 0 5px rgba(0, 171, 65, 0.5);
+}
+
+.genre-badge { /* Updated from genre-badge (in case it was separate) */
+  color: white;
+  background: transparent;
+  border: 1px solid white;
+  padding: 4px 8px;
+  margin: 2px;
+  border-radius: 6px;
+  display: inline-block;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  transition: box-shadow 0.2s ease;
+}
+
+.genre-badge:hover {
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
 }
 
 .search-suggestion {
@@ -661,7 +709,7 @@ body {
   }
 
   .imdb-rating-circle {
-    justify-content: flex-start; /* Left-align on mobile */
+    justify-content: flex-start;
   }
 }
 
@@ -700,7 +748,7 @@ body {
   }
 
   .imdb-rating-circle {
-    justify-content: flex-start; /* Left-align on tablets */
+    justify-content: flex-start;
   }
 }
 
