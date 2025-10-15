@@ -146,7 +146,7 @@
                     ...moviesData.map(item => ({
                         imdbID: item.imdbID || null,
                         name: item.name || 'Unknown Movie',
-                        thumbnail: item.thumbnail || 'path/to/placeholder.jpg',
+                        thumbnail: item.thumbnail || null, // Allow null/empty thumbnails
                         category: item.category || 'Uncategorized',
                         type: 'movie',
                         rating: item.imdbID ? null : 'N/A'
@@ -154,31 +154,34 @@
                     ...seriesData.map(item => ({
                         imdbID: item.imdbID || null,
                         name: item.name || 'Unknown Series',
-                        thumbnail: item.thumbnail || 'path/to/placeholder.jpg',
+                        thumbnail: item.thumbnail || null, // Allow null/empty thumbnails
                         category: item.category || 'Uncategorized',
                         type: 'series',
                         rating: item.imdbID ? null : 'N/A'
                     }))
                 ];
 
-                // Fetch OMDB data for items with imdbID
+                // Fetch OMDB data for items with imdbID, including thumbnails if missing
                 for (const item of data) {
                     if (item.imdbID) {
                         const omdbItem = await fetchOmdbData(item.imdbID);
                         if (omdbItem) {
                             item.name = omdbItem.name;
-                            item.thumbnail = omdbItem.thumbnail;
+                            item.thumbnail = item.thumbnail || omdbItem.thumbnail; // Use OMDB thumbnail if local is missing
                             item.category = omdbItem.category;
                             item.rating = omdbItem.rating;
                             item.type = omdbItem.type; // Update type if OMDB disagrees
                         } else {
                             item.rating = 'N/A'; // Failed OMDB fetch
+                            item.thumbnail = item.thumbnail || 'path/to/placeholder.jpg'; // Fallback if no OMDB data
                         }
+                    } else {
+                        item.thumbnail = item.thumbnail || 'path/to/placeholder.jpg'; // Fallback for no imdbID
                     }
                 }
 
-                // Filter valid items with thumbnails
-                const validData = data.filter(item => item.thumbnail && item.thumbnail !== 'N/A' && item.name);
+                // Filter valid items (require name only)
+                const validData = data.filter(item => item.name);
                 console.log('Valid data:', validData);
 
                 // Newly Added: 7 movies + 3 series, movies first
@@ -221,7 +224,7 @@
                     section.appendChild(viewAll);
 
                     const categoryVideos = validData
-                        .filter(item => item.category === category && item.thumbnail && item.name)
+                        .filter(item => item.category === category && item.name)
                         .slice(-12)
                         .reverse();
                     const swiperEl = createSwiperContainer(categoryVideos, index);
@@ -263,65 +266,10 @@
                         return;
                     }
                     const matches = validData.filter(item =>
-                        item.name && item.name.toLowerCase().includes(query) && item.thumbnail && item.thumbnail !== 'N/A');
+                        item.name && item.name.toLowerCase().includes(query));
                     searchResults.innerHTML = "";
                     matches.forEach(item => {
                         const div = document.createElement("div");
                         const page = item.type === 'movie' ? 'movie.html' : 'series.html';
                         div.innerHTML = `<img src="${item.thumbnail}" alt="${item.name}"><span>${item.name} (IMDb: ${item.rating})</span>`;
-                        div.onclick = () => window.location.href = `${page}?name=${encodeURIComponent(item.name)}`;
-                        searchResults.appendChild(div);
-                    });
-                    searchResults.style.display = matches.length ? "block" : "none";
-                });
-
-                searchBox.addEventListener("keydown", function (e) {
-                    if (e.key === "Enter") {
-                        const query = searchBox.value.trim();
-                        if (query) window.location.href = `search-result.html?query=${encodeURIComponent(query)}`;
-                    }
-                });
-            }).catch(error => {
-                console.error('Fetch Error:', error);
-            });
-
-            function createSwiperContainer(videos, index = 0) {
-                const swiper = document.createElement("div");
-                swiper.className = `swiper video-grid swiper-container-${index}`;
-
-                const wrapper = document.createElement("div");
-                wrapper.className = "swiper-wrapper";
-
-                videos.forEach(item => {
-                    const slide = document.createElement("div");
-                    slide.className = "swiper-slide video-item";
-                    const page = item.type === 'movie' ? 'movie.html' : 'series.html';
-                    slide.innerHTML = `
-                        <a href="${page}?name=${encodeURIComponent(item.name)}">
-                            <img src="${item.thumbnail}" alt="${item.name}">
-                            <span>${item.name}</span>
-                            <div class="imdb-rating" data-rating="${item.rating}">IMDb: ${item.rating}</div>
-                        </a>`;
-                    wrapper.appendChild(slide);
-                });
-
-                const nextBtn = document.createElement("div");
-                nextBtn.className = `swiper-button-next swiper-button-next-${index}`;
-
-                const prevBtn = document.createElement("div");
-                prevBtn.className = `swiper-button-prev swiper-button-prev-${index}`;
-
-                const pagination = document.createElement("div");
-                pagination.className = `swiper-pagination swiper-pagination-${index}`;
-
-                swiper.appendChild(wrapper);
-                swiper.appendChild(prevBtn);
-                swiper.appendChild(nextBtn);
-                swiper.appendChild(pagination);
-
-                return swiper;
-            }
-        });
-    </script>
-</body>
-</html>
+                        div.onclick = () => window.location.href = `${page}?name=${encodeURIComponent(item.name)}
