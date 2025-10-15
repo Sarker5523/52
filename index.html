@@ -35,6 +35,9 @@
     <!-- Content -->
     <div id="content"></div>
 
+    <!-- Error Message -->
+    <div id="error-message" style="display: none; color: red; text-align: center; padding: 20px;"></div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
@@ -44,6 +47,7 @@
             const searchBox = document.getElementById("search-box");
             const searchResults = document.getElementById("search-results");
             const navbar = document.querySelector(".navbar");
+            const errorMessage = document.getElementById("error-message");
             const OMDB_API_KEY = 'ede2d5d7'; // Move to .env for production (e.g., process.env.OMDB_API_KEY or import.meta.env.VITE_OMDB_API_KEY)
 
             let lastScrollTop = 0;
@@ -69,7 +73,7 @@
             const dataCache = {};
 
             // Normalize strings for consistency
-            const normalize = (str) => str.toLowerCase().trim();
+            const normalize = (str) => str ? str.toLowerCase().trim() : '';
 
             // Function to fetch OMDB data
             async function fetchOmdbData(imdbID) {
@@ -85,7 +89,7 @@
                     if (data.Response === "True") {
                         const itemData = {
                             name: data.Title || 'Unknown Title',
-                            thumbnail: data.Poster !== "N/A" ? data.Poster : 'path/to/placeholder.jpg', // Fallback image
+                            thumbnail: data.Poster !== "N/A" ? data.Poster : 'path/to/placeholder.jpg',
                             category: data.Genre ? data.Genre.split(', ')[0] : 'Uncategorized',
                             rating: data.imdbRating || 'N/A',
                             type: data.Type === 'movie' ? 'movie' : 'series'
@@ -128,6 +132,8 @@
                     return res.json();
                 }).catch(error => {
                     console.error('Movies JSON fetch error:', error);
+                    errorMessage.textContent = 'Failed to load movies data. Please check your JSON files.';
+                    errorMessage.style.display = 'block';
                     return [];
                 }),
                 fetch('series.json').then(res => {
@@ -135,54 +141,77 @@
                     return res.json();
                 }).catch(error => {
                     console.error('Series JSON fetch error:', error);
+                    errorMessage.textContent = 'Failed to load series data. Please check your JSON files.';
+                    errorMessage.style.display = 'block';
                     return [];
                 })
             ]).then(async ([moviesData, seriesData]) => {
                 console.log('Movies data:', moviesData);
                 console.log('Series data:', seriesData);
 
-                // Combine data, preserving items without imdbID
+                if (moviesData.length === 0 && seriesData.length === 0) {
+                    errorMessage.textContent = 'No movies or series data found. Please check your JSON files.';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                // Combine data, handling missing fields
                 const data = [
                     ...moviesData.map(item => ({
                         imdbID: item.imdbID || null,
-                        name: item.name || 'Unknown Movie',
-                        thumbnail: item.thumbnail || null, // Allow null/empty thumbnails
+                        name: item.name || null,
+                        thumbnail: item.thumbnail || null,
                         category: item.category || 'Uncategorized',
                         type: 'movie',
                         rating: item.imdbID ? null : 'N/A'
                     })),
                     ...seriesData.map(item => ({
                         imdbID: item.imdbID || null,
-                        name: item.name || 'Unknown Series',
-                        thumbnail: item.thumbnail || null, // Allow null/empty thumbnails
+                        name: item.name || null,
+                        thumbnail: item.thumbnail || null,
                         category: item.category || 'Uncategorized',
                         type: 'series',
                         rating: item.imdbID ? null : 'N/A'
                     }))
                 ];
 
-                // Fetch OMDB data for items with imdbID, including thumbnails if missing
+                // Process data: fetch OMDB data only if needed
                 for (const item of data) {
-                    if (item.imdbID) {
+                    if (!item.name) {
+                        item.name = 'Unknown Title';
+                    }
+                    if (item.thumbnail) {
+                        // Use JSON thumbnail if provided
+                        item.thumbnail = item.thumbnail !== 'N/A' ? item.thumbnail : 'path/to/placeholder.jpg';
+                    } else if (item.imdbID) {
+                        // Fetch from OMDB if no thumbnail but imdbID exists
                         const omdbItem = await fetchOmdbData(item.imdbID);
                         if (omdbItem) {
-                            item.name = omdbItem.name;
-                            item.thumbnail = item.thumbnail || omdbItem.thumbnail; // Use OMDB thumbnail if local is missing
+                            item.name = item.name || omdbItem.name;
+                            item.thumbnail = omdbItem.thumbnail;
                             item.category = omdbItem.category;
                             item.rating = omdbItem.rating;
-                            item.type = omdbItem.type; // Update type if OMDB disagrees
+                            item.type = omdbItem.type;
                         } else {
-                            item.rating = 'N/A'; // Failed OMDB fetch
-                            item.thumbnail = item.thumbnail || 'path/to/placeholder.jpg'; // Fallback if no OMDB data
+                            item.thumbnail = 'path/to/placeholder.jpg';
+                            item.rating = 'N/A';
                         }
                     } else {
-                        item.thumbnail = item.thumbnail || 'path/to/placeholder.jpg'; // Fallback for no imdbID
+                        // Fallback for no thumbnail and no imdbID
+                        item.thumbnail = 'path/to/placeholder.jpg';
+                        item.rating = 'N/A';
                     }
                 }
 
-                // Filter valid items (require name only)
-                const validData = data.filter(item => item.name);
+                // Filter valid items (require non-empty name)
+                const validData = data.filter(item => item.name && item.name.trim() !== '');
                 console.log('Valid data:', validData);
+
+                if (validData.length === 0) {
+                    errorMessage.textContent = 'No valid movies or series found. Please ensure your JSON files contain valid names.';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
 
                 // Newly Added: 7 movies + 3 series, movies first
                 const newlyAddedMovies = validData
@@ -195,19 +224,27 @@
                     .reverse();
                 const newlyAddedVideos = [...newlyAddedMovies, ...newlyAddedSeries];
                 const newlyAddedSection = document.getElementById("newly-added");
-                const swiperContainer = createSwiperContainer(newlyAddedVideos, -1);
-                newlyAddedSection.appendChild(swiperContainer);
+                if (newlyAddedVideos.length > 0) {
+                    const swiperContainer = createSwiperContainer(newlyAddedVideos, -1);
+                    newlyAddedSection.appendChild(swiperContainer);
+                } else {
+                    newlyAddedSection.innerHTML += '<p>No new items available.</p>';
+                }
 
                 // Category List
                 const categories = [...new Set(validData.map(item => item.category).filter(Boolean))];
                 const categoryList = document.getElementById("category-list");
                 categoryList.innerHTML = '';
-                categories.forEach(category => {
-                    const link = document.createElement("a");
-                    link.href = `category.html?category=${encodeURIComponent(category)}`;
-                    link.textContent = category;
-                    categoryList.appendChild(link);
-                });
+                if (categories.length === 0) {
+                    categoryList.innerHTML = '<p>No categories available.</p>';
+                } else {
+                    categories.forEach(category => {
+                        const link = document.createElement("a");
+                        link.href = `category.html?category=${encodeURIComponent(category)}`;
+                        link.textContent = category;
+                        categoryList.appendChild(link);
+                    });
+                }
 
                 // Category Sections
                 const contentSection = document.getElementById("content");
@@ -224,38 +261,49 @@
                     section.appendChild(viewAll);
 
                     const categoryVideos = validData
-                        .filter(item => item.category === category && item.name)
+                        .filter(item => item.category === category && item.name && item.name.trim() !== '')
                         .slice(-12)
                         .reverse();
-                    const swiperEl = createSwiperContainer(categoryVideos, index);
-                    section.appendChild(swiperEl);
+                    if (categoryVideos.length > 0) {
+                        const swiperEl = createSwiperContainer(categoryVideos, index);
+                        section.appendChild(swiperEl);
+                    } else {
+                        section.innerHTML += '<p>No items in this category.</p>';
+                    }
                     contentSection.appendChild(section);
                 });
 
                 // Initialize Swiper instances
                 const swipers = document.querySelectorAll(".swiper");
+                if (swipers.length === 0) {
+                    console.warn('No Swiper instances created. Check data or Swiper initialization.');
+                }
                 swipers.forEach((el, index) => {
-                    new Swiper(`.swiper-container-${index - 1}`, {
-                        loop: true,
-                        loopedSlides: 12,
-                        speed: 1500,
-                        slidesPerView: 'auto',
-                        spaceBetween: 15,
-                        freeMode: true,
-                        autoplay: {
-                            delay: 3700,
-                            disableOnInteraction: false,
-                            reverseDirection: index % 2 !== 0
-                        },
-                        navigation: {
-                            nextEl: `.swiper-button-next-${index - 1}`,
-                            prevEl: `.swiper-button-prev-${index - 1}`,
-                        },
-                        pagination: {
-                            el: `.swiper-pagination-${index - 1}`,
-                            clickable: true,
-                        }
-                    });
+                    try {
+                        new Swiper(`.swiper-container-${index - 1}`, {
+                            loop: true,
+                            loopedSlides: 12,
+                            speed: 1500,
+                            slidesPerView: 'auto',
+                            spaceBetween: 15,
+                            freeMode: true,
+                            autoplay: {
+                                delay: 3700,
+                                disableOnInteraction: false,
+                                reverseDirection: index % 2 !== 0
+                            },
+                            navigation: {
+                                nextEl: `.swiper-button-next-${index - 1}`,
+                                prevEl: `.swiper-button-prev-${index - 1}`,
+                            },
+                            pagination: {
+                                el: `.swiper-pagination-${index - 1}`,
+                                clickable: true,
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Swiper initialization error:', error);
+                    }
                 });
 
                 // Search functionality
@@ -263,13 +311,77 @@
                     const query = searchBox.value.toLowerCase();
                     if (!query) {
                         searchResults.style.display = "none";
+                        searchResults.innerHTML = "";
                         return;
                     }
                     const matches = validData.filter(item =>
-                        item.name && item.name.toLowerCase().includes(query));
+                        item.name && normalize(item.name).includes(query));
                     searchResults.innerHTML = "";
-                    matches.forEach(item => {
-                        const div = document.createElement("div");
-                        const page = item.type === 'movie' ? 'movie.html' : 'series.html';
-                        div.innerHTML = `<img src="${item.thumbnail}" alt="${item.name}"><span>${item.name} (IMDb: ${item.rating})</span>`;
-                        div.onclick = () => window.location.href = `${page}?name=${encodeURIComponent(item.name)}
+                    if (matches.length === 0) {
+                        searchResults.innerHTML = '<div class="no-results">No results found</div>';
+                    } else {
+                        matches.forEach(item => {
+                            const div = document.createElement("div");
+                            const page = item.type === 'movie' ? 'movie.html' : 'series.html';
+                            div.innerHTML = `
+                                <img src="${item.thumbnail || 'path/to/placeholder.jpg'}" alt="${item.name}">
+                                <span>${item.name} (IMDb: ${item.rating})</span>`;
+                            div.onclick = () => window.location.href = `${page}?name=${encodeURIComponent(item.name)}`;
+                            searchResults.appendChild(div);
+                        });
+                    }
+                    searchResults.style.display = matches.length ? "block" : "none";
+                });
+
+                searchBox.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        const query = searchBox.value.trim();
+                        if (query) window.location.href = `search-result.html?query=${encodeURIComponent(query)}`;
+                    }
+                });
+            }).catch(error => {
+                console.error('Fetch Error:', error);
+                errorMessage.textContent = 'Failed to load data. Please try again later.';
+                errorMessage.style.display = 'block';
+            });
+        });
+
+        function createSwiperContainer(videos, index = 0) {
+            const swiper = document.createElement("div");
+            swiper.className = `swiper video-grid swiper-container-${index}`;
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "swiper-wrapper";
+
+            videos.forEach(item => {
+                const slide = document.createElement("div");
+                slide.className = "swiper-slide video-item";
+                const page = item.type === 'movie' ? 'movie.html' : 'series.html';
+                slide.innerHTML = `
+                    <a href="${page}?name=${encodeURIComponent(item.name)}">
+                        <img src="${item.thumbnail || 'path/to/placeholder.jpg'}" alt="${item.name}">
+                        <span>${item.name}</span>
+                        <div class="imdb-rating" data-rating="${item.rating}">IMDb: ${item.rating}</div>
+                    </a>`;
+                wrapper.appendChild(slide);
+            });
+
+            const nextBtn = document.createElement("div");
+            nextBtn.className = `swiper-button-next swiper-button-next-${index}`;
+
+            const prevBtn = document.createElement("div");
+            prevBtn.className = `swiper-button-prev swiper-button-prev-${index}`;
+
+            const pagination = document.createElement("div");
+            pagination.className = `swiper-pagination swiper-pagination-${index}`;
+
+            swiper.appendChild(wrapper);
+            swiper.appendChild(prevBtn);
+            swiper.appendChild(nextBtn);
+            swiper.appendChild(pagination);
+
+            return swiper;
+        }
+    </script>
+</body>
+</html>
