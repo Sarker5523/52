@@ -8,149 +8,7 @@
 
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-<link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #222 url('stardust.png') repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    color: white;
-}
-        .category-section {
-            margin: 20px;
-        }
-
-        .category-section h2 {
-            font-size: 1.5em;
-            color: white;
-            display: inline-block;
-        }
-
-        .view-all-button {
-    border: 1px solid #00ab41;
-    box-shadow: 0 2px 10px rgba(0, 171, 65, 0.2);
-    background: linear-gradient(to bottom, rgba(43, 43, 43, 0.8), rgba(0, 0, 0, 0.5));
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
-        }
-
-        .view-all-button:hover {
-        border-color: #00ff9c;
-        background: linear-gradient(to right, #1a1a1a, #333);
-        }
-        .swiper {
-            overflow: hidden;
-        }
-
-        .swiper-wrapper {
-            display: flex;
-            transition-timing-function: linear !important;
-        }
-
-        .swiper-slide {
-            width: 200px;
-            flex-shrink: 0;
-            margin-right: 15px;
-        }
-:root {
-    --card-radius: 8px; /* 👈 Change this value to control all corners */
-}
-
-        .video-item {
-    position: relative;
-    background: rgba(255, 255, 255, 0.08); /* light translucent background */
-    border-radius: var(--card-radius);
-    overflow: hidden;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.video-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-}
-
-.video-item img {
-    width: 100%;
-    height: 100%;
-    display: block; /* 👈 Prevents bottom gap that can show background */
-    border-radius: var(--card-radius);
-    object-fit: cover; /* 👈 Ensures the image fully covers the box */
-}
-
-.video-item span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 10px;
-    font-size: 1em;
-    color: white;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border-radius: var(--card-radius) var(--card-radius) 0 0;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-        .swiper-button-next::after,.swiper-button-prev::after {
-            font-size: 25px;
-            color: white;
-            font-weight: bold; /* 🔺 Reduce arrow size only (default is 20px) */
-        }
-        .swiper-button-next,.swiper-button-prev {
-            width: 36px;
-            height: 36px;
-            background: rgba(252, 252, 252, 0.4);
-            border-radius: 50%; /* 👈 Ensures it's a perfect circle */
-            padding: 0;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.788);
-            display: flex;       /* 👈 Ensures icon is centered */
-            align-items: center; /* 👈 Vertically center the arrow */
-            justify-content: center; /* 👈 Horizontally center the arrow */
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-            transition: background 0.3s ease;
-            box-sizing: border-box; /* 👈 Prevents padding/size issues */
-        }
-
-        .swiper-button-next:hover,.swiper-button-prev:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-.swiper-pagination-bullet {
-    background: white;
-}
-
-        @media (max-width: 767px) {
-            .nav-links a:first-child {
-                display: none;
-            }
-
-            .swiper-slide {
-                width: 140px;
-            }
-
-            .search-box {
-                width: 150px;
-                font-size: 0.9em;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Navbar -->
@@ -178,7 +36,6 @@
     <div id="content"></div>
 
     <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -187,6 +44,7 @@
             const searchBox = document.getElementById("search-box");
             const searchResults = document.getElementById("search-results");
             const navbar = document.querySelector(".navbar");
+            const OMDB_API_KEY = 'ede2d5d7'; // Your OMDB API key
 
             let lastScrollTop = 0;
             window.addEventListener("scroll", function () {
@@ -206,136 +64,246 @@
                 }
             });
 
-           // Fetch both movies and series JSON
-Promise.all([
-    fetch('movies.json').then(res => res.json()),
-    fetch('series.json').then(res => res.json())
-]).then(([moviesData, seriesData]) => {
-    // Combine data
-    const data = [...moviesData, ...seriesData];
+            // Cache for OMDB data
+            const dataCache = JSON.parse(localStorage.getItem('omdbDataCache')) || {};
 
-    // Newly added
-    const newlyAddedSection = document.getElementById("newly-added");
-    const newlyAddedVideos = data.filter(item => item.thumbnail && item.thumbnail.trim()).slice(-12).reverse();
-    const swiperContainer = createSwiperContainer(newlyAddedVideos, -1);
-    newlyAddedSection.appendChild(swiperContainer);
-
-    // Category List
-    const categories = [...new Set(data.map(item => item.category).filter(Boolean))];
-    const categoryList = document.getElementById("category-list");
-    categoryList.innerHTML = ''; // clear before appending
-    categories.forEach(category => {
-        const link = document.createElement("a");
-        link.href = `category.html?category=${encodeURIComponent(category)}`;
-        link.textContent = category;
-        categoryList.appendChild(link);
-    });
-
-    // Category Sections
-    const contentSection = document.getElementById("content");
-    contentSection.innerHTML = ''; // clear before appending
-    categories.forEach((category, index) => {
-        const section = document.createElement("div");
-        section.className = "category-section";
-        section.innerHTML = `<h2>${category}:</h2>`;
-
-        const viewAll = document.createElement("button");
-        viewAll.className = "view-all-button";
-        viewAll.textContent = "View All";
-        viewAll.onclick = () => window.location.href = `category.html?category=${encodeURIComponent(category)}`;
-        section.appendChild(viewAll);
-
-        const categoryVideos = data.filter(item => item.category === category && item.thumbnail);
-        const swiperEl = createSwiperContainer(categoryVideos.slice(-12).reverse(), index);
-        section.appendChild(swiperEl);
-        contentSection.appendChild(section);
-    });
-
-    // Initialize Swiper instances
-    const swipers = document.querySelectorAll(".swiper");
-    swipers.forEach((el, index) => {
-        new Swiper(`.swiper-container-${index - 1}`, {
-            loop: true,
-            loopedSlides: 12,
-            speed: 1500,
-            slidesPerView: 'auto',
-            spaceBetween: 15,
-            freeMode: true,
-            autoplay: {
-                delay: 3700,
-                disableOnInteraction: false,
-                reverseDirection: index % 2 !== 0
-            },
-            navigation: {
-                nextEl: `.swiper-button-next-${index - 1}`,
-                prevEl: `.swiper-button-prev-${index - 1}`,
-            },
-            pagination: {
-                el: `.swiper-pagination-${index - 1}`,
-                clickable: true,
+            // Function to fetch OMDB data
+            async function fetchOmdbData(imdbID) {
+                if (dataCache[imdbID]) {
+                    return dataCache[imdbID];
+                }
+                await new Promise(resolve => setTimeout(resolve, 100)); // Rate limit delay
+                try {
+                    const response = await fetch(`http://www.omdbapi.com/?i=${imdbID}&apikey=${OMDB_API_KEY}`);
+                    const data = await response.json();
+                    if (data.Response === "True") {
+                        const itemData = {
+                            name: data.Title,
+                            thumbnail: data.Poster !== "N/A" ? data.Poster : 'path/to/placeholder.jpg', // Fallback image
+                            category: data.Genre ? data.Genre.split(', ')[0] : 'Uncategorized',
+                            rating: data.imdbRating || 'N/A',
+                            type: data.Type === 'movie' ? 'movie' : 'series'
+                        };
+                        dataCache[imdbID] = itemData;
+                        updateCache();
+                        return itemData;
+                    }
+                    console.warn(`OMDB Error for ${imdbID}: ${data.Error}`);
+                    return null;
+                } catch (error) {
+                    console.error(`Error fetching OMDB data for ${imdbID}:`, error);
+                    return null;
+                }
             }
-        });
-    });
 
-    // Search functionality
-    searchBox.addEventListener("input", function () {
-        const query = searchBox.value.toLowerCase();
-        if (!query) return searchResults.style.display = "none";
-        const matches = data.filter(item =>
-            item.name.toLowerCase().includes(query) && item.thumbnail && item.thumbnail.trim());
-        searchResults.innerHTML = "";
-        matches.forEach(item => {
-            const div = document.createElement("div");
-            div.innerHTML = `<img src="${item.thumbnail}" alt="${item.name}"><span>${item.name}</span>`;
-            div.onclick = () => window.location.href = `video.html?name=${encodeURIComponent(video.name)}`;
+            // Update cache with size limit
+            function updateCache() {
+                if (Object.keys(dataCache).length > 1000) {
+                    const newCache = Object.fromEntries(Object.entries(dataCache).slice(-1000));
+                    Object.assign(dataCache, newCache);
+                }
+                try {
+                    localStorage.setItem('omdbDataCache', JSON.stringify(dataCache));
+                } catch (e) {
+                    if (e.name === 'QuotaExceededError') {
+                        console.warn('localStorage full, clearing cache');
+                        localStorage.removeItem('omdbDataCache');
+                        Object.keys(dataCache).forEach(key => delete dataCache[key]);
+                        localStorage.setItem('omdbDataCache', JSON.stringify(dataCache));
+                    }
+                }
+            }
 
-        });
-        searchResults.style.display = matches.length ? "block" : "none";
-    });
+            // Fetch JSON files and process data
+            Promise.all([
+                fetch('movies.json').then(res => {
+                    if (!res.ok) throw new Error('Failed to fetch movies.json');
+                    return res.json();
+                }),
+                fetch('series.json').then(res => {
+                    if (!res.ok) throw new Error('Failed to fetch series.json');
+                    return res.json();
+                })
+            ]).then(async ([moviesData, seriesData]) => {
+                // Combine data, preserving items without imdbID
+                const data = [
+                    ...moviesData.map(item => ({
+                        imdbID: item.imdbID || null,
+                        name: item.name || null,
+                        thumbnail: item.thumbnail || 'path/to/placeholder.jpg',
+                        category: item.category || 'Uncategorized',
+                        type: 'movie',
+                        rating: item.imdbID ? null : 'N/A'
+                    })),
+                    ...seriesData.map(item => ({
+                        imdbID: item.imdbID || null,
+                        name: item.name || null,
+                        thumbnail: item.thumbnail || 'path/to/placeholder.jpg',
+                        category: item.category || 'Uncategorized',
+                        type: 'series',
+                        rating: item.imdbID ? null : 'N/A'
+                    }))
+                ];
 
-    searchBox.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            const query = searchBox.value.trim();
-            if (query) window.location.href = `search-result.html?query=${encodeURIComponent(query)}`;
-        }
-    });
-});
+                // Fetch OMDB data for items with imdbID
+                for (const item of data) {
+                    if (item.imdbID) {
+                        const omdbItem = await fetchOmdbData(item.imdbID);
+                        if (omdbItem) {
+                            item.name = omdbItem.name;
+                            item.thumbnail = omdbItem.thumbnail;
+                            item.category = omdbItem.category;
+                            item.rating = omdbItem.rating;
+                            item.type = omdbItem.type; // Update type if OMDB disagrees
+                        } else {
+                            item.rating = 'N/A'; // Failed OMDB fetch
+                        }
+                    }
+                }
+
+                // Filter valid items with thumbnails
+                const validData = data.filter(item => item.thumbnail && item.thumbnail !== 'N/A' && item.name);
+
+                // Newly Added: 7 movies + 3 series, movies first
+                const newlyAddedMovies = validData
+                    .filter(item => item.type === 'movie')
+                    .slice(-7)
+                    .reverse();
+                const newlyAddedSeries = validData
+                    .filter(item => item.type === 'series')
+                    .slice(-3)
+                    .reverse();
+                const newlyAddedVideos = [...newlyAddedMovies, ...newlyAddedSeries];
+                const newlyAddedSection = document.getElementById("newly-added");
+                const swiperContainer = createSwiperContainer(newlyAddedVideos, -1);
+                newlyAddedSection.appendChild(swiperContainer);
+
+                // Category List
+                const categories = [...new Set(validData.map(item => item.category).filter(Boolean))];
+                const categoryList = document.getElementById("category-list");
+                categoryList.innerHTML = '';
+                categories.forEach(category => {
+                    const link = document.createElement("a");
+                    link.href = `category.html?category=${encodeURIComponent(category)}`;
+                    link.textContent = category;
+                    categoryList.appendChild(link);
+                });
+
+                // Category Sections
+                const contentSection = document.getElementById("content");
+                contentSection.innerHTML = '';
+                categories.forEach((category, index) => {
+                    const section = document.createElement("div");
+                    section.className = "category-section";
+                    section.innerHTML = `<h2>${category}:</h2>`;
+
+                    const viewAll = document.createElement("button");
+                    viewAll.className = "view-all-button";
+                    viewAll.textContent = "View All";
+                    viewAll.onclick = () => window.location.href = `category.html?category=${encodeURIComponent(category)}`;
+                    section.appendChild(viewAll);
+
+                    const categoryVideos = validData
+                        .filter(item => item.category === category && item.thumbnail && item.name)
+                        .slice(-12)
+                        .reverse();
+                    const swiperEl = createSwiperContainer(categoryVideos, index);
+                    section.appendChild(swiperEl);
+                    contentSection.appendChild(section);
+                });
+
+                // Initialize Swiper instances
+                const swipers = document.querySelectorAll(".swiper");
+                swipers.forEach((el, index) => {
+                    new Swiper(`.swiper-container-${index - 1}`, {
+                        loop: true,
+                        loopedSlides: 12,
+                        speed: 1500,
+                        slidesPerView: 'auto',
+                        spaceBetween: 15,
+                        freeMode: true,
+                        autoplay: {
+                            delay: 3700,
+                            disableOnInteraction: false,
+                            reverseDirection: index % 2 !== 0
+                        },
+                        navigation: {
+                            nextEl: `.swiper-button-next-${index - 1}`,
+                            prevEl: `.swiper-button-prev-${index - 1}`,
+                        },
+                        pagination: {
+                            el: `.swiper-pagination-${index - 1}`,
+                            clickable: true,
+                        }
+                    });
+                });
+
+                // Search functionality
+                searchBox.addEventListener("input", function () {
+                    const query = searchBox.value.toLowerCase();
+                    if (!query) {
+                        searchResults.style.display = "none";
+                        return;
+                    }
+                    const matches = validData.filter(item =>
+                        item.name && item.name.toLowerCase().includes(query) && item.thumbnail && item.thumbnail !== 'N/A');
+                    searchResults.innerHTML = "";
+                    matches.forEach(item => {
+                        const div = document.createElement("div");
+                        const page = item.type === 'movie' ? 'movie.html' : 'series.html';
+                        div.innerHTML = `<img src="${item.thumbnail}" alt="${item.name}"><span>${item.name} (IMDb: ${item.rating})</span>`;
+                        div.onclick = () => window.location.href = `${page}?name=${encodeURIComponent(item.name)}`;
+                        searchResults.appendChild(div);
+                    });
+                    searchResults.style.display = matches.length ? "block" : "none";
+                });
+
+                searchBox.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        const query = searchBox.value.trim();
+                        if (query) window.location.href = `search-result.html?query=${encodeURIComponent(query)}`;
+                    }
+                });
+            }).catch(error => {
+                console.error('Fetch Error:', error);
+            });
+
             function createSwiperContainer(videos, index = 0) {
-    const swiper = document.createElement("div");
-    swiper.className = `swiper video-grid swiper-container-${index}`;
+                const swiper = document.createElement("div");
+                swiper.className = `swiper video-grid swiper-container-${index}`;
 
-    const wrapper = document.createElement("div");
-    wrapper.className = "swiper-wrapper";
+                const wrapper = document.createElement("div");
+                wrapper.className = "swiper-wrapper";
 
-    videos.forEach(item => {
-        const slide = document.createElement("div");
-        slide.className = "swiper-slide video-item";
-        slide.innerHTML = `
-            <a href="video.html?name=${encodeURIComponent(item.name)}">
+                videos.forEach(item => {
+                    const slide = document.createElement("div");
+                    slide.className = "swiper-slide video-item";
+                    const page = item.type === 'movie' ? 'movie.html' : 'series.html';
+                    slide.innerHTML = `
+                        <a href="${page}?name=${encodeURIComponent(item.name)}">
+                            <img src="${item.thumbnail}" alt="${item.name}">
+                            <span>${item.name}</span>
+                            <div class="imdb-rating" data-rating="${item.rating || 'N/A'}">${item.rating ? `IMDb: ${item.rating}` : ''}</div>
+                        </a>`;
+                    wrapper.appendChild(slide);
+                });
 
-                <img src="${item.thumbnail}" alt="${item.name}">
-                <span>${item.name}</span>
-            </a>`;
-        wrapper.appendChild(slide);
-    });
+                const nextBtn = document.createElement("div");
+                nextBtn.className = `swiper-button-next swiper-button-next-${index}`;
 
-    const nextBtn = document.createElement("div");
-    nextBtn.className = `swiper-button-next swiper-button-next-${index}`;
+                const prevBtn = document.createElement("div");
+                prevBtn.className = `swiper-button-prev swiper-button-prev-${index}`;
 
-    const prevBtn = document.createElement("div");
-    prevBtn.className = `swiper-button-prev swiper-button-prev-${index}`;
+                const pagination = document.createElement("div");
+                pagination.className = `swiper-pagination swiper-pagination-${index}`;
 
-    const pagination = document.createElement("div");
-    pagination.className = `swiper-pagination swiper-pagination-${index}`;
+                swiper.appendChild(wrapper);
+                swiper.appendChild(prevBtn);
+                swiper.appendChild(nextBtn);
+                swiper.appendChild(pagination);
 
-    swiper.appendChild(wrapper);
-    swiper.appendChild(prevBtn);
-    swiper.appendChild(nextBtn);
-    swiper.appendChild(pagination);
-
-    return swiper;
-}
-
+                return swiper;
+            }
         });
     </script>
 </body>
