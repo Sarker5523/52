@@ -82,20 +82,22 @@
     const mainCast = document.getElementById("main-cast");
     const imdbCategories = document.getElementById("imdb-categories");
 
-    const OMDB_API_KEY = 'ede2d5d7'; // Note: Move to Netlify environment variable for production
+    const OMDB_API_KEY = 'ede2d5d7'; // Move to .env for production (e.g., process.env.OMDB_API_KEY)
     const ratingCache = JSON.parse(localStorage.getItem('imdbRatingCache')) || {};
 
     // Helper to normalize strings
     const normalize = (str) => str.toLowerCase().trim();
 
-    // Fetch IMDb data via Netlify Function
+    // Fetch IMDb data directly from OMDb API
     async function fetchImdbData(title) {
-      const cacheKey = title;
+      const cacheKey = normalize(title);
       if (ratingCache[cacheKey]) {
         return ratingCache[cacheKey];
       }
       try {
-        const response = await fetch(`/.netlify/functions/imdb-proxy?title=${encodeURIComponent(title)}`);
+        const response = await fetch(
+          `https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${encodeURIComponent(title)}&plot=full`
+        );
         const data = await response.json();
         if (data.Response === "True") {
           const imdbData = {
