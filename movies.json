@@ -2068,7 +2068,7 @@
   },
   {
     "name": "Param Sundari",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BY2QwOWQ5N2YtZmYyOS00NTZiLWJmZWYtMDJmMGI3ZTAyOWZmXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "Param Sundari",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/fdWnfzsx-ks' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -2084,7 +2084,7 @@
   },
   {
     "name": "War 2",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BY2U0MGFkNzctOGI5OC00MzhhLWExYTctZjE5YjY3MzcwYjMzXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt27425164",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/mjBym9uKth4' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -2101,7 +2101,6 @@
   {
     "name": "Odum Kuthira Chadum Kuthira",
     "imdbID": "tt22001978",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BYWM1NzRlMWUtMjVlOS00YjA3LWJkMjgtZjc2ZTdmZGFlMzBlXkEyXkFqcGc@._V1_.jpg",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/nXnCPMXqcLc' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
