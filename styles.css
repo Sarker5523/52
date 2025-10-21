@@ -720,9 +720,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-}
-
-.info-link, .info-button {
+}.info-link, .info-button {
   font-size: 0.95em;
   padding: 0.6em 0.8em;
   border-radius: 0.5em;
@@ -730,42 +728,56 @@ body {
   background-color: #000;
   color: #fff;
   cursor: pointer;
-  box-shadow: 2px 2px 3px #000000b4;
+  box-shadow: 2px 2px 3px #000000b4; /* Outer shadow for default state */
   text-decoration: none;
+  position: relative; /* For z-index stacking */
+  z-index: 1; /* Ensure content is above the glow */
+  display: inline-block; /* Maintain inline behavior */
 }
 
 .info-link:hover, .info-button:hover {
-  background-color: #333;
+  background: linear-gradient(90deg, #03a9f4, #f441a5); /* Gradient background on hover */
+  color: #fff; /* Ensure text remains readable */
+  box-shadow:
+    0.1em 0.15em 0.05em 0 inset rgba(5, 5, 5, 0.75), /* Dark shadow for depth */
+    -0.025em -0.03em 0.05em 0.025em inset rgba(5, 5, 5, 0.5), /* Subtle dark shadow */
+    0.25em 0.25em 0.2em 0 inset rgba(5, 5, 5, 0.5), /* Deeper shadow */
+    0 0 0 0.5em inset rgba(255, 255, 255, 0.15), /* Light highlight */
+    0 0 0 0 inset rgba(255, 255, 255, 1), /* Neutral base */
+    0.12em 0.12em 0.12em inset rgba(255, 255, 255, 0.25), /* Light highlight */
+    -0.075em -0.12em 0.2em 0.1em inset rgba(5, 5, 5, 0.25); /* Subtle dark shadow */
 }
 
 .container {
   position: relative;
-  padding: 3px;
-  background: linear-gradient(90deg, #03a9f4, #f441a5);
-  border-radius: 0.9em;
+  display: inline-block; /* Match the inline behavior of the link/button */
+  padding: 1px; /* Very thin border (1px) */
+  background: linear-gradient(90deg, #03a9f4, #f441a5); /* Gradient for the thin border */
+  border-radius: 0.6em; /* Slightly larger than the inner element's border-radius */
   transition: all 0.4s ease;
-  display: inline-block;
-  margin: 6px;
+  margin: 6px; /* Maintain spacing */
 }
 
 .container::before {
   content: "";
   position: absolute;
-  inset: 0;
-  margin: auto;
-  border-radius: 0.9em;
-  z-index: -10;
+  top: -1.5px; /* Smaller extension for glow due to thinner border */
+  left: -1.5px;
+  right: -1.5px;
+  bottom: -1.5px;
+  background: linear-gradient(90deg, #03a9f4, #f441a5); /* Gradient for glow */
+  border-radius: 0.7em; /* Slightly larger to encompass the container */
+  z-index: -1; /* Place behind the container and link/button */
   filter: blur(0);
-  transition: filter 0.4s ease;
+  transition: filter 0.2s ease;
 }
 
 .container:hover::before {
-  background: linear-gradient(90deg, #03a9f4, #f441a5);
-  filter: blur(1.2em);
+  filter: blur(1em); /* Glow effect on hover */
 }
 
 .container:active::before {
-  filter: blur(0.2em);
+  filter: blur(0.2em); /* Reduced blur on click */
 }
 
 .search-suggestion {
