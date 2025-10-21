@@ -67,44 +67,72 @@
                 }
             });
 
-            // Clear cache on load to avoid stale data
-            localStorage.removeItem('movieDataCache');
-            const dataCache = {};
+            // Load cache from localStorage
+            let dataCache = {};
+            try {
+                const cachedData = localStorage.getItem('movieDataCache');
+                if (cachedData) {
+                    dataCache = JSON.parse(cachedData);
+                }
+            } catch (e) {
+                console.warn('Error loading cache:', e);
+            }
 
             // Normalize strings for consistency
             const normalize = (str) => str ? str.toLowerCase().trim() : '';
 
-            // Function to fetch TMDb data
-            async function fetchMovieData(imdbID) {
-                const cacheKey = normalize(imdbID);
-                if (dataCache[cacheKey]) {
-                    console.log(`Cache hit for ${imdbID}`);
-                    return dataCache[cacheKey];
+            // Function to fetch TMDb data for a batch of IMDb IDs
+            async function fetchMovieDataBatch(items) {
+                const results = [];
+                const batchSize = 10; // TMDb rate limit: ~50 requests per 10s, so batch conservatively
+                for (let i = 0; i < items.length; i += batchSize) {
+                    const batch = items.slice(i, i + batchSize);
+                    const promises = batch.map(async ({ imdbID, type }) => {
+                        const cacheKey = normalize(imdbID);
+                        if (dataCache[cacheKey]) {
+                            console.log(`Cache hit for ${imdbID}`);
+                            return { imdbID, data: dataCache[cacheKey] };
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 50)); // Reduced delay for batch
+                        try {
+                            const tmdbResponse = await fetch(`https://api.themoviedb.org/3/find/${imdbID}?api_key=${TMDB_API_KEY}&language=en-US&external_source=imdb_id`);
+                            const tmdbData = await tmdbResponse.json();
+                            let itemData = null;
+                            if (tmdbData.movie_results && tmdbData.movie_results.length > 0) {
+                                const movieData = tmdbData.movie_results[0];
+                                itemData = {
+                                    name: movieData.title || 'Unknown Title',
+                                    thumbnail: movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : 'path/to/placeholder.jpg',
+                                    category: movieData.genres && movieData.genres.length > 0 ? movieData.genres[0].name : 'Uncategorized',
+                                    rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : 'N/A',
+                                    type: 'movie'
+                                };
+                            } else if (tmdbData.tv_results && tmdbData.tv_results.length > 0) {
+                                const seriesData = tmdbData.tv_results[0];
+                                itemData = {
+                                    name: seriesData.name || 'Unknown Title',
+                                    thumbnail: seriesData.poster_path ? `https://image.tmdb.org/t/p/w500${seriesData.poster_path}` : 'path/to/placeholder.jpg',
+                                    category: seriesData.genres && seriesData.genres.length > 0 ? seriesData.genres[0].name : 'Uncategorized',
+                                    rating: seriesData.vote_average ? seriesData.vote_average.toFixed(1) : 'N/A',
+                                    type: 'series'
+                                };
+                            }
+                            if (itemData) {
+                                dataCache[cacheKey] = itemData;
+                                return { imdbID, data: itemData };
+                            }
+                            console.warn(`TMDb Error for ${imdbID}: No results found`);
+                            return { imdbID, data: null };
+                        } catch (error) {
+                            console.error(`Error fetching TMDb data for ${imdbID}:`, error);
+                            return { imdbID, data: null };
+                        }
+                    });
+                    const batchResults = await Promise.all(promises);
+                    results.push(...batchResults);
+                    updateCache(); // Update cache after each batch
                 }
-                await new Promise(resolve => setTimeout(resolve, 100)); // Rate limit delay
-                try {
-                    const tmdbResponse = await fetch(`https://api.themoviedb.org/3/find/${imdbID}?api_key=${TMDB_API_KEY}&language=en-US&external_source=imdb_id`);
-                    const tmdbData = await tmdbResponse.json();
-                    if (tmdbData.movie_results && tmdbData.movie_results.length > 0) {
-                        const movieData = tmdbData.movie_results[0];
-                        const itemData = {
-                            name: movieData.title || 'Unknown Title',
-                            thumbnail: movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : 'path/to/placeholder.jpg',
-                            category: movieData.genres && movieData.genres.length > 0 ? movieData.genres[0].name : 'Uncategorized',
-                            rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : 'N/A',
-                            type: 'movie' // TMDb /find endpoint primarily returns movies
-                        };
-                        dataCache[cacheKey] = itemData;
-                        updateCache();
-                        console.log(`Fetched TMDb data for ${imdbID}:`, itemData);
-                        return itemData;
-                    }
-                    console.warn(`TMDb Error for ${imdbID}: No movie results found`);
-                    return null;
-                } catch (error) {
-                    console.error(`Error fetching TMDb data for ${imdbID}:`, error);
-                    return null;
-                }
+                return results;
             }
 
             // Update cache with size limit
@@ -175,7 +203,16 @@
                     }))
                 ];
 
-                // Process data: fetch TMDb data only if needed
+                // Filter items needing TMDb data
+                const itemsToFetch = data
+                    .filter(item => item.imdbID && !(item.thumbnail && item.rating && item.category && item.category !== 'Uncategorized'))
+                    .map(item => ({ imdbID: item.imdbID, type: item.type }));
+
+                // Fetch TMDb data in batch
+                const tmdbResults = await fetchMovieDataBatch(itemsToFetch);
+                const tmdbMap = new Map(tmdbResults.map(result => [result.imdbID, result.data]));
+
+                // Process data: apply TMDb data or fallbacks
                 for (const item of data) {
                     if (!item.name) {
                         item.name = 'Unknown Title';
@@ -184,8 +221,8 @@
                         // Use JSON data if complete
                         item.thumbnail = item.thumbnail !== 'N/A' ? item.thumbnail : 'path/to/placeholder.jpg';
                     } else if (item.imdbID) {
-                        // Fetch from TMDb if no thumbnail, rating, or category
-                        const tmdbItem = await fetchMovieData(item.imdbID);
+                        // Apply TMDb data if available
+                        const tmdbItem = tmdbMap.get(item.imdbID);
                         if (tmdbItem) {
                             item.name = item.name || tmdbItem.name;
                             item.thumbnail = item.thumbnail || tmdbItem.thumbnail;
@@ -251,7 +288,7 @@
                 } else {
                     categories.forEach(category => {
                         const link = document.createElement("a");
-                        link.href = `category.html#${category.replace(/\s+/g, '')}`; // Use hash instead of query, no encoding
+                        link.href = `category.html#${category.replace(/\s+/g, '')}`;
                         link.textContent = category;
                         categoryList.appendChild(link);
                     });
@@ -268,7 +305,7 @@
                     const viewAll = document.createElement("button");
                     viewAll.className = "view-all-button";
                     viewAll.textContent = "View All";
-                    viewAll.onclick = () => window.location.href = `category.html#${category.replace(/\s+/g, '')}`; // Use hash
+                    viewAll.onclick = () => window.location.href = `category.html#${category.replace(/\s+/g, '')}`;
                     section.appendChild(viewAll);
 
                     const categoryVideos = validData
@@ -337,7 +374,7 @@
                             div.innerHTML = `
                                 <img src="${item.thumbnail || 'path/to/placeholder.jpg'}" alt="${item.name}">
                                 <span>${item.name} (TMDb: ${item.rating})</span>`;
-                            div.onclick = () => window.location.href = `${page}#${item.name.replace(/\s+/g, '')}`; // Use hash
+                            div.onclick = () => window.location.href = `${page}#${item.name.replace(/\s+/g, '')}`;
                             searchResults.appendChild(div);
                         });
                     }
@@ -347,7 +384,7 @@
                 searchBox.addEventListener("keydown", function (e) {
                     if (e.key === "Enter") {
                         const query = searchBox.value.trim();
-                        if (query) window.location.href = `search-result.html#${query.replace(/\s+/g, '')}`; // Use hash
+                        if (query) window.location.href = `search-result.html#${query.replace(/\s+/g, '')}`;
                     }
                 });
             }).catch(error => {
@@ -369,7 +406,7 @@
                 slide.className = "swiper-slide video-item";
                 const page = item.type === 'movie' ? 'movie.html' : 'series.html';
                 slide.innerHTML = `
-                    <a href="${page}#${item.name.replace(/\s+/g, '')}"> <!-- Use hash -->
+                    <a href="${page}#${item.name.replace(/\s+/g, '')}">
                         <img src="${item.thumbnail || 'path/to/placeholder.jpg'}" alt="${item.name}">
                         <span>${item.name}</span>
                         <div class="imdb-rating" data-rating="${item.rating}">IMDB: ${item.rating}</div>
