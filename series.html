@@ -235,7 +235,6 @@
         });
       }
 
-      // ✅ FIXED: BOUNCE ANIMATION!
       function loadVideo(episode) {
         if (!episode) {
           elements.seriesTitle.textContent = currentSeries?.name || 'Series not found';
@@ -249,7 +248,6 @@
         elements.seasonEpisodeInfo.dataset.season = episode.season_number.toString().padStart(2, '0');
         elements.seasonEpisodeInfo.dataset.episode = episode.episode_number.toString().padStart(2, '0');
         
-        // ✅ BOUNCE TRIGGER!
         elements.seasonEpisodeInfo.classList.add('animate');
         setTimeout(() => elements.seasonEpisodeInfo.classList.remove('animate'), 600);
         
@@ -334,7 +332,7 @@
             const button = document.createElement('button');
             button.textContent = seriesDataInfo.director;
             button.className = 'info-link';
-            button.onclick = () => window.open(`search.html#director=${encodeURIComponent(seriesDataInfo.director)}`, '_blank');
+            button.onclick = () => { window.location.href = `search.html#director=${encodeURIComponent(seriesDataInfo.director)}`; };
             const wrapper = document.createElement('span');
             wrapper.className = 'container';
             wrapper.appendChild(button);
@@ -349,7 +347,7 @@
               const button = document.createElement('button');
               button.textContent = actor;
               button.className = 'info-link';
-              button.onclick = () => window.open(`search.html#actor=${encodeURIComponent(actor)}`, '_blank');
+              button.onclick = () => { window.location.href = `search.html#actor=${encodeURIComponent(actor)}`; };
               const wrapper = document.createElement('span');
               wrapper.className = 'container';
               wrapper.appendChild(button);
@@ -366,7 +364,7 @@
               const button = document.createElement('button');
               button.textContent = genre;
               button.className = 'info-link';
-              button.onclick = () => window.open(`search.html#genre=${encodeURIComponent(genre)}`, '_blank');
+              button.onclick = () => { window.location.href = `search.html#genre=${encodeURIComponent(genre)}`; };
               const wrapper = document.createElement('span');
               wrapper.className = 'container';
               wrapper.appendChild(button);
@@ -384,7 +382,7 @@
             const button = document.createElement('button');
             button.textContent = seriesDataInfo.release_year;
             button.className = 'info-link';
-            button.onclick = () => window.open(`search.html#year=${encodeURIComponent(seriesDataInfo.release_year)}`, '_blank');
+            button.onclick = () => { window.location.href = `search.html#year=${encodeURIComponent(seriesDataInfo.release_year)}`; };
             const wrapper = document.createElement('span');
             wrapper.className = 'container';
             wrapper.appendChild(button);
