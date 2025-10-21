@@ -1525,7 +1525,7 @@
   },
   {
     "name": "Kuberaa",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nTPqV892IzhP0Yw389yjXKQfzWOnZURAJYoMw&s",
+    "imdbID": "tt23846482",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/GiVdj7fCuQs' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1541,7 +1541,7 @@
   },
   {
     "name": "Maa",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTkyNjQ5YTAtMTA4ZS00MzcyLWI0MDktYTYzM2ExMmE0MWQ2XkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt30496762",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/lVvMbXiJjko' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1557,7 +1557,7 @@
   },
   {
     "name": "Aankhon Ki Gustaakhiyan",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BOWM2N2U3YjctODkzOS00ODkzLWExNGMtNjZhMzBmYzJkODU2XkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt28812582",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/JbCwz-1OHWE' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1573,7 +1573,7 @@
   },
   {
     "name": "Badlapur",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjhlYTkyNmYtNzk4NC00YzE4LTkyMDgtYWE1ZmM1YjEyMzdlXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt3678782",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/wu8WtH_izqc' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1589,7 +1589,7 @@
   },
   {
     "name": "Metro In Dino",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BODQ1NmJlNjEtODdmZi00YzY0LTgyNTctZTUwNjVkYjY0MWI1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt24225606",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/Wm2R3aJPY2M' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1605,7 +1605,7 @@
   },
   {
     "name": "Dumb Money",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZTRiOWE4NzctNGFmOS00NDFiLWExYTAtYmQ2OWE0YmQ3Mzk1XkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt13957560",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/bmr8YmwnZ3w' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1716,8 +1716,8 @@
     ]
   },
   {
-    "name": "Jurassic Park II (The Lost World)",
-    "thumbnail": "https://goldendiscs.ie/cdn/shop/products/MM00245791.jpg?v=3D1690801515",
+    "name": "The Lost World: Jurassic Park",
+    "imdbID": "tt0119567",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/E6Xf65X0JB8' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
