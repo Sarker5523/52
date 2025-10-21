@@ -87,7 +87,7 @@
             const noResultsEl = document.getElementById('no-results');
             const paginationEl = document.getElementById('pagination');
             const categoryList = document.getElementById('category-list');
-            const ITEMS_PER_PAGE = 12;
+            const ITEMS_PER_PAGE = 15;
             let currentPage = 1;
             let allResults = [];
             let genreMap = null;
@@ -120,19 +120,16 @@
 
             // Fetch TMDb data for a batch of IMDb IDs
             async function fetchMovieData(imdbIDs) {
-                const BATCH_SIZE = 20; // Increased for higher concurrency
+                const BATCH_SIZE = 20;
                 const results = {};
                 const maxRetries = 3;
 
-                // Pre-fetch genre map to avoid repeated calls
                 await fetchGenreMap();
 
-                // Filter out cached IMDb IDs
                 const uncachedImdbIDs = imdbIDs.filter(id => !movieDataCache[id] || !movieDataCache[id].genres);
                 const cachedResults = imdbIDs.filter(id => movieDataCache[id] && movieDataCache[id].genres)
                     .reduce((acc, id) => ({ ...acc, [id]: movieDataCache[id] }), {});
 
-                // Process uncached IMDb IDs in chunks
                 const chunks = [];
                 for (let i = 0; i < uncachedImdbIDs.length; i += BATCH_SIZE) {
                     chunks.push(uncachedImdbIDs.slice(i, i + BATCH_SIZE));
@@ -148,32 +145,34 @@
                                 );
                                 if (tmdbResponse.status === 429) {
                                     attempt++;
-                                    const delay = Math.pow(2, attempt) * 500; // Reduced exponential backoff
+                                    const delay = Math.pow(2, attempt) * 500;
                                     await new Promise(resolve => setTimeout(resolve, delay));
                                     continue;
                                 }
                                 if (!tmdbResponse.ok) throw new Error(`TMDb API error: ${tmdbResponse.status}`);
                                 const tmdbData = await tmdbResponse.json();
+                                let tmdbItem = null;
                                 if (tmdbData.movie_results?.length > 0) {
-                                    const tmdbMovieId = tmdbData.movie_results[0].id;
-                                    const movieResponse = await fetch(
-                                        `https://api.themoviedb.org/3/movie/${tmdbMovieId}?api_key=${TMDB_API_KEY}&language=en-US`
+                                    tmdbItem = tmdbData.movie_results[0];
+                                } else if (tmdbData.tv_results?.length > 0) {
+                                    tmdbItem = tmdbData.tv_results[0];
+                                }
+                                if (tmdbItem) {
+                                    const detailsResponse = await fetch(
+                                        `https://api.themoviedb.org/3/${tmdbItem.media_type}/${tmdbItem.id}?api_key=${TMDB_API_KEY}&language=en-US`
                                     );
-                                    if (!movieResponse.ok) throw new Error(`TMDb movie details API error: ${movieResponse.status}`);
-                                    const movieData = await movieResponse.json();
-
+                                    if (!detailsResponse.ok) throw new Error(`TMDb details API error: ${detailsResponse.status}`);
+                                    const detailsData = await detailsResponse.json();
                                     const itemData = {
-                                        name: movieData.title || 'Unknown Title',
-                                        thumbnail: movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : 'path/to/placeholder.jpg',
-                                        genres: movieData.genres?.length > 0
-                                            ? movieData.genres.map(g => g.name)
-                                            : movieData.genre_ids?.length > 0
-                                                ? genreMap[movieData.genre_ids[0]]
-                                                    ? movieData.genre_ids.map(id => genreMap[id]).filter(Boolean)
+                                        thumbnail: detailsData.poster_path ? `https://image.tmdb.org/t/p/w500${detailsData.poster_path}` : 'path/to/placeholder.jpg',
+                                        genres: detailsData.genres?.length > 0
+                                            ? detailsData.genres.map(g => g.name)
+                                            : detailsData.genre_ids?.length > 0
+                                                ? genreMap[detailsData.genre_ids[0]]
+                                                    ? detailsData.genre_ids.map(id => genreMap[id]).filter(Boolean)
                                                     : ['Uncategorized']
                                                 : ['Uncategorized'],
-                                        rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : 'N/A',
-                                        type: 'movie',
+                                        rating: detailsData.vote_average ? detailsData.vote_average.toFixed(1) : 'N/A',
                                         imdbID: imdbID
                                     };
                                     movieDataCache[imdbID] = itemData;
@@ -199,26 +198,21 @@
                         }
                     });
 
-                    // Wait for all promises in the current chunk to resolve
                     const chunkResults = await Promise.all(promises);
                     chunkResults.forEach(({ imdbID, data }) => {
                         results[imdbID] = data || {
-                            name: 'Unknown Title',
                             thumbnail: 'path/to/placeholder.jpg',
                             genres: ['Uncategorized'],
                             rating: 'N/A',
-                            type: 'movie',
                             imdbID: imdbID
                         };
                     });
 
-                    // Delay between batches to respect TMDb rate limits (50 reqs/10s)
                     if (chunks.length > 1) {
-                        await new Promise(resolve => setTimeout(resolve, 200)); // 200ms delay between batches
+                        await new Promise(resolve => setTimeout(resolve, 200));
                     }
                 }
 
-                // Combine cached and fetched results
                 return { ...cachedResults, ...results };
             }
 
@@ -226,36 +220,23 @@
                 const fetchSafe = url => fetch(url).then(r => r.ok ? r.json() : []).catch(() => []);
                 const [movies, series] = await Promise.all([fetchSafe('movies.json'), fetchSafe('series.json')]);
                 const data = [
-                    ...movies.map(i => ({ imdbID: i.imdbID, type: 'movie' })),
-                    ...series.map(i => ({ imdbID: i.imdbID, type: 'series' }))
+                    ...movies.map(i => ({ imdbID: i.imdbID, name: i.name, type: 'movie' })),
+                    ...series.map(i => ({ imdbID: i.imdbID, name: i.name, type: 'series' }))
                 ];
 
-                // Fetch TMDb data in batches
                 const imdbIDs = data.map(item => item.imdbID);
                 const tmdbDataMap = await fetchMovieData(imdbIDs);
 
                 const enrichedData = [];
                 for (const item of data) {
                     const tmdbItem = tmdbDataMap[item.imdbID];
-                    if (tmdbItem) {
-                        enrichedData.push({
-                            ...item,
-                            name: tmdbItem.name,
-                            thumbnail: tmdbItem.thumbnail,
-                            genres: tmdbItem.genres,
-                            rating: tmdbItem.rating,
-                            type: item.type
-                        });
-                    } else {
-                        enrichedData.push({
-                            ...item,
-                            name: 'Unknown Title',
-                            thumbnail: 'path/to/placeholder.jpg',
-                            genres: ['Uncategorized'],
-                            rating: 'N/A'
-                        });
-                    }
-                    // Special case for Dhadak 2
+                    enrichedData.push({
+                        ...item,
+                        thumbnail: tmdbItem ? tmdbItem.thumbnail : 'path/to/placeholder.jpg',
+                        genres: tmdbItem ? tmdbItem.genres : ['Uncategorized'],
+                        rating: tmdbItem ? tmdbItem.rating : 'N/A'
+                    });
+
                     if (item.imdbID === 'tt13451410') {
                         enrichedData[enrichedData.length - 1] = {
                             ...enrichedData[enrichedData.length - 1],
@@ -335,27 +316,27 @@
             }
 
             function renderResults(items) {
-                allResults = items;
-                resultsEl.innerHTML = '';
-                if (!items.length) {
-                    noResultsEl.style.display = 'block';
-                    paginationEl.style.display = 'none';
-                    return;
-                }
-                noResultsEl.style.display = 'none';
-                paginationEl.style.display = 'flex';
+    allResults = items.slice().reverse(); // Reverse the items array
+    resultsEl.innerHTML = '';
+    if (!items.length) {
+        noResultsEl.style.display = 'block';
+        paginationEl.style.display = 'none';
+        return;
+    }
+    noResultsEl.style.display = 'none';
+    paginationEl.style.display = 'flex';
 
-                const start = (currentPage - 1) * ITEMS_PER_PAGE;
-                const end = start + ITEMS_PER_PAGE;
-                const paginatedItems = items.slice(start, end);
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const paginatedItems = allResults.slice(start, end); // Use reversed allResults
 
-                paginatedItems.forEach(item => {
-                    const meta = movieDataCache[item.imdbID] || {};
-                    resultsEl.appendChild(renderItem(item, meta));
-                });
+    paginatedItems.forEach(item => {
+        const meta = movieDataCache[item.imdbID] || {};
+        resultsEl.appendChild(renderItem(item, meta));
+    });
 
-                renderPagination(items.length);
-            }
+    renderPagination(items.length);
+}
 
             function showInstant(results) {
                 instantResults.innerHTML = '';
