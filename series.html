@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Series Details - StreamOn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -18,7 +20,7 @@
       </div>
       <div class="search-container">
         <input type="text" id="search-box" class="search-box" placeholder="Search..." aria-label="Search series or movies">
-        <div id="search-results" class="search-results" role="listbox"></div>
+        <div id="search" class="search" role="listbox"></div>
       </div>
     </div>
   </div>
@@ -34,7 +36,37 @@
       <label id="season-label" for="season-dropdown">Select Season:</label>
       <select id="season-dropdown" class="season-dropdown" aria-label="Select season"></select>
     </div>
-    <div class="episode-list" id="episode-list" role="listbox"></div>
+    
+    <div id="episode-list" class="episode-list"></div>
+    
+    <div class="movie-info" id="movie-info" style="display: none;">
+      <div class="plot-container">
+        <div class="plot-text">
+          <h3>Plot</h3>
+          <p id="movie-plot"></p>
+        </div>
+      </div>
+      <div class="info-columns">
+        <div class="left-column">
+          <h3>Director</h3>
+          <div id="director" class="director"></div>
+          <h3>Main Cast</h3>
+          <div id="main-cast" class="cast-list"></div>
+          <h3>Genres</h3>
+          <div id="imdb-categories" class="imdb-categories"></div>
+          <h3>Released Year</h3>
+          <div id="release-year" class="release-year"></div>
+        </div>
+        <div class="right-column">
+          <div class="imdb-rating-circle" id="imdb-rating-circle" style="display: none;">
+            <div class="rating-circle" id="rating-circle">
+              <span id="rating-value">0</span>
+            </div>
+            <span class="rating-text">IMDB Rating</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="trailer-container" id="trailer-container">
@@ -44,10 +76,9 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // DOM Elements
       const elements = {
         searchInput: document.getElementById('search-box'),
-        searchResults: document.getElementById('search-results'),
+        searchResults: document.getElementById('search'),
         iframeContainer: document.getElementById('iframe-container'),
         trailerContainer: document.getElementById('trailer-container'),
         trailerIframe: document.getElementById('trailer-iframe-container'),
@@ -60,21 +91,192 @@
         trailerTitle: document.querySelector('.trailer-title'),
         navbar: document.querySelector('.navbar'),
         dropdown: document.querySelector('.dropdown'),
-        dropdownContent: document.querySelector('.dropdown-content')
+        dropdownContent: document.querySelector('.dropdown-content'),
+        movieInfo: document.getElementById('movie-info'),
+        moviePlot: document.getElementById('movie-plot'),
+        director: document.getElementById('director'),
+        mainCast: document.getElementById('main-cast'),
+        imdbCategories: document.getElementById('imdb-categories'),
+        releaseYear: document.getElementById('release-year'),
+        imdbRatingCircle: document.getElementById('imdb-rating-circle'),
+        ratingCircle: document.getElementById('rating-circle'),
+        ratingValue: document.getElementById('rating-value')
       };
 
       let allEpisodes = [];
       let lastScrollTop = 0;
       let currentSeries = null;
+      const TMDB_API_KEY = 'ef93f865877bb70f8175a613d28b8ebe';
+      let movieDataCache = JSON.parse(localStorage.getItem('movieDataCache')) || {};
+      let genreMap = null;
 
-      // Navbar Scroll Logic
+      const normalize = (str) => str.toLowerCase().trim();
+
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      async function fetchGenreMap() {
+        if (genreMap) return genreMap;
+        try {
+          const response = await fetch(
+            `https://api.themoviedb.org/3/genre/tv/list?api_key=${TMDB_API_KEY}&language=en-US`
+          );
+          if (!response.ok) throw new Error(`TMDb genre list API error: ${response.status}`);
+          const data = await response.json();
+          genreMap = {};
+          data.genres.forEach(genre => {
+            genreMap[genre.id] = genre.name;
+          });
+          return genreMap;
+        } catch (error) {
+          console.error('Error fetching TMDb genre list:', error);
+          return {};
+        }
+      }
+
+      async function fetchSeriesData(series) {
+        const cacheKey = normalize(series.name);
+        if (movieDataCache[cacheKey] && movieDataCache[cacheKey].genre !== 'Unknown') {
+          return movieDataCache[cacheKey];
+        }
+
+        const genreMap = await fetchGenreMap();
+        const maxRetries = 3;
+        let attempt = 0;
+
+        try {
+          const searchQuery = series.name.replace(/[^\w\s]/g, ' ').trim();
+          const searchResponse = await fetch(
+            `https://api.themoviedb.org/3/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchQuery)}&language=en-US`
+          );
+          if (!searchResponse.ok) throw new Error(`TMDb search API error: ${searchResponse.status}`);
+          const searchData = await searchResponse.json();
+          
+          if (searchData.results?.length > 0) {
+            const bestMatch = searchData.results[0];
+            const seriesResponse = await fetch(
+              `https://api.themoviedb.org/3/tv/${bestMatch.id}?api_key=${TMDB_API_KEY}&language=en-US`
+            );
+            if (!seriesResponse.ok) throw new Error(`TMDb series details API error: ${seriesResponse.status}`);
+            const fullSeriesData = await seriesResponse.json();
+            
+            const creditsResponse = await fetch(
+              `https://api.themoviedb.org/3/tv/${bestMatch.id}/aggregate_credits?api_key=${TMDB_API_KEY}`
+            );
+            if (!creditsResponse.ok) throw new Error(`TMDb credits API error: ${creditsResponse.status}`);
+            const creditsData = await creditsResponse.json();
+            
+            const seriesInfo = {
+              rating: fullSeriesData.vote_average ? fullSeriesData.vote_average.toFixed(1) : series.rating || 'N/A',
+              plot: fullSeriesData.overview || series.plot || 'Plot not available',
+              director: creditsData?.crew?.find(crew => crew.jobs.some(job => job.department === 'Directing'))?.name || series.director || 'N/A',
+              actors: creditsData?.cast?.slice(0, 5).map(actor => actor.name) || series.actors || [],
+              genre: fullSeriesData.genre_ids?.length > 0
+                ? fullSeriesData.genre_ids.map(id => genreMap[id] || 'Unknown').filter(Boolean).join(', ')
+                : fullSeriesData.genres?.length > 0
+                  ? fullSeriesData.genres.map(genre => genre.name).join(', ')
+                  : series.genre || 'Unknown',
+              release_year: fullSeriesData.first_air_date ? fullSeriesData.first_air_date.split('-')[0] : series.release_year || 'N/A'
+            };
+            movieDataCache[cacheKey] = seriesInfo;
+            localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
+            return seriesInfo;
+          }
+        } catch (error) {
+          console.error(`TMDb error for ${series.name}:`, error);
+        }
+
+        const seriesData = {
+          rating: series.rating || 'N/A',
+          plot: series.plot || 'Plot not available',
+          director: series.director || 'N/A',
+          actors: series.actors || [],
+          genre: series.genre || 'Unknown',
+          release_year: series.release_year || 'N/A'
+        };
+        movieDataCache[cacheKey] = seriesData;
+        localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
+        return seriesData;
+      }
+
+      function createEpisodeButtons(container, episodes, currentEpisodeName) {
+        container.innerHTML = "";
+        episodes.forEach((episode) => {
+          const button = document.createElement("div");
+          button.className = 'button';
+          button.innerHTML = `
+            <div class="button-outer">
+              <div class="button-inner">
+                <span>${episode.episode_name}</span>
+              </div>
+            </div>
+          `;
+          button.dataset.episodeName = episode.episode_name;
+          button.onclick = () => {
+            loadVideo(episode);
+            Array.from(container.getElementsByClassName("button")).forEach((btn) =>
+              btn.classList.remove("active")
+            );
+            button.classList.add("active");
+          };
+          if (episode.episode_name === currentEpisodeName) {
+            button.classList.add("active");
+          }
+          container.appendChild(button);
+        });
+      }
+
+      // ✅ FIXED: BOUNCE ANIMATION!
+      function loadVideo(episode) {
+        if (!episode) {
+          elements.seriesTitle.textContent = currentSeries?.name || 'Series not found';
+          elements.seasonEpisodeInfo.textContent = 'Episode not found';
+          elements.iframeContainer.innerHTML = '';
+          elements.iframeContainer.style.display = 'none';
+          return;
+        }
+
+        elements.seasonEpisodeInfo.textContent = `Season ${episode.season_number}, Episode ${episode.episode_number}`;
+        elements.seasonEpisodeInfo.dataset.season = episode.season_number.toString().padStart(2, '0');
+        elements.seasonEpisodeInfo.dataset.episode = episode.episode_number.toString().padStart(2, '0');
+        
+        // ✅ BOUNCE TRIGGER!
+        elements.seasonEpisodeInfo.classList.add('animate');
+        setTimeout(() => elements.seasonEpisodeInfo.classList.remove('animate'), 600);
+        
+        elements.iframeContainer.innerHTML = episode.embed_code || '';
+        elements.iframeContainer.style.display = episode.embed_code ? 'block' : 'none';
+
+        document.title = `${currentSeries.name} - Season ${episode.season_number}, Episode ${episode.episode_number} - StreamOn`;
+      }
+
+      function loadTrailer(trailerEmbed, seasonId) {
+        elements.trailerIframe.innerHTML = trailerEmbed || '<p>No trailer available</p>';
+        elements.trailerContainer.style.display = trailerEmbed ? 'block' : 'none';
+        if (trailerEmbed) {
+          setTimeout(() => {
+            elements.trailerTitle.classList.add('visible');
+          }, 10);
+        } else {
+          elements.trailerTitle.classList.remove('visible');
+        }
+      }
+
       window.addEventListener('scroll', () => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         elements.navbar.classList.toggle('fixed', scrollTop > lastScrollTop);
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
       });
 
-      // Dropdown Toggle
       elements.dropdown.addEventListener('click', (event) => {
         event.stopPropagation();
         elements.dropdownContent.style.display = elements.dropdownContent.style.display === 'block' ? 'none' : 'block';
@@ -88,52 +290,122 @@
         }
       });
 
-      // Fetch Data
       Promise.all([
         fetch('series.json').then(res => res.json()).catch(() => []),
         fetch('movies.json').then(res => res.json()).catch(() => [])
       ])
-        .then(([seriesData, moviesData]) => {
-          const data = [
-            ...seriesData.map(item => ({ ...item, type: 'series' })),
-            ...moviesData.map(item => ({ ...item, type: 'movie' }))
-          ];
+        .then(async ([seriesData, moviesData]) => {
+          const data = [...seriesData.map(item => ({ ...item, type: 'series' })), 
+                       ...moviesData.map(item => ({ ...item, type: 'movie' }))];
 
-          // Populate Categories
           const categories = [...new Set(data.map(item => item.category).filter(Boolean))];
           elements.categoryList.innerHTML = categories.map(category =>
-            `<a href="category.html?category=${encodeURIComponent(category)}" role="option">${category}</a>`
+            `<a href="category.html#${category.replace(/\s+/g, '')}" role="option">${category}</a>`
           ).join('');
 
-          // Get Series Name
-          const seriesName = new URLSearchParams(window.location.search).get('name');
-          const series = seriesData.find(s => s.name === seriesName);
+          const seriesName = window.location.hash.substring(1);
+          const series = seriesData.find(s => normalize(s.name.replace(/\s+/g, '')) === normalize(seriesName));
           currentSeries = series;
 
           if (!series) {
             elements.seriesTitle.textContent = 'Series not found';
-            elements.seasonEpisodeInfo.textContent = '';
-            document.title = 'Series not found - StreamOn';
             return;
           }
 
-          // Set Series Title
           elements.seriesTitle.textContent = series.name;
           document.title = `${series.name} - StreamOn`;
 
-          // Flatten Episodes
+          let seriesDataInfo = await fetchSeriesData(series);
+
+          const rating = parseFloat(seriesDataInfo.rating);
+          if (!isNaN(rating) && rating > 0) {
+            const percentage = (rating / 10) * 100;
+            elements.ratingCircle.style.setProperty('--percentage', `${percentage}%`);
+            elements.ratingValue.textContent = seriesDataInfo.rating;
+            elements.imdbRatingCircle.style.display = "flex";
+          } else {
+            elements.imdbRatingCircle.style.display = "none";
+          }
+
+          elements.moviePlot.textContent = seriesDataInfo.plot;
+
+          elements.director.innerHTML = '';
+          if (seriesDataInfo.director && seriesDataInfo.director !== 'N/A') {
+            const button = document.createElement('button');
+            button.textContent = seriesDataInfo.director;
+            button.className = 'info-link';
+            button.onclick = () => window.open(`search.html#director=${encodeURIComponent(seriesDataInfo.director)}`, '_blank');
+            const wrapper = document.createElement('span');
+            wrapper.className = 'container';
+            wrapper.appendChild(button);
+            elements.director.appendChild(wrapper);
+          } else {
+            elements.director.textContent = 'N/A';
+          }
+
+          elements.mainCast.innerHTML = '';
+          if (seriesDataInfo.actors.length > 0) {
+            seriesDataInfo.actors.forEach(actor => {
+              const button = document.createElement('button');
+              button.textContent = actor;
+              button.className = 'info-link';
+              button.onclick = () => window.open(`search.html#actor=${encodeURIComponent(actor)}`, '_blank');
+              const wrapper = document.createElement('span');
+              wrapper.className = 'container';
+              wrapper.appendChild(button);
+              elements.mainCast.appendChild(wrapper);
+            });
+          } else {
+            elements.mainCast.textContent = 'N/A';
+          }
+
+          elements.imdbCategories.innerHTML = '';
+          if (seriesDataInfo.genre && seriesDataInfo.genre !== 'Unknown') {
+            seriesDataInfo.genre.split(', ').forEach(genre => {
+              const span = document.createElement('span');
+              const button = document.createElement('button');
+              button.textContent = genre;
+              button.className = 'info-link';
+              button.onclick = () => window.open(`search.html#genre=${encodeURIComponent(genre)}`, '_blank');
+              const wrapper = document.createElement('span');
+              wrapper.className = 'container';
+              wrapper.appendChild(button);
+              span.appendChild(wrapper);
+              elements.imdbCategories.appendChild(span);
+            });
+          } else {
+            const span = document.createElement('span');
+            span.textContent = 'Unknown';
+            elements.imdbCategories.appendChild(span);
+          }
+
+          elements.releaseYear.innerHTML = '';
+          if (seriesDataInfo.release_year && seriesDataInfo.release_year !== 'N/A') {
+            const button = document.createElement('button');
+            button.textContent = seriesDataInfo.release_year;
+            button.className = 'info-link';
+            button.onclick = () => window.open(`search.html#year=${encodeURIComponent(seriesDataInfo.release_year)}`, '_blank');
+            const wrapper = document.createElement('span');
+            wrapper.className = 'container';
+            wrapper.appendChild(button);
+            elements.releaseYear.appendChild(wrapper);
+          } else {
+            elements.releaseYear.textContent = 'N/A';
+          }
+
+          elements.movieInfo.style.display = "block";
+
           allEpisodes = series.seasons.flatMap((season, seasonIndex) =>
             season.episodes.map((episode, episodeIndex) => ({
               ...episode,
               season_id: `season-${seasonIndex + 1}`,
               season_name: season.season_name,
               season_number: seasonIndex + 1,
-              episode_number: episode.episode_number || episodeIndex + 1, // Use episode_number if available, else index
+              episode_number: episode.episode_number || episodeIndex + 1,
               trailer: season.trailer
             }))
           );
 
-          // Populate Seasons
           const seasons = series.seasons.map((season, index) => ({
             season_id: `season-${index + 1}`,
             season_name: season.season_name,
@@ -145,117 +417,59 @@
             `<option value="${season.season_id}">${season.season_name}</option>`
           ).join('');
 
-          // Show/Hide Season Selection
           elements.seasonSelection.style.display = seasons.length > 1 ? 'flex' : 'none';
 
-          // Load Initial Season
           const initialSeason = seasons[0];
           if (initialSeason) {
             const initialEpisodes = allEpisodes.filter(ep => ep.season_id === initialSeason.season_id);
             if (initialEpisodes.length > 0) {
               loadVideo(initialEpisodes[0]);
-              loadEpisodes(initialEpisodes, initialEpisodes[0].episode_name);
+              createEpisodeButtons(elements.episodeList, initialEpisodes, initialEpisodes[0].episode_name);
             }
             loadTrailer(initialSeason.trailer, initialSeason.season_id);
           }
 
-          // Season Change Handler
           elements.seasonDropdown.addEventListener('change', () => {
             const selectedSeasonId = elements.seasonDropdown.value;
             const filteredEpisodes = allEpisodes.filter(ep => ep.season_id === selectedSeasonId);
             if (filteredEpisodes.length > 0) {
               loadVideo(filteredEpisodes[0]);
-              loadEpisodes(filteredEpisodes, filteredEpisodes[0].episode_name);
+              createEpisodeButtons(elements.episodeList, filteredEpisodes, filteredEpisodes[0].episode_name);
               const selectedSeason = seasons.find(s => s.season_id === selectedSeasonId);
               loadTrailer(selectedSeason?.trailer, selectedSeasonId);
             }
           });
 
-          // Search Functionality
-          elements.searchInput.addEventListener('input', () => {
+          elements.searchInput.addEventListener('input', debounce(() => {
             const query = elements.searchInput.value.toLowerCase().trim();
             elements.searchResults.style.display = 'none';
             elements.searchResults.innerHTML = '';
-
             if (query) {
               const matches = data.filter(item =>
                 item.name.toLowerCase().includes(query) && item.thumbnail?.trim()
               );
               elements.searchResults.innerHTML = matches.slice(0, 5).map(item => {
                 const page = item.type === 'movie' ? 'movie.html' : 'series.html';
-                return `<div role="option" onclick="window.location.href='${page}?name=${encodeURIComponent(item.name)}'">
+                return `<div role="option" onclick="window.location.href='${page}#${item.name.replace(/\s+/g, '')}'">
                   <img src="${item.thumbnail}" alt="${item.name}">
                   <span>${item.name}</span>
                 </div>`;
               }).join('');
               elements.searchResults.style.display = matches.length ? 'block' : 'none';
             }
-          });
+          }, 300));
 
           elements.searchInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
               const query = elements.searchInput.value.trim();
-              if (query) window.location.href = `search-result.html?query=${encodeURIComponent(query)}`;
+              if (query) window.location.href = `search.html#${query.replace(/\s+/g, '')}`;
             }
           });
         })
         .catch(error => {
           console.error('Error loading data:', error);
           elements.seriesTitle.textContent = 'Error loading series';
-          elements.seasonEpisodeInfo.textContent = '';
-          document.title = 'Error - StreamOn';
         });
-
-      // Load Video
-      function loadVideo(episode) {
-        if (!episode) {
-          elements.seriesTitle.textContent = currentSeries?.name || 'Series not found';
-          elements.seasonEpisodeInfo.textContent = 'Episode not found';
-          elements.iframeContainer.innerHTML = '';
-          elements.iframeContainer.style.display = 'none';
-          return;
-        }
-
-        // Set season and episode info
-        elements.seasonEpisodeInfo.textContent = `Season ${episode.season_number}, Episode ${episode.episode_number}`;
-        elements.iframeContainer.innerHTML = episode.embed_code || '';
-        elements.iframeContainer.style.display = episode.embed_code ? 'block' : 'none';
-
-        // Highlight Active Episode
-        const buttons = elements.episodeList.getElementsByTagName('button');
-        for (const button of buttons) {
-          button.classList.toggle('active', button.dataset.episodeName === episode.episode_name);
-        }
-
-        // Update page title
-        document.title = `${currentSeries.name} - Season ${episode.season_number}, Episode ${episode.episode_number} - StreamOn`;
-      }
-
-      // Load Episodes
-      function loadEpisodes(episodes, currentEpisodeName) {
-        elements.episodeList.innerHTML = episodes.map(episode =>
-          `<button data-episode-name="${episode.episode_name}" role="option" 
-            class="${episode.episode_name === currentEpisodeName ? 'active' : ''}">
-            ${episode.episode_name}
-          </button>`
-        ).join('');
-        elements.episodeList.querySelectorAll('button').forEach(button => {
-          button.addEventListener('click', () => loadVideo(episodes.find(ep => ep.episode_name === button.dataset.episodeName)));
-        });
-      }
-
-      // Load Trailer
-      function loadTrailer(trailerEmbed, seasonId) {
-        elements.trailerIframe.innerHTML = trailerEmbed || '<p>No trailer available</p>';
-        elements.trailerContainer.style.display = trailerEmbed ? 'block' : 'none';
-        if (trailerEmbed) {
-          setTimeout(() => {
-            elements.trailerTitle.classList.add('visible');
-          }, 10);
-        } else {
-          elements.trailerTitle.classList.remove('visible');
-        }
-      }
     });
   </script>
 </body>
