@@ -118,79 +118,108 @@
                 }
             }
 
-            // Fetch TMDb data
-            async function fetchMovieData(imdbID) {
-                const cacheKey = imdbID; // Use imdbID as cache key since name is not in JSON
-                if (movieDataCache[cacheKey] && movieDataCache[cacheKey].genres) {
-                    return movieDataCache[cacheKey];
-                }
-                await new Promise(resolve => setTimeout(resolve, 100)); // Rate limit delay
+            // Fetch TMDb data for a batch of IMDb IDs
+            async function fetchMovieData(imdbIDs) {
+                const BATCH_SIZE = 20; // Increased for higher concurrency
+                const results = {};
                 const maxRetries = 3;
-                let attempt = 0;
 
-                while (attempt < maxRetries) {
-                    try {
-                        const tmdbResponse = await fetch(
-                            `https://api.themoviedb.org/3/find/${imdbID}?api_key=${TMDB_API_KEY}&language=en-US&external_source=imdb_id`
-                        );
-                        if (tmdbResponse.status === 429) {
-                            attempt++;
-                            const delay = Math.pow(2, attempt) * 1000;
-                            await new Promise(resolve => setTimeout(resolve, delay));
-                            continue;
-                        }
-                        if (!tmdbResponse.ok) throw new Error(`TMDb API error: ${tmdbResponse.status}`);
-                        const tmdbData = await tmdbResponse.json();
-                        if (tmdbData.movie_results?.length > 0) {
-                            const tmdbMovieId = tmdbData.movie_results[0].id;
-                            const movieResponse = await fetch(
-                                `https://api.themoviedb.org/3/movie/${tmdbMovieId}?api_key=${TMDB_API_KEY}&language=en-US`
-                            );
-                            if (!movieResponse.ok) throw new Error(`TMDb movie details API error: ${movieResponse.status}`);
-                            const movieData = await movieResponse.json();
-                            
-                            const itemData = {
-                                name: movieData.title || 'Unknown Title',
-                                thumbnail: movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : 'path/to/placeholder.jpg',
-                                genres: movieData.genres?.length > 0
-                                    ? movieData.genres.map(g => g.name)
-                                    : movieData.genre_ids?.length > 0
-                                        ? (await fetchGenreMap())[movieData.genre_ids[0]]
-                                            ? movieData.genre_ids.map(id => genreMap[id]).filter(Boolean)
-                                            : ['Uncategorized']
-                                        : ['Uncategorized'],
-                                rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : 'N/A',
-                                type: 'movie',
-                                imdbID: imdbID
-                            };
-                            movieDataCache[cacheKey] = itemData;
+                // Pre-fetch genre map to avoid repeated calls
+                await fetchGenreMap();
+
+                // Filter out cached IMDb IDs
+                const uncachedImdbIDs = imdbIDs.filter(id => !movieDataCache[id] || !movieDataCache[id].genres);
+                const cachedResults = imdbIDs.filter(id => movieDataCache[id] && movieDataCache[id].genres)
+                    .reduce((acc, id) => ({ ...acc, [id]: movieDataCache[id] }), {});
+
+                // Process uncached IMDb IDs in chunks
+                const chunks = [];
+                for (let i = 0; i < uncachedImdbIDs.length; i += BATCH_SIZE) {
+                    chunks.push(uncachedImdbIDs.slice(i, i + BATCH_SIZE));
+                }
+
+                for (const chunk of chunks) {
+                    const promises = chunk.map(async (imdbID) => {
+                        let attempt = 0;
+                        while (attempt < maxRetries) {
                             try {
-                                localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
-                            } catch (e) {
-                                if (e.name === 'QuotaExceededError') {
-                                    console.warn('localStorage full, clearing cache');
-                                    localStorage.removeItem('movieDataCache');
-                                    movieDataCache = {};
+                                const tmdbResponse = await fetch(
+                                    `https://api.themoviedb.org/3/find/${imdbID}?api_key=${TMDB_API_KEY}&language=en-US&external_source=imdb_id`
+                                );
+                                if (tmdbResponse.status === 429) {
+                                    attempt++;
+                                    const delay = Math.pow(2, attempt) * 500; // Reduced exponential backoff
+                                    await new Promise(resolve => setTimeout(resolve, delay));
+                                    continue;
+                                }
+                                if (!tmdbResponse.ok) throw new Error(`TMDb API error: ${tmdbResponse.status}`);
+                                const tmdbData = await tmdbResponse.json();
+                                if (tmdbData.movie_results?.length > 0) {
+                                    const tmdbMovieId = tmdbData.movie_results[0].id;
+                                    const movieResponse = await fetch(
+                                        `https://api.themoviedb.org/3/movie/${tmdbMovieId}?api_key=${TMDB_API_KEY}&language=en-US`
+                                    );
+                                    if (!movieResponse.ok) throw new Error(`TMDb movie details API error: ${movieResponse.status}`);
+                                    const movieData = await movieResponse.json();
+
+                                    const itemData = {
+                                        name: movieData.title || 'Unknown Title',
+                                        thumbnail: movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : 'path/to/placeholder.jpg',
+                                        genres: movieData.genres?.length > 0
+                                            ? movieData.genres.map(g => g.name)
+                                            : movieData.genre_ids?.length > 0
+                                                ? genreMap[movieData.genre_ids[0]]
+                                                    ? movieData.genre_ids.map(id => genreMap[id]).filter(Boolean)
+                                                    : ['Uncategorized']
+                                                : ['Uncategorized'],
+                                        rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : 'N/A',
+                                        type: 'movie',
+                                        imdbID: imdbID
+                                    };
+                                    movieDataCache[imdbID] = itemData;
+                                    try {
+                                        localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
+                                    } catch (e) {
+                                        if (e.name === 'QuotaExceededError') {
+                                            console.warn('localStorage full, clearing cache');
+                                            localStorage.removeItem('movieDataCache');
+                                            movieDataCache = {};
+                                        }
+                                    }
+                                    return { imdbID, data: itemData };
+                                }
+                                return { imdbID, data: null };
+                            } catch (error) {
+                                console.error(`Error fetching TMDb data for ${imdbID} (attempt ${attempt + 1}):`, error);
+                                attempt++;
+                                if (attempt === maxRetries) {
+                                    return { imdbID, data: null };
                                 }
                             }
-                            return itemData;
                         }
-                        return null;
-                    } catch (error) {
-                        console.error(`Error fetching TMDb data for ${imdbID} (attempt ${attempt + 1}):`, error);
-                        attempt++;
-                        if (attempt === maxRetries) break;
+                    });
+
+                    // Wait for all promises in the current chunk to resolve
+                    const chunkResults = await Promise.all(promises);
+                    chunkResults.forEach(({ imdbID, data }) => {
+                        results[imdbID] = data || {
+                            name: 'Unknown Title',
+                            thumbnail: 'path/to/placeholder.jpg',
+                            genres: ['Uncategorized'],
+                            rating: 'N/A',
+                            type: 'movie',
+                            imdbID: imdbID
+                        };
+                    });
+
+                    // Delay between batches to respect TMDb rate limits (50 reqs/10s)
+                    if (chunks.length > 1) {
+                        await new Promise(resolve => setTimeout(resolve, 200)); // 200ms delay between batches
                     }
                 }
-                // Fallback if TMDb fails
-                return {
-                    name: 'Unknown Title',
-                    thumbnail: 'path/to/placeholder.jpg',
-                    genres: ['Uncategorized'],
-                    rating: 'N/A',
-                    type: 'movie',
-                    imdbID: imdbID
-                };
+
+                // Combine cached and fetched results
+                return { ...cachedResults, ...results };
             }
 
             async function loadJsons() {
@@ -200,10 +229,14 @@
                     ...movies.map(i => ({ imdbID: i.imdbID, type: 'movie' })),
                     ...series.map(i => ({ imdbID: i.imdbID, type: 'series' }))
                 ];
-                
+
+                // Fetch TMDb data in batches
+                const imdbIDs = data.map(item => item.imdbID);
+                const tmdbDataMap = await fetchMovieData(imdbIDs);
+
                 const enrichedData = [];
                 for (const item of data) {
-                    const tmdbItem = await fetchMovieData(item.imdbID);
+                    const tmdbItem = tmdbDataMap[item.imdbID];
                     if (tmdbItem) {
                         enrichedData.push({
                             ...item,
