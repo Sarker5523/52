@@ -91,7 +91,7 @@ body {
   width: 150px;
 }
 
-.search-results {
+.search {
   display: none;
   position: absolute;
   top: 100%;
@@ -106,7 +106,7 @@ body {
   border-radius: 5px;
 }
 
-.search-results div {
+.search div {
   display: flex;
   align-items: center;
   padding: 10px;
@@ -114,27 +114,27 @@ body {
   transition: background 0.3s;
 }
 
-.search-results div:hover {
+.search div:hover {
   background: #ddd;
   color: #000;
 }
 
-.search-results img {
+.search img {
   width: 50px;
   margin-right: 10px;
   border-radius: 5px;
 }
 
-.search-results::-webkit-scrollbar {
+.search::-webkit-scrollbar {
   width: 8px;
 }
 
-.search-results::-webkit-scrollbar-thumb {
+.search::-webkit-scrollbar-thumb {
   background-color: #00ab41;
   border-radius: 4px;
 }
 
-.search-results::-webkit-scrollbar-track {
+.search::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -234,54 +234,191 @@ body {
   background-color: #222;
   color: #00ff9c;
 }
-.episode-list {
+
+.video-details .episode-list {
   margin: 20px 0;
-  display: flex;
-  justify-content: center; /* Centers buttons horizontally */
-  align-items: center; /* Ensures vertical alignment */
-  flex-wrap: wrap; /* Allows buttons to wrap */
-  gap: 15px; /* Adds space between buttons */
-  width: 100%; /* Ensures full width of parent */
-  max-width: 100%; /* Prevents max-width constraints from parent */
-  padding: 0; /* Removes any padding that might offset centering */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap;
+  gap: 2px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
 }
 
-.episode-list button {
-  background-color: #e0e0e0;
-  border-radius: 50px;
-  box-shadow: inset 4px 4px 10px #bcbcbc, inset -4px -4px 10px #ffffff;
-  color: #4d4d4d;
-  cursor: pointer;
-  font-size: 15px;
-  padding: 8px 20px; /* Adjusted padding for better button size */
-  transition: all 0.2s ease-in-out;
-  border: 2px solid rgb(206, 206, 206);
-  margin: 0; /* Ensures no individual button margins interfere */
+.episode-list .button {
+  all: unset !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+  position: relative !important;
+  border-radius: 100em !important;
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  box-shadow:
+    -0.15em -0.15em 0.15em -0.075em rgba(5, 5, 5, 0.25),
+    0.0375em 0.0375em 0.0675em 0 rgba(5, 5, 5, 0.1) !important;
+  margin: 0 10px 10px 0 !important;
+  display: inline-block !important;
+  width: auto !important;
 }
 
-.episode-list button:focus {
-  outline: none;
-  box-shadow: inset 2px 2px 5px #bcbcbc, inset -2px -2px 5px #ffffff, 2px 2px 5px #bcbcbc, -2px -2px 5px #ffffff;
+.episode-list .button::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  width: calc(100% + 0.3em) !important;
+  height: calc(100% + 0.3em) !important;
+  top: -0.15em !important;
+  left: -0.15em !important;
+  border-radius: inherit !important;
+  background: linear-gradient(
+    -135deg,
+    rgba(5, 5, 5, 0.5),
+    transparent 20%,
+    transparent 100%
+  ) !important;
+  filter: blur(0.0125em) !important;
+  opacity: 0.25 !important;
+  mix-blend-mode: multiply !important;
 }
 
-.episode-list button:hover {
-  box-shadow: inset 2px 2px 5px #bcbcbc, inset -2px -2px 5px #ffffff, 2px 2px 5px #bcbcbc, -2px -2px 5px #ffffff;
+.episode-list .button .button-outer {
+  position: relative !important;
+  z-index: 1 !important;
+  border-radius: inherit !important;
+  transition: box-shadow 300ms ease !important;
+  will-change: box-shadow !important;
+  box-shadow:
+    0 0.05em 0.05em -0.01em rgba(5, 5, 5, 1),
+    0 0.01em 0.01em -0.01em rgba(5, 5, 5, 0.5),
+    0.15em 0.3em 0.1em -0.01em rgba(5, 5, 5, 0.25) !important;
+}
+
+.episode-list .button:hover .button-outer {
+  box-shadow: 0 0 0 0 !important;
+}
+
+.episode-list .button-inner {
+  --inset: 0.035em;
+  position: relative !important;
+  z-index: 1 !important;
+  border-radius: inherit !important;
+  padding: 0.5em 0.6em !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(230, 230, 230, 1),
+    rgba(180, 180, 180, 1)
+  ) !important;
+  transition:
+    box-shadow 300ms ease,
+    clip-path 250ms ease,
+    background-image 250ms ease,
+    transform 250ms ease !important;
+  will-change: box-shadow, clip-path, background-image, transform !important;
+  overflow: clip !important;
+  clip-path: inset(0 0 0 0 round 100em) !important;
+  box-shadow:
+    0 0 0 0 inset rgba(5, 5, 5, 0.1),
+    -0.05em -0.05em 0.05em 0 inset rgba(5, 5, 5, 0.25),
+    0 0 0 0 inset rgba(5, 5, 5, 0.1),
+    0 0 0.05em 0.2em inset rgba(255, 255, 255, 0.25),
+    0.025em 0.05em 0.1em 0 inset rgba(255, 255, 255, 1),
+    0.12em 0.12em 0.12em inset rgba(255, 255, 255, 0.25),
+    -0.075em -0.25em 0.25em 0.1em inset rgba(5, 5, 5, 0.25) !important;
+}
+
+.episode-list .button:hover .button-inner {
+  clip-path: inset(
+    clamp(1px, 0.0625em, 2px) clamp(1px, 0.0625em, 2px)
+      clamp(1px, 0.0625em, 2px) clamp(1px, 0.0625em, 2px) round 100em
+  ) !important;
+  box-shadow:
+    0.1em 0.15em 0.05em 0 inset rgba(5, 5, 5, 0.75),
+    -0.025em -0.03em 0.05em 0.025em inset rgba(5, 5, 5, 0.5),
+    0.25em 0.25em 0.2em 0 inset rgba(5, 5, 5, 0.5),
+    0 0 0.05em 0.5em inset rgba(255, 255, 255, 0.15),
+    0 0 0 0 inset rgba(255, 255, 255, 1),
+    0.12em 0.12em 0.12em inset rgba(255, 255, 255, 0.25),
+    -0.075em -0.12em 0.2em 0.1em inset rgba(5, 5, 5, 0.25) !important;
+}
+
+.episode-list .button .button-inner span {
+  position: relative !important;
+  z-index: 4 !important;
+  font-family: "Inter", sans-serif !important;
+  letter-spacing: -0.05em !important;
+  font-weight: 500 !important;
+  font-size: 0.95em !important;
+  color: rgba(0, 0, 0, 0) !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(25, 25, 25, 1),
+    rgba(75, 75, 75, 1)
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  transition: transform 250ms ease !important;
+  display: block !important;
+  will-change: transform !important;
+  text-shadow: rgba(0, 0, 0, 0.1) 0 0 0.1em !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.episode-list .button:hover .button-inner span {
+  transform: scale(0.975) !important;
+}
+
+.episode-list .button:active .button-inner {
+  transform: scale(0.975) !important;
+}
+
+#season-episode-info {
+  margin: 10px auto 20px !important;
+  padding: 12px 20px !important;
+  background: linear-gradient(135deg, #1a5d1a 0%, #006400 50%, #004d00 100%) !important;
+  color: transparent !important;
+  border-radius: 30px !important;
+  font: 700 1em "Inter", sans-serif !important;
+  box-shadow: 0 8px 25px rgba(0,100,0,.4), inset 0 2px 8px rgba(0,255,156,.2) !important;
+  display: block !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all .4s ease !important;
+  width: fit-content !important;
+  text-align: center !important;
+}
+
+#season-episode-info::before {
+  content: "Season " attr(data-season) " Episode " attr(data-episode) !important;
+  position: absolute !important;
+  inset: 0 !important;
+  padding: inherit !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  text-shadow: 0 0 6px rgba(0,255,156,.6) !important;
+  z-index: 2 !important;
+  white-space: nowrap !important;
+}
+
+#season-episode-info.animate::before {
+  animation: seasonPulse .4s ease !important;
+}
+
+@keyframes seasonPulse {
+  0%,100% { transform: scale(1); text-shadow: 0 0 6px rgba(0,255,156,.6); }
+  50% { transform: scale(1.08); text-shadow: 0 0 16px rgba(0,255,156,1); }
 }
 
 .trailer-container {
   width: 100%;
   margin: 20px auto;
-}
-
-.trailer-title-container {
-  background: linear-gradient(to bottom, rgba(43, 43, 43, 0.8), rgba(0, 0, 0, 0.5));
-  border-radius: 15px;
-  box-shadow: 0 1px 50px rgba(3, 3, 3, 0.8);
-  padding: 15px;
-  margin-bottom: 20px;
-  width: 100%;
-  max-width: 100%;
-  text-align: left;
 }
 
 .trailer-title {
@@ -361,11 +498,11 @@ body {
   font-size: 1.2em;
 }
 
-.genre-section { /* Updated from category-section */
+.genre-section {
   margin: 20px;
 }
 
-.genre-section h2 { /* Updated from category-section h2 */
+.genre-section h2 {
   font-size: 1.5em;
   color: white;
   display: inline-block;
@@ -499,18 +636,17 @@ body {
   background: white;
 }
 
-/* IMDb Rating Circle and Movie Info */
 .imdb-rating-circle {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 8px;
   margin: 10px 0;
-  justify-content: flex-end;
 }
 
 .rating-circle {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: conic-gradient(#f5c518 var(--percentage), #333 var(--percentage));
   display: flex;
@@ -518,7 +654,7 @@ body {
   justify-content: center;
   color: #f5c518;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
   position: relative;
   box-shadow: 0 2px 10px rgba(245, 197, 24, 0.3);
 }
@@ -526,8 +662,8 @@ body {
 .rating-circle::after {
   content: '';
   position: absolute;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: #222;
 }
@@ -538,16 +674,19 @@ body {
 }
 
 .rating-text {
-  font-size: 14px;
+  font-size: 16px;
   color: #f5c518;
+  text-align: center;
 }
 
-.movie-info {
+.movie-info,
+.series-info {
   margin: 10px 0;
   text-align: left;
 }
 
-.movie-info h3 {
+.movie-info h3,
+.series-info h3 {
   margin: 0 0 8px 0;
   color: #00ab41;
 }
@@ -558,81 +697,75 @@ body {
 }
 
 .plot-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
+  display: block;
+  margin-bottom: 20px;
 }
 
 .plot-text {
+  width: 100%;
+}
+
+.info-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.left-column {
   flex: 1;
 }
 
-.director {
-  color: white;
-  text-decoration: none;
-  cursor: default;
-  background: transparent;
-  border: 2px solid white;
-  padding: 5px 10px;
-  border-radius: 8px;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
-}
-
-.director:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.4);
-}
-
-.cast-list a {
-  color: white;
-  text-decoration: none;
-  cursor: pointer;
-  background: transparent;
-  border: 2px solid white;
-  padding: 5px 10px;
-  border-radius: 8px;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
-}
-
-.cast-list a:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.4);
-}
-
-.cast-list {
+.right-column {
+  flex: 0 0 auto;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 5px;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-.imdb-genres { /* Updated from imdb-categories */
-  color: #00ab41;
-  font-size: 1.1em;
-  margin-top: 10px;
-  padding: 5px 10px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  text-shadow: 0 0 5px rgba(0, 171, 65, 0.5);
+.info-link, .info-button {
+  font-size: 0.95em;
+  padding: 0.6em 0.8em;
+  border-radius: 0.5em;
+  border: none;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 2px 2px 3px #000000b4;
+  text-decoration: none;
 }
 
-.genre-badge { /* Updated from genre-badge (in case it was separate) */
-  color: white;
-  background: transparent;
-  border: 1px solid white;
-  padding: 4px 8px;
-  margin: 2px;
-  border-radius: 6px;
+.info-link:hover, .info-button:hover {
+  background-color: #333;
+}
+
+.container {
+  position: relative;
+  padding: 3px;
+  background: linear-gradient(90deg, #03a9f4, #f441a5);
+  border-radius: 0.9em;
+  transition: all 0.4s ease;
   display: inline-block;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-  transition: box-shadow 0.2s ease;
+  margin: 6px;
 }
 
-.genre-badge:hover {
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 0.9em;
+  z-index: -10;
+  filter: blur(0);
+  transition: filter 0.4s ease;
+}
+
+.container:hover::before {
+  background: linear-gradient(90deg, #03a9f4, #f441a5);
+  filter: blur(1.2em);
+}
+
+.container:active::before {
+  filter: blur(0.2em);
 }
 
 .search-suggestion {
@@ -678,10 +811,6 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
   }
 
-  .trailer-title-container {
-    max-width: 94%;
-  }
-
   .trailer-title {
     font-size: 1.4em;
     letter-spacing: 1px;
@@ -705,13 +834,17 @@ body {
     width: 140px;
   }
 
-  .plot-container {
+  .info-columns {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .imdb-rating-circle {
+  .right-column {
     justify-content: flex-start;
+  }
+
+  .imdb-rating-circle {
+    align-items: flex-start;
   }
 }
 
@@ -727,7 +860,6 @@ body {
     padding: 10px;
   }
 
-  .trailer-title-container,
   .trailer-iframe-container {
     max-width: 70%;
   }
@@ -744,13 +876,17 @@ body {
     width: 140px;
   }
 
-  .plot-container {
+  .info-columns {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .imdb-rating-circle {
+  .right-column {
     justify-content: flex-start;
+  }
+
+  .imdb-rating-circle {
+    align-items: flex-start;
   }
 }
 
@@ -762,7 +898,6 @@ body {
     padding: 20px;
   }
 
-  .trailer-title-container,
   .trailer-iframe-container {
     max-width: 60%;
   }
