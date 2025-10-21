@@ -21,7 +21,7 @@
             </div>
             <div class="search-container">
                 <input type="text" id="search-box" class="search-box" placeholder="Search...">
-                <div id="search-results" class="search-results"></div>
+                <div id="search" class="search"></div>
             </div>
         </div>
     </div>
@@ -44,7 +44,7 @@
             const dropdown = document.querySelector(".dropdown");
             const dropdownContent = document.querySelector(".dropdown-content");
             const searchBox = document.getElementById("search-box");
-            const searchResults = document.getElementById("search-results");
+            const searchResults = document.getElementById("search");
             const navbar = document.querySelector(".navbar");
             const errorMessage = document.getElementById("error-message");
             const TMDB_API_KEY = 'ef93f865877bb70f8175a613d28b8ebe'; // TMDb API key
@@ -251,7 +251,7 @@
                 } else {
                     categories.forEach(category => {
                         const link = document.createElement("a");
-                        link.href = `category.html?category=${encodeURIComponent(category)}`;
+                        link.href = `category.html#${category.replace(/\s+/g, '')}`; // Use hash instead of query, no encoding
                         link.textContent = category;
                         categoryList.appendChild(link);
                     });
@@ -268,7 +268,7 @@
                     const viewAll = document.createElement("button");
                     viewAll.className = "view-all-button";
                     viewAll.textContent = "View All";
-                    viewAll.onclick = () => window.location.href = `category.html?category=${encodeURIComponent(category)}`;
+                    viewAll.onclick = () => window.location.href = `category.html#${category.replace(/\s+/g, '')}`; // Use hash
                     section.appendChild(viewAll);
 
                     const categoryVideos = validData
@@ -337,7 +337,7 @@
                             div.innerHTML = `
                                 <img src="${item.thumbnail || 'path/to/placeholder.jpg'}" alt="${item.name}">
                                 <span>${item.name} (TMDb: ${item.rating})</span>`;
-                            div.onclick = () => window.location.href = `${page}?name=${encodeURIComponent(item.name)}`;
+                            div.onclick = () => window.location.href = `${page}#${item.name.replace(/\s+/g, '')}`; // Use hash
                             searchResults.appendChild(div);
                         });
                     }
@@ -347,7 +347,7 @@
                 searchBox.addEventListener("keydown", function (e) {
                     if (e.key === "Enter") {
                         const query = searchBox.value.trim();
-                        if (query) window.location.href = `search-result.html?query=${encodeURIComponent(query)}`;
+                        if (query) window.location.href = `search-result.html#${query.replace(/\s+/g, '')}`; // Use hash
                     }
                 });
             }).catch(error => {
@@ -369,7 +369,7 @@
                 slide.className = "swiper-slide video-item";
                 const page = item.type === 'movie' ? 'movie.html' : 'series.html';
                 slide.innerHTML = `
-                    <a href="${page}?name=${encodeURIComponent(item.name)}">
+                    <a href="${page}#${item.name.replace(/\s+/g, '')}"> <!-- Use hash -->
                         <img src="${item.thumbnail || 'path/to/placeholder.jpg'}" alt="${item.name}">
                         <span>${item.name}</span>
                         <div class="imdb-rating" data-rating="${item.rating}">IMDB: ${item.rating}</div>
