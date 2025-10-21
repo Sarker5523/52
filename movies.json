@@ -1781,7 +1781,7 @@
   },
   {
     "name": "Final Destination Bloodlines",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMzc3OWFhZWItMTE2Yy00N2NmLTg1YTktNGVlNDY0ODQ5YjNlXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "htt9619824",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/UWMzKXsY9A4' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1797,7 +1797,7 @@
   },
   {
     "name": "Tehran",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjAxZDgxNzgtZjQwNi00OWE3LThlNTItNTliNzM5OTRmMGZjXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt21818782",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/WdMreqaM2J4' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1813,6 +1813,7 @@
   },
   {
     "name": "Housefull 5A",
+    "imdbID":"tt9104736",
     "thumbnail": "https://catimages.org/images/2025/07/18/Housefull-5A-2025-HDHub4u.Ms.jpg",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/xGQuT1wm2qk' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
@@ -1829,6 +1830,7 @@
   },
   {
     "name": "Housefull 5B",
+    "imdbID":"tt9104736",
     "thumbnail": "https://catimages.org/images/2025/07/18/Housefull-5B-2025-HDHub4u.Ms.jpg",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/xGQuT1wm2qk' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
@@ -1845,7 +1847,7 @@
   },
   {
     "name": "Inspector Zende",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTQ3MzI3Y2UtNjlkMy00ZDIzLWEwOGUtMGEzMzNlMmY3MTkzXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt35076553",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/SqIE6lj2IGo' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1860,8 +1862,8 @@
     ]
   },
   {
-    "name": "The Predator (2018)",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nTlgaF7Oulu9BNe0fqYIl48e14z7tRyCf_o7T-dPqEjIs7M6ayoiXCDL2J3&s=3D10",
+    "name": "The Predator",
+    "imdbID": "tt3829266",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/WaG1KZqrLvM' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1876,8 +1878,8 @@
     ]
   },
   {
-    "name": "Predator (2010)",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nTNV9PU2gnXtTS6sGJI9AGCRcB7TWFyy8njPHuEe7-UX_zWpW1Dyh5YldY&s=3D10",
+    "name": "Predator",
+    "imdbID": "tt1424381",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/uzqYqoVoU74' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1893,7 +1895,7 @@
   },
   {
     "name": "The Naked Gun",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nTtvwn4egcBMgGvf1XVavKzPsE_lAdgARZ4ia4vTSY8TvJZVoD87QU09jE&s=3D10",
+    "imdbID": "tt3402138",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/uLguU7WLreA' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1909,7 +1911,7 @@
   },
   {
     "name": "Saiyaara",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nRRW9YqN_HF_SYDlb7HiU1McnBYZinDa3uhu31rw4tc-3tmSr9VOwxA5BQ&s=3D10",
+    "imdbID": "tt28037987",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/9r-tT5IN0vg' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1923,8 +1925,8 @@
       }
     ]
   },{
-    "name": "Insaaf",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgvk8jXP3bsUJf6t6JvKH_NeUb71zPM8kZbbrBDS6kVK5zgxQ4TU4yeO1f&s=10",
+    "name": "Insaaf: Tale of Legends",
+    "imdbID": "tt36831568",
     "category": "Bangla Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/i2DuVfwP4iM' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1940,7 +1942,7 @@
   },
   {
     "name": "Fatima",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXi_JPORPXqMTdlfY7DxfxNzooIMCIdw9EN_mSk1SwQzcnneQaPDMniQUz&s=10",
+    "imdbID": "tt31462171",
     "category": "Bangla Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/Sd6BrXGQq' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1956,7 +1958,7 @@
   },
   {
     "name": "Eleven",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZTEyMTg5ODQtMDM5Ni00ODMxLTgyZTAtZDRmMWQzYmFjNzBmXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt28679253",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/sE3O2XZsRN8' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1988,7 +1990,7 @@
   },
   {
     "name": "Aliens vs Predator 2: Requiem (2007)",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTQyNzkwNDk1OV5BMl5BanBnXkFtZTcwMjc2NDU2MQ@@._V1_.jpg",
+    "imdbID": "tt0970416",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/oqLM_21tqyc' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -2004,7 +2006,7 @@
   },
   {
     "name": "The Kite Runner",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMmRmZmU3YzgtN2ZhYi00ZmUxLWJhYzUtYjFlMmJlZDZmNTBiXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt0419887",
     "category": "Foreign Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/3a8meND61-c' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -2020,7 +2022,7 @@
   },
   {
     "name": "Vikram Vedha",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4v-H_ILJA79DPD3saSnGVcqvJssSN7pVP5Q&s",
+    "imdbID": "tt13131350",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/hpwnlr-ZHB0' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -2068,7 +2070,6 @@
   },
   {
     "name": "Param Sundari",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BYjBhNDMyYWItMmYyMC00ZjMwLWE3MmUtZGMwZWM0ZWExYjVkXkEyXkFqcGc@._V1_FMjpg_UY3333_.jpg",
     "imdbID": "tt33996113",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/fdWnfzsx-ks' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
