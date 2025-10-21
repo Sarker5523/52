@@ -1,8 +1,7 @@
 [
   {
     "name": "When Life Gives You Tangerines",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZTBhZTcwNWUtOTZjMi00ZjI2LWEzMzMtNWJkMWQ2ZDA0NTU3XkEyXkFqcGc@._V1_FMjpg_UX1200_.jpg",
-    "category": "Kdrama",
+    "imdbID": "tt26471411",
     "seasons": [
       {
         "season_name": "Season 01",
@@ -78,7 +77,7 @@
   },
   {
     "name": "Adolescence",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDks-eCTzaKcD3hcO7TV9xTngkSWB0RgrTxK2UDjZvOWpSrGBfmCBLge4&s=10",
+    "imdbID": "tt31806037",
     "category": "TV-Series",
     "seasons": [
       {
@@ -107,7 +106,7 @@
   },
   {
     "name": "Newtopia",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdQ_BwVVSBmjvbv-GnzTYOM_vUEt0XWEDUG3xY5d4WpSlUyiJAbA3NofPp&s=10",
+    "imdbID": "tt32199328",
     "category": "Kdrama",
     "seasons": [
       {
@@ -152,7 +151,7 @@
   },
   {
     "name": "The Trauma Code : Heroes On Call",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd1LHro3g22XTWQ4vRf96p2QGKN5t-Lkqm5dQQzMEuNlad2Imvsh58Vurd&s=10",
+    "imdbID": "tt28106730",
     "category": "Kdrama",
     "seasons": [
       {
@@ -197,7 +196,7 @@
   },
   {
     "name": "Alice In Borderland",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BYjk3MDUwYjQtY2EyNi00NTZkLWI4ZmUtNjgzYTQ0OGQ2ZTk2XkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt10795658",
     "category": "TV-Series",
     "seasons": [
       {
@@ -310,7 +309,7 @@
   },
   {
     "name": "Mr. & Mrs. Smith",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZmQ0NmMyMDItZDNiNC00ZTBiLWI0ZDgtMTk5NDBmNmZhMDZmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt14044212",
     "category": "TV-Series",
     "seasons": [
       {
@@ -355,7 +354,7 @@
   },
   {
     "name": "Peaky Blinders",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BM2ZiNThlNzItNmY3Ny00NjA2LWJlMjItNTk1NDI3MDMyMTk4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt2442560",
     "category": "TV-Series",
     "seasons": [
       {
@@ -442,7 +441,7 @@
   },
   {
     "name": "Loki",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlkLxz2aXOlViITnR4oqJrXYrg1GCIbzcPcuqpfOpfuHVg1yTrtLdBbP0&s=10",
+    "imdbID": "tt9140554",
     "category": "TV-Series",
     "seasons": [
       {
@@ -509,7 +508,7 @@
   },
   {
     "name": "Weak Hero",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BNTk4YmVjOGQtM2ZiMC00ZWE2LTg2ZGQtYzk2NjNmMWYzOWU4XkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt20234568",
     "category": "Kdrama",
     "seasons": [
       {
@@ -592,8 +591,7 @@
   },
   {
     "name": "Squid Game",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQS_eSykyE2bpEFWrRZ-gU1OuHwHrNUEqerwvzdEhklaYJ1Uljl3at8T9c&s=10",
-    "category": "Kdrama",
+    "imdbID": "tt10919420",
     "seasons": [
       {
         "season_name": "Season-01",
@@ -705,7 +703,7 @@
   },
   {
     "name": "Extraordinary",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJX49u53GvNCSjMzi6WEvD3Q3pIg0tSVUHaxOOF71dScQzyTX_-E2RIqQg&s=10",
+    "imdbID": "tt14531842",
     "category": "TV-Series",
     "seasons": [
       {
@@ -788,7 +786,7 @@
   },
   {
     "name": "True Detective",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BYjgwYzA1NWMtNDYyZi00ZGQyLWI5NTktMDYwZjE2OTIwZWEwXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt2356777",
     "category": "TV-Series",
     "seasons": [
       {
@@ -804,7 +802,7 @@
     ]
   },{
     "name": "Cobra Kai",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTG2u9B2__v6ZqwFi9ZVMNcNh5t1svAMj9Yg_O-PRC26K_DojOHk8ODa1G8&s=10",
+    "imdbID": "tt7221388",
     "category": "TV-Series",
     "seasons": [
       {
@@ -1039,7 +1037,7 @@
       }
     ]
   },{"name": "Wednesday",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMDE1NjNmZjgtZTg0OC00NjkxLWEzYzItMDNkMTc3YjgxZWQyXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt13443470",
     "category": "TV-Series",
     "seasons": [
       {
