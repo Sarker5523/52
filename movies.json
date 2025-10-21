@@ -1621,7 +1621,7 @@
   },
   {
     "name": "Sitaare Zameen Par",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZjdjODdiMTQtYWIwZi00NTQyLWE0YWItMzk3MTBhOGUyNDY3XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt29471573",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/CWWqCMIkHBY' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1637,7 +1637,7 @@
   },
   {
     "name": "The Pursuit of Happyness",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTQ5NjQ0NDI3NF5BMl5BanBnXkFtZTcwNDI0MjEzMw@@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt0454921",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/DMOBlEcRuw8' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1653,7 +1653,7 @@
   },
   {
     "name": "Jurassic Park III",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nQ39qZrFU46pKLxfCcFgCXRCKHPHyYYQLKTOzyyhXgf1vdSoOdvI2WrVI8&s=3D10",
+    "imdbID": "tt0163025",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/btc50fvj_Gs' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1669,7 +1669,7 @@
   },
   {
     "name": "Taandob",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nReRVwuxFaKC2KBiy_dcfN-R_J5UQElXg4E5l0Jc2d36j9OKvTJRIwN6Ysr&s=3D10",
+    "imdbID": "tt36293840",
     "category": "Bangla Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/PnP3abT_dSo' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1685,7 +1685,7 @@
   },
   {
     "name": "Utshob",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nSKypbZr87cgzu4KMieBEY_c_98bgICYO1PUX9g2Vp5LzhKpEoQIv6McvE&s=3D10",
+    "imdbID": "tt37034643",
     "category": "Bangla Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/jHPf1iKw4T8' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1701,7 +1701,7 @@
   },
   {
     "name": "Jurassic Park",
-    "thumbnail": "https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg",
+    "imdbID": "tt0107290",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/Rz_FvTXa_qY' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1732,8 +1732,8 @@
     ]
   },
   {
-    "name": "Jurassic World (2015)",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BNzBhNzlkM2UtZTQyOC00NjUyLTkzMmMtNDQ1YTM5N2NmMGE5XkEyXkFqcGc@._V1_.jpg",
+    "name": "Jurassic World",
+    "imdbID": "tt0369610",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/RFinNxS5KN4' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1749,7 +1749,7 @@
   },
   {
     "name": "Jurassic World: Fallen Kingdom",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BNzIxMjYwNDEwN15BMl5BanBnXkFtZTgwMzk5MDI3NTM@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt4881806",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/vn9mMeWcgoM' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1764,8 +1764,8 @@
     ]
   },
   {
-    "name": "Superman (2025)",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BOGMwZGJiM2EtMzEwZC00YTYzLWIxNzYtMmJmZWNlZjgxZTMwXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "name": "Superman",
+    "imdbID": "tt5950044",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/Ox8ZLF6cGM0' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1974,7 +1974,7 @@
   },
   {
     "name": "Aliens vs Predator (2004)",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTU4MjIwMTcyMl5BMl5BanBnXkFtZTYwMTYwNDA3._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt0370263",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/Cld40qD7HcY' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -2133,3 +2133,4 @@
     ]
   }
 ]
+
