@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Video Details</title>
-  <!-- Adjusted CSP to allow WebSocket for development -->
-  <meta http-equiv="Content-Security-Policy" content="frame-src 'self' https://www.youtube.com https://mp.rpmhub.site https://cybervynx.com; connect-src 'self' https://api.themoviedb.org ws://127.0.0.1:3001;">
+  <!-- Fully permissive CSP for frames (allows all embeds) -->
+  <meta http-equiv="Content-Security-Policy" content="frame-src *; connect-src 'self' https://api.themoviedb.org ws://127.0.0.1:3001;">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="styles.css" />
