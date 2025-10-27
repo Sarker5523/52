@@ -713,7 +713,7 @@
   },
   {
     "name": "Novocaine",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:RlNyAXdUjOM1xUAVlcOWcURZo7JYuDseDo9KczVSm42xPyk_ccUH5-0h8&s=10",
+    "imdbID": "tt29603959",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/-PyOIlJEdqA' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -729,7 +729,7 @@
   },
   {
     "name": "Chhorii",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:T_vtebJZaeJOOpGnAATf395f9s-8nBRaLpSv8JQ-RilPGFCfPcgo8ilKo&s=10",
+    "imdbID": "tt12861212",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/BdgFSxIcEBg' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -745,7 +745,7 @@
   },
   {
     "name": "Chhorii 2",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:RjjhegVX1OM5h4crR6ZlVU9hdISYL-aq8OsHE4UlooKjtwlAdq_oRouJK2&s=10",
+    "imdbID": "tt16436848",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/d4VVkwTw3x4' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -761,7 +761,7 @@
   },
   {
     "name": "Main Hoon Na",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ReuxuoFYuorhoBRhwbRnxf1PtLHwy1E9m0yGFjXYO1gvgdkG_aDvxpKhk&s=10",
+    "imdbID": "tt0347473",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/lzOH61u36W0' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -785,7 +785,7 @@
   },
   {
     "name": "Logout",
-    "thumbnail": "https://images.justwatch.com/poster/329321774/s332/logout",
+    "imdbID": "tt27721892",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/AeFfA9ACg6I' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -801,7 +801,7 @@
   },
   {
     "name": "Mahaan",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:S-q9HK3ky5yliy620EwRlpDD5R_N2RQrYZ9n5U-1giLVDP-Wq6yIiIRgSQ&s=10",
+    "imdbID": "tt12472554",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/i4ORfM-q35Y' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -817,7 +817,7 @@
   },
   {
     "name": "Neru",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:SILDR6sW3BY-t9ZRkBjLr9isLiVTjWNO8fuGsCa5YsAFsv9haS0K3cJDlN&s=10",
+    "imdbID": "tt28358950",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/F7bzeQo_6bs' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -833,7 +833,7 @@
   },
   {
     "name": "Jewel Thief: The Heist Begins",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:SbGdYcFincM0nDDS7TlP5JUZxYxjH3JN6zqkLEOlZVW8K4ipZiLmS8zRQ6&s=10",
+    "imdbID": "tt27843798",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/_dUNLPNfS8s' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -849,7 +849,7 @@
   },
   {
     "name": "Vedaa",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMjRiMWI0M2UtM2JlMC00NGI5LTk3YWEtYmI4MTc0ZjBiN2VjXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt28153480",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/eGfYMhdKR0Q' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -865,7 +865,7 @@
   },
   {
     "name": "Palm Springs",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:Q1_NdkYh-HO15F7lwMCk09Q5P6wvmFZSLEaP1uXCY_YLu-ttmi7N9I0Zc&s=10",
+    "imdbID": "tt9484998",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/CpBLtXduh_k' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -881,7 +881,7 @@
   },
   {
     "name": "Do Patti",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:QdQ3dhx5_NDd98dMononqgbvX2mufxbx16RXAneG1UvqY4dd72G1unqTQ&s=10",
+    "imdbID": "tt28075881",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/b6Z_RYC8IAQ' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -897,7 +897,7 @@
   },
   {
     "name": "Borbaad",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:Q-tDdzejhKCD4RXQ8kOpLm98hy8Yv-yND3v8SIiXRQ8RDU0M71-5MKIFOj&s=10",
+    "imdbID": "tt33305312",
     "category": "Bangla Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/4LiHg8nUlFw' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -928,8 +928,8 @@
     ]
   },
   {
-    "name": "Kesari 2",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:Roog0E1K-E6SVknWRDsdX3aMhbJ5N1778_Q00onSHoIehWu7KW0WnqESo&s=10",
+    "name": "Kesari Chapter 2: The Untold Story of Jallianwala Bagh",
+    "imdbID": "tt3562110",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/r-7g08INMSI' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -945,7 +945,7 @@
   },
   {
     "name": "Good Bad Ugly",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:SZntpT4m2BpZULTbJklRIsOKnoGqdeG4jT5ZoNkGAkSwScakvzHkrJEBI&s=10",
+    "imdbID": "tt27540217",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/XkLRfH1oF3I' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -961,7 +961,7 @@
   },
   {
     "name": "Trapped",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:TEXbA9Qeo7ZTpk4jZ0Ek2dIRDxBNsiN8bti2-odi9J0d96UZ3iD36XTkym&s=10",
+    "imdbID": "tt6206564",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/RJaj39jI-qk' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -977,7 +977,7 @@
   },
   {
     "name": "Costao",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX1d6xVmhPgQayKcM_mRzOEW1GCpopCcpJvjUrBny1sv1SYA5GAi2KdEgs&s=10",
+    "imdbID": "tt13261550",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/rc8pReu9fjU' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -992,8 +992,8 @@
     ]
   },
   {
-    "name": "Mission Mangal",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZDI3NGMxYzMtZjQyMi00OTU4LTlhYzAtNmZkYTE2NTI3YzIwXkEyXkFqcGc@._V1_.jpg",
+    "name": " ",
+    "imdbID": "tt9248972",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/q10nfS9V090' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1121,7 +1121,7 @@
   },
   {
     "name": "Final Destination 5",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nQ_dUfSYtRmP1d7VHqjS7HDTzScpXlBDTszVg&s",
+    "imdbID": "tt1622979",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/PI87-0g_SI8' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1133,7 +1133,7 @@
   },
   {
     "name": "Sinners",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BNjIwZWY4ZDEtMmIxZS00NDA4LTg4ZGMtMzUwZTYyNzgxMzk5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt31193180",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/bKGxHflevuk' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1145,7 +1145,7 @@
   },
   {
     "name": "Crazxy",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nSi_-Jn7T9nQPE3jRgfy6CRkC_kN0x5V0-NTj5WgWSeY2h3Hw98X28BzwM&s=3D10",
+    "imdbID": "tt30798612",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/sHfnlnyjD-E' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1161,7 +1161,7 @@
   },
   {
     "name": "Ghosted",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZDI0YzJjZTctNjU0MS00Y2Y3LThkNDgtNWMxYWVlZjVkYzYwXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt15326988",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/QKQGONpUzuk' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1177,7 +1177,7 @@
   },
   {
     "name": "Raid 2",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BNjQyOTRiYTQtNzU0MS00ZGM2LWE4MTktODI5ZjZiN2NkYjYyXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt28089700",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/kQF1gl7nLaU' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1193,7 +1193,7 @@
   },
   {
     "name": "The Bhootnii",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BNWYwYjljNzEtNTVlMy00YmI2LWE5YzktMjhmZjI2NGNhZDAxXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt27162102",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/L8Wfzxch7Xo' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1209,7 +1209,7 @@
   },
   {
     "name": "The Accountant",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nT1LHLEXBbYxJcbxHRWasukore7vREDsAWSWLYEMEn2-x7epsc9g2JTfZCy&s=3D10",
+    "imdbID": "tt2140479",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/DBfsgcswlYQ' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1225,7 +1225,7 @@
   },
   {
     "name": "Salaam Namaste",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nQQgwV10onWhj7dwMM_M8EywE_6gO_tgN4CgJgLqmAJgtZGuIHLwmeuDMoD&s=3D10",
+    "imdbID": "tt0456165",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/r-13Ezk7Zxg' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1237,7 +1237,7 @@
   },
   {
     "name": "Hit: The Third Case",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nQb193TEkT1J7f1iTxI0xT0JtB68a_fzsjDSQ&s",
+    "imdbID": "tt23804696",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/DKSlOAtzoiY' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1253,7 +1253,7 @@
   },
   {
     "name": "Thudarum",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nTlEhSHlBvbYdV8nb6SHB6wAxZpUtdtMuBOBV7EayCaZkYf6E_ZWzfbpv8&s=3D10",
+    "imdbID": "tt31969600",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/HZrYlXuecRg' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1269,7 +1269,7 @@
   },
   {
     "name": "Retro",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nRS41fkpwpyPmWEeph-indsP4KnVZQVZhPrOaZh8jXjtJ7rPs4T-JFQRpI&s=3D10",
+    "imdbID": "tt31945132",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/-FrvnEFISWY' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1285,7 +1285,7 @@
   },
   {
     "name": "172 Days",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BNGQ5NTY3YzQtOWU5MC00NzE0LWIyZjAtMjc4ZGViMjJiZjQ0XkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt28005338",
     "category": "Foreign Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/IPRBKGxCCZQ' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1300,8 +1300,8 @@
     ]
   },
   {
-    "name": "Jongi",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nQgTTgun6ySYD8cvI1HJSFYg6TkFuYlpbUxmPyJyQMqFmSLSWOhzaDVGWZf&s=3D10",
+    "name": "Jongli",
+    "imdbID": "tt31951179",
     "category": "Bangla Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/6_BlSd9lez0' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1317,7 +1317,7 @@
   },
   {
     "name": "Daagi",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nRwqCLnqrZe5lhCQkvJGblnCpA3-wziL2blILGNFPCQp9A9upD7drfGhaHb&s=3D10",
+    "imdbID": "tt34936199",
     "category": "Bangla Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/80952qaL6P8' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1333,8 +1333,7 @@
   },
   {
     "name": "Stolen",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nSijBgGDuxw6S5R_hxC4Y58I8jl5TAndJX82MQOpgSKgzZq2L_DKe6WHPIR&s=3D10",
-    "category": "Bollywood Movie",
+    "imdbID": "tt28494851",
     "trailer": "<iframe src='https://www.youtube.com/embed/ALaTpllzI50' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
@@ -1349,7 +1348,7 @@
   },
   {
     "name": "Oppenheimer",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=3Dtb:nS792nYmL0GWasTeCmHaPoS78z1RhlQ5vfHqsbjbhEwn1TU4QrDjv5Nh5A&s=3D10",
+    "imdbID": "tt15398776",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/uYPbbksJxIg' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1365,7 +1364,7 @@
   },
   {
     "name": "Padakkalam",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BODdmMGNhZTItMWZkZi00N2MwLWE5N2YtNmE5M2I0MTE3OGU4XkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt32919734",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/Oz1Qcv2DZ2U' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1381,7 +1380,7 @@
   },
   {
     "name": "Brothers",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BYzRlNTJkN2UtNTdjZS00ODljLTllODYtY2RmZDA0NDVmN2NkXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt0765010",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/0Jvi7OcEQWM' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1396,9 +1395,8 @@
     ]
   },
   {
-    "name": "The Karate Kid (1984)",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BM2I3ZmZhNzctMzBlNC00YTc2LWE1MmEtY2ZkMzg3Y2I1ZDJhXkEyXkFqcGc@._V1_.jpg",
-    "category": "Hollywood Movie",
+    "name": "The Karate Kid",
+    "imdbID": "tt0087538",
     "trailer": "<iframe src='https://www.youtube.com/embed/r_8Rw16uscg' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
@@ -1412,8 +1410,8 @@
     ]
   },
   {
-    "name": "The Karate Kid 2 (1986)",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZWM5NTJiYzItZmE3MS00ZmM2LThhZjUtYzQ1NGIyZGQ3MGQ1XkEyXkFqcGc@._V1_.jpg",
+    "name": "The Karate Kid Part II",
+    "imdbID": "tt0091326",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/V-T0ajeo7xQ' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1429,8 +1427,7 @@
   },
   {
     "name": "The Karate Kid (2010)",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BMTQ0ODg3ODEyMF5BMl5BanBnXkFtZTcwNjI1MTgxMw@@._V1_FMjpg_UX1000_.jpg",
-    "category": "Hollywood Movie",
+   "imdbID": "tt1155076",
     "trailer": "<iframe src='https://www.youtube.com/embed/XY8amUImEu0' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
@@ -1444,8 +1441,8 @@
     ]
   },
   {
-    "name": "Karate Kid Legends (2025)",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BM2MwYTlkY2MtNmUzNy00MTljLThjNDAtZGUzNzMxMzcxNzM5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "name": "Karate Kid: Legends",
+    "imdbID": "tt1674782",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/uPzOAtzoiY4' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -2140,6 +2137,18 @@
       {
         "label": "Dual Audio (Source-1)",
         "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#96bmon' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
+  },
+  {
+    "name": "Bhagwat Chapter One: Raakshas",
+    "imdbID": "tt38525492",
+    "category": "Bollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/7uBy1gkgWxQ' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Dual Audio (Source-1)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#asphf6' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
   }
