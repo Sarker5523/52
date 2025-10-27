@@ -1461,7 +1461,7 @@
   },
   {
     "name": "The Others",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BZTNhODBkODAtNDllYy00YTg1LWJmNDUtY2RmZDA0NDVmN2NkXkEyXkFqcGc@._V1_.jpg",
+    "imdbID": "tt0230600",
     "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/C7pKqaPtMiA' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1477,7 +1477,7 @@
   },
   {
     "name": "KGF: Chapter 01",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BM2M0YmIxNzItOWI4My00MmQzLWE0NGYtZTM3NjllNjIwZjc5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt7838252",
     "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/-KfsY-qwBS0' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
@@ -1493,8 +1493,7 @@
   },
   {
     "name": "KGF: Chapter 02",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BOTE2ZjUyODktMWJmOC00Nzk5LWIzNGItZTM3MDAwYWFiOTc2XkEyXkFqcGc@._V1_.jpg",
-    "category": "South Indian Movie",
+    "imdbID": "tt10698680",
     "trailer": "<iframe src='https://www.youtube.com/embed/JKa05nyUmuQ' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
@@ -1509,7 +1508,7 @@
   },
   {
     "name": "Aap Jaisa Koi",
-    "thumbnail": "https://m.media-amazon.com/images/M/MV5BYzgwOGM4YTEtMmE1Ny00MWQxLTlhMzEtYWY0MDY1ZjY0NWJhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "imdbID": "tt33888131",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/IC_2jSsWpZk' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
