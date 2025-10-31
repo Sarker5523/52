@@ -2146,8 +2146,7 @@
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/4304pbi44ixg' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
-  },
-  {
+  },{
     "name": "Bhagwat Chapter One: Raakshas",
     "imdbID": "tt38525492",
     "category": "Bollywood Movie",
@@ -2160,7 +2159,9 @@
       {
         "label": "Hindi (Source-2)",
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/c2kdx2bxn061' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
-      },
+      }
+    ]
+  },
   {
     "name": "Lokah Chapter One: Chandra",
     "imdbID": "tt33372494",
@@ -2178,6 +2179,5 @@
     ]
   }
 ]
-
 
 
