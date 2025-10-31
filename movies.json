@@ -2160,6 +2160,20 @@
       {
         "label": "Hindi (Source-2)",
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/c2kdx2bxn061' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+  {
+    "name": "Lokah Chapter One: Chandra",
+    "imdbID": "tt33372494",
+    "category": "South Indian Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/c6jz7rc6Uag' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Hindi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#heep3g' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://cybervynx.com/e/1ecvjn1lhkes' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
   }
