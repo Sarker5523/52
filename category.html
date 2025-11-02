@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category - StreamOn</title>
+  <meta http-equiv="Content-Security-Policy"
+        content="frame-src 'self' https://www.youtube.com https://mp.rpmhub.site https://cybervynx.com;
+                 connect-src 'self' https://api.themoviedb.org;">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@500&display=swap"
+        rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    .category-header {
+      text-align: center;
+      margin: 30px 0 20px;
+    }
+
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .filter-container select {
+      padding: 10px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #222;
+      color: #fff;
+    }
+
+    /* Grid – identical to index.html */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+       .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      padding: 8px 14px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      min-width: 40px;
+    }
+
+    .page-btn.active,
+    .page-btn:hover {
+      background: #ff9800;
+    }
+
+    .no-results {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 50px;
+      color: #aaa;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .video-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo" onclick="window.location.href='index.html'">StreamOn</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <div class="dropdown">
+        Categories
+        <div class="dropdown-content" id="category-list"></div>
+      </div>
+      <div class="search-container">
+        <input type="text" id="search-box" class="search-box" placeholder="Search...">
+        <div id="search" class="search"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-wrapper">
+    <div class="category-header">
+      <h1 id="category-title"></h1>
+    </div>
+
+    <div class="filter-container">
+      <label for="year-filter">Filter by Year: </label>
+      <select id="year-filter">
+        <option value="">All Years</option>
+      </select>
+    </div>
+
+    <div id="video-grid" class="video-grid"></div>
+
+    <div id="pagination" class="pagination"></div>
+  </div>
+
+  <div id="loading" style="text-align:center;padding:40px;color:#aaa;">Loading...</div>
+  <div id="error-message" style="display:none;color:red;text-align:center;padding:20px;"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const el = {
+      categoryTitle: document.getElementById("category-title"),
+      yearFilter   : document.getElementById("year-filter"),
+      videoGrid    : document.getElementById("video-grid"),
+      pagination   : document.getElementById("pagination"),
+      loading      : document.getElementById("loading"),
+      errorMessage : document.getElementById("error-message"),
+      searchBox    : document.getElementById("search-box"),
+      searchResults: document.getElementById("search"),
+      dropdown     : document.querySelector(".dropdown"),
+      dropdownContent: document.querySelector(".dropdown-content"),
+      navbar       : document.querySelector(".navbar")
+    };
+
+    const TMDB_API_KEY = 'ef93f865877bb70f8175a613d28b8ebe';
+    let allData = [], filteredData = [], currentCategory = '';
+    let currentPage = 1, itemsPerPage = 18;
+
+    // ---------- cache ----------
+    let tmdbCache = JSON.parse(localStorage.getItem('movieDataCache') || '{}');
+    let lastScrollTop = 0;
+
+    // ---------- navbar scroll ----------
+    window.addEventListener("scroll", () => {
+      const st = window.pageYOffset || document.documentElement.scrollTop;
+      el.navbar.classList.toggle("fixed", st > lastScrollTop);
+      lastScrollTop = st <= 0 ? 0 : st;
+    });
+
+    // ---------- dropdown ----------
+    el.dropdown.addEventListener("click", e => {
+      e.stopPropagation();
+      const cur = el.dropdownContent.style.display;
+      el.dropdownContent.style.display = cur === "block" ? "none" : "block";
+    });
+    document.addEventListener("click", e => {
+      if (!el.dropdown.contains(e.target)) el.dropdownContent.style.display = "none";
+    });
+
+    const normalize = s => s ? s.toLowerCase().trim().replace(/\s+/g, '') : '';
+
+    // ---------- TMDb ----------
+    async function fetchTMDbData(imdbID) {
+      const key = imdbID.toLowerCase().trim();
+      if (tmdbCache[key]) return tmdbCache[key];
+
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/find/${imdbID}?api_key=${TMDB_API_KEY}&external_source=imdb_id`);
+        const data = await res.json();
+
+        let result = { thumbnail: 'path/to/placeholder.jpg', rating: 'N/A', year: 'N/A' };
+
+        const m = data.movie_results?.[0] ?? data.tv_results?.[0];
+        if (m) {
+          result.thumbnail = m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : result.thumbnail;
+          result.rating    = m.vote_average ? m.vote_average.toFixed(1) : result.rating;
+          result.year      = (m.release_date ?? m.first_air_date ?? '').split('-')[0] || result.year;
+        }
+
+        tmdbCache[key] = result;
+        localStorage.setItem('movieDataCache', JSON.stringify(tmdbCache));
+        return result;
+      } catch (e) {
+        console.warn('TMDb fetch failed:', e);
+        return { thumbnail: 'path/to/placeholder.jpg', rating: 'N/A', year: 'N/A' };
+      }
+    }
+
+    // ---------- load category ----------
+    async function loadCategory() {
+      const hash = window.location.hash.substring(1);
+      if (!hash) return showError('No category selected.');
+
+      currentCategory = decodeURIComponent(hash.replace(/_/g, ' '));
+      el.categoryTitle.textContent = currentCategory;
+
+      try {
+        const [movies, series] = await Promise.all([
+          fetch('movies.json').then(r => r.ok ? r.json() : []),
+          fetch('series.json').then(r => r.ok ? r.json() : [])
+        ]);
+
+        allData = [
+          ...movies.map(m => ({ ...m, type: 'movie' })),
+          ...series.map(s => ({ ...s, type: 'series' }))
+        ].filter(i => normalize(i.category) === normalize(currentCategory));
+
+        if (!allData.length) {
+          el.videoGrid.innerHTML = '<div class="no-results">No items in this category.</div>';
+          el.loading.style.display = 'none';
+          return;
+        }
+
+        el.loading.textContent = 'Loading thumbnails, ratings & years...';
+
+        const processed = await Promise.all(
+          allData.map(async item => {
+            let thumbnail = item.thumbnail || 'path/to/placeholder.jpg';
+            let rating = item.rating || 'N/A';
+            let year = 'N/A';
+
+            if (item.imdbID) {
+              const data = await fetchTMDbData(item.imdbID);
+              thumbnail = data.thumbnail;
+              rating = data.rating;
+              year = data.year;
+            }
+
+            return { ...item, thumbnail, rating, year };
+          })
+        );
+
+        // ***** REVERSE ORDER (newest first) *****
+        allData = processed.sort((a, b) => {
+          const ya = parseInt(a.year) || 0;
+          const yb = parseInt(b.year) || 0;
+          return yb - ya;               // descending
+        });
+        filteredData = [...allData];
+
+        // ----- year filter -----
+        const years = [...new Set(
+          allData.filter(i => i.year && i.year !== 'N/A').map(i => i.year)
+        )].sort((a, b) => b - a);
+
+        el.yearFilter.innerHTML = '<option value="">All Years</option>';
+        years.forEach(y => {
+          const opt = document.createElement('option');
+          opt.value = y; opt.textContent = y;
+          el.yearFilter.appendChild(opt);
+        });
+
+        renderPage(1);
+        el.loading.style.display = 'none';
+      } catch (e) {
+        console.error(e);
+        showError('Failed to load category.');
+      }
+    }
+
+    // ---------- render page ----------
+    function renderPage(page) {
+      currentPage = page;
+      const start = (page - 1) * itemsPerPage;
+      const end   = start + itemsPerPage;
+      const items = filteredData.slice(start, end);
+
+      if (!items.length) {
+        el.videoGrid.innerHTML = '<div class="no-results">No items match the filter.</div>';
+        el.pagination.innerHTML = '';
+        return;
+      }
+
+      el.videoGrid.innerHTML = items.map(item => {
+        const page = item.type === 'movie' ? 'movie.html' : 'series.html';
+        return `
+          <div class="video-item">
+            <a href="${page}#${encodeURIComponent(item.name.replace(/\s+/g, ''))}">
+              <img src="${item.thumbnail}" alt="${item.name}">
+              <span>${item.name}</span>
+              <div class="imdb-rating">IMDB: ${item.rating}</div>
+            </a>
+          </div>`;
+      }).join('');
+
+      renderPagination();
+    }
+
+    // ---------- pagination (fixed) ----------
+    function renderPagination() {
+      const total = Math.ceil(filteredData.length / itemsPerPage);
+      if (total <= 1) {
+        el.pagination.innerHTML = '';
+        return;
+      }
+
+      const container = document.createElement('div');
+      for (let i = 1; i <= total; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+        btn.textContent = i;
+        btn.addEventListener('click', () => renderPage(i));
+        container.appendChild(btn);
+      }
+      el.pagination.innerHTML = '';
+      el.pagination.appendChild(container);
+    }
+
+    // ---------- year filter ----------
+    el.yearFilter.addEventListener('change', () => {
+      const y = el.yearFilter.value;
+      filteredData = y ? allData.filter(i => i.year === y) : [...allData];
+      renderPage(1);
+    });
+
+    // ---------- search ----------
+    el.searchBox.addEventListener('input', () => {
+      const q = el.searchBox.value.toLowerCase().trim();
+      el.searchResults.style.display = 'none';
+      el.searchResults.innerHTML = '';
+      if (!q) return;
+
+      const matches = allData.filter(i => i.name?.toLowerCase().includes(q)).slice(0, 5);
+      if (!matches.length) {
+        el.searchResults.innerHTML = '<div class="no-results">No results</div>';
+      } else {
+        matches.forEach(m => {
+          const div = document.createElement('div');
+          const pg = m.type === 'movie' ? 'movie.html' : 'series.html';
+          div.innerHTML = `<img src="${m.thumbnail}" alt="${m.name}"><span>${m.name}</span>`;
+          div.onclick = () => location.href = `${pg}#${encodeURIComponent(m.name.replace(/\s+/g, ''))}`;
+          el.searchResults.appendChild(div);
+        });
+      }
+      el.searchResults.style.display = matches.length ? 'block' : 'none';
+    });
+
+    el.searchBox.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const q = el.searchBox.value.trim();
+        if (q) location.href = `search-result.html#${q.replace(/\s+/g, '')}`;
+      }
+    });
+
+    // ---------- load categories (dropdown) ----------
+    async function loadCategories() {
+      try {
+        const [m, s] = await Promise.all([
+          fetch('movies.json').then(r => r.json()),
+          fetch('series.json').then(r => r.json())
+        ]);
+        const cats = [...new Set([...m, ...s].map(i => i.category).filter(Boolean))];
+        el.dropdownContent.innerHTML = cats.map(c =>
+          `<a href="category.html#${encodeURIComponent(c.replace(/\s+/g, ''))}" onclick="event.stopPropagation();">${c}</a>`
+        ).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    function showError(msg) {
+      el.errorMessage.textContent = msg;
+      el.errorMessage.style.display = 'block';
+      el.loading.style.display = 'none';
+    }
+
+    loadCategories();
+    loadCategory();
+  });
+</script>
+</body>
+</html>

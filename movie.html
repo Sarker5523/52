@@ -4,23 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Video Details</title>
-  <!-- Fully permissive CSP for frames (allows all embeds) -->
-  <meta http-equiv="Content-Security-Policy" content="frame-src *; connect-src 'self' https://api.themoviedb.org ws://127.0.0.1:3001;">
+  <meta http-equiv="Content-Security-Policy" content="frame-src 'self' https://www.youtube.com https://mp.rpmhub.site https://cybervynx.com; connect-src 'self' https://api.themoviedb.org;">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* For lists */
-    #main-cast, #imdb-categories {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .error-message {
-      color: red;
-      text-align: center;
-      padding: 20px;
-      display: none;
+    #main-cast, #imdb-categories { display: block; }
+    .search-suggestion img {
+      width: 40px; height: 60px; object-fit: cover; border-radius: 6px; background: #333;
     }
   </style>
 </head>
@@ -35,14 +26,7 @@
         <div class="dropdown-content" id="category-list"></div>
       </div>
       <div class="search-container">
-        <input
-          type="text"
-          id="search-box"
-          class="search-box"
-          placeholder="Search..."
-          autocomplete="off"
-          aria-label="Search movies"
-        />
+        <input type="text" id="search-box" class="search-box" placeholder="Search..." autocomplete="off" aria-label="Search movies" />
         <div id="search" class="search" role="listbox"></div>
       </div>
     </div>
@@ -54,7 +38,6 @@
 
   <div class="video-details">
     <h2 id="video-title" aria-live="polite"></h2>
-    <div id="error-message" class="error-message"></div>
     <div id="source-selection" class="episode-list"></div>
     <div class="movie-info" id="movie-info" style="display: none;">
       <div class="plot-container">
@@ -65,20 +48,14 @@
       </div>
       <div class="info-columns">
         <div class="left-column">
-          <h3>Director</h3>
-          <div id="director" class="director"></div>
-          <h3>Main Cast</h3>
-          <div id="main-cast" class="cast-list"></div>
-          <h3>Genres</h3>
-          <div id="imdb-categories" class="imdb-categories"></div>
-          <h3>Released Year</h3>
-          <div id="release-year" class="release-year"></div>
+          <h3>Director</h3><div id="director" class="director"></div>
+          <h3>Genres</h3><div id="imdb-categories" class="imdb-categories"></div>
+          <h3>Main Cast</h3><div id="main-cast" class="cast-list"></div>
+          <h3>Released Year</h3><div id="release-year" class="release-year"></div>
         </div>
         <div class="right-column">
           <div class="imdb-rating-circle" id="imdb-rating-circle" style="display: none;">
-            <div class="rating-circle" id="rating-circle">
-              <span id="rating-value">0</span>
-            </div>
+            <div class="rating-circle" id="rating-circle"><span id="rating-value">0</span></div>
             <span class="rating-text">IMDB Rating</span>
           </div>
         </div>
@@ -86,7 +63,6 @@
     </div>
   </div>
 
-  <!-- Trailer Section -->
   <div class="trailer-container" id="trailer-container" style="display: none;">
     <h3 class="trailer-title">Trailer</h3>
     <div class="iframe-container" id="trailer-iframe-container" role="region" aria-label="Movie trailer"></div>
@@ -110,502 +86,152 @@
     const mainCast = document.getElementById("main-cast");
     const imdbCategories = document.getElementById("imdb-categories");
     const releaseYear = document.getElementById("release-year");
-    const errorMessage = document.getElementById("error-message");
 
     const TMDB_API_KEY = 'ef93f865877bb70f8175a613d28b8ebe';
+    let movieDataCache = JSON.parse(localStorage.getItem('movieDataCache') || '{}');
     let genreMap = null;
 
-    const normalize = (str) => str ? str.toLowerCase().trim().replace(/[^\w\s]/g, '') : '';
-
-    // IndexedDB Setup
-    const DB_NAME = 'StreamOnDB';
-    const DB_VERSION = 1;
-    const STORE_NAME = 'movieCache';
-    let db;
-
-    function openDB() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-        request.onupgradeneeded = function (event) {
-          db = event.target.result;
-          if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME, { keyPath: 'imdbID' });
-          }
-        };
-
-        request.onsuccess = function (event) {
-          db = event.target.result;
-          resolve(db);
-        };
-
-        request.onerror = function (event) {
-          console.error('IndexedDB error:', event.target.error);
-          reject(event.target.error);
-        };
-      });
-    }
-
-    // Load cache from IndexedDB and LocalStorage
-    async function loadCache() {
-      let dataCache = {};
-      try {
-        // Check LocalStorage for metadata
-        const cacheMetadata = localStorage.getItem('movieCacheMetadata');
-        let metadata = cacheMetadata ? JSON.parse(cacheMetadata) : { lastUpdated: 0, keys: [] };
-
-        // Open IndexedDB
-        await openDB();
-
-        // Get data from IndexedDB
-        const transaction = db.transaction([STORE_NAME], 'readonly');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.getAll();
-
-        return new Promise((resolve) => {
-          request.onsuccess = function (event) {
-            dataCache = Object.fromEntries(event.target.result.map(item => [item.imdbID, item]));
-            // Fallback to LocalStorage if IndexedDB is empty
-            if (Object.keys(dataCache).length === 0) {
-              try {
-                const localCache = localStorage.getItem('movieDataCache');
-                if (localCache) {
-                  dataCache = JSON.parse(localCache);
-                }
-              } catch (e) {
-                console.warn('Error loading LocalStorage cache:', e);
-              }
-            }
-            resolve({ dataCache, metadata });
-          };
-
-          request.onerror = function () {
-            console.warn('Error reading from IndexedDB, falling back to LocalStorage');
-            try {
-              const localCache = localStorage.getItem('movieDataCache');
-              if (localCache) {
-                dataCache = JSON.parse(localCache);
-              }
-            } catch (e) {
-              console.warn('Error loading LocalStorage cache:', e);
-            }
-            resolve({ dataCache, metadata });
-          };
-        });
-      } catch (e) {
-        console.warn('Error loading cache:', e);
-        return { dataCache, metadata: { lastUpdated: 0, keys: [] } };
-      }
-    }
-
-    // Save cache to IndexedDB and update LocalStorage metadata
-    async function saveCache(dataCache, metadata) {
-      try {
-        // Update IndexedDB
-        await openDB();
-        const transaction = db.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-
-        // Enforce size limit (e.g., 1000 items)
-        const keys = Object.keys(dataCache);
-        if (keys.length > 1000) {
-          const keysToKeep = keys.slice(-1000);
-          const newCache = Object.fromEntries(keysToKeep.map(key => [key, dataCache[key]]));
-          Object.assign(dataCache, newCache);
-
-          // Clear old entries
-          const clearRequest = store.clear();
-          await new Promise((resolve, reject) => {
-            clearRequest.onsuccess = resolve;
-            clearRequest.onerror = reject;
-          });
-        }
-
-        // Save new entries
-        for (const [key, value] of Object.entries(dataCache)) {
-          store.put({ imdbID: key, ...value });
-        }
-
-        // Update LocalStorage metadata
-        metadata.keys = Object.keys(dataCache);
-        metadata.lastUpdated = Date.now();
-        try {
-          localStorage.setItem('movieCacheMetadata', JSON.stringify(metadata));
-          // Optionally save to LocalStorage as a fallback
-          localStorage.setItem('movieDataCache', JSON.stringify(dataCache));
-        } catch (e) {
-          if (e.name === 'QuotaExceededError') {
-            console.warn('LocalStorage full, clearing fallback cache');
-            localStorage.removeItem('movieDataCache');
-          }
-        }
-      } catch (error) {
-        console.error('Error saving to IndexedDB:', error);
-        // Fallback to LocalStorage
-        try {
-          localStorage.setItem('movieDataCache', JSON.stringify(dataCache));
-          localStorage.setItem('movieCacheMetadata', JSON.stringify(metadata));
-        } catch (e) {
-          console.warn('Error saving to LocalStorage:', e);
-        }
-      }
-    }
+    const normalize = (str) => str?.toLowerCase().trim() || '';
 
     function debounce(func, wait) {
       let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
+      return (...args) => {
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = setTimeout(() => func(...args), wait);
       };
     }
 
     async function fetchGenreMap() {
       if (genreMap) return genreMap;
       try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/genre/movie/list?api_key=${TMDB_API_KEY}&language=en-US`
-        );
-        if (!response.ok) throw new Error(`TMDb genre list API error: ${response.status}`);
-        const data = await response.json();
+        const res = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${TMDB_API_KEY}&language=en-US`);
+        const data = await res.json();
         genreMap = {};
-        data.genres.forEach(genre => {
-          genreMap[genre.id] = genre.name;
-        });
+        data.genres.forEach(g => genreMap[g.id] = g.name);
         return genreMap;
-      } catch (error) {
-        console.error('Error fetching TMDb genre list:', error);
-        return {};
-      }
+      } catch (e) { console.error(e); return {}; }
     }
 
     async function fetchMovieData(movie) {
-      const cacheKey = movie.imdbID ? normalize(movie.imdbID) : normalize(movie.name);
-      let { dataCache } = await loadCache();
-
-      // Validate cached data
-      if (dataCache[cacheKey] && dataCache[cacheKey].genre !== 'Unknown' && Array.isArray(dataCache[cacheKey].actors)) {
-        console.log(`Cache hit for ${movie.name}:`, dataCache[cacheKey]);
-        return dataCache[cacheKey];
+      const cacheKey = normalize(movie.name);
+      if (movieDataCache[cacheKey] && movieDataCache[cacheKey].genre !== 'Unknown') {
+        return movieDataCache[cacheKey];
       }
 
       const genreMap = await fetchGenreMap();
-      console.log(`Fetching fresh TMDb data for ${movie.name}`);
-      const maxRetries = 3;
-      let attempt = 0;
-
-      if (movie.imdbID) {
-        while (attempt < maxRetries) {
-          try {
-            console.log(`Fetching TMDb data for IMDb ID: ${movie.imdbID}, attempt ${attempt + 1}`);
-            const tmdbResponse = await fetch(
-              `https://api.themoviedb.org/3/find/${movie.imdbID}?api_key=${TMDB_API_KEY}&language=en-US&external_source=imdb_id`
-            );
-            if (tmdbResponse.status === 429) {
-              attempt++;
-              const delay = Math.pow(2, attempt) * 1000;
-              console.log(`Rate limit hit, retrying after ${delay}ms`);
-              await new Promise(resolve => setTimeout(resolve, delay));
-              continue;
-            }
-            if (!tmdbResponse.ok) throw new Error(`TMDb API error: ${tmdbResponse.status}`);
-            const tmdbData = await tmdbResponse.json();
-            if (tmdbData.movie_results?.length > 0) {
-              const tmdbMovieId = tmdbData.movie_results[0].id;
-              console.log(`Found TMDb movie ID: ${tmdbMovieId}`);
-              const movieResponse = await fetch(
-                `https://api.themoviedb.org/3/movie/${tmdbMovieId}?api_key=${TMDB_API_KEY}&language=en-US`
-              );
-              if (!movieResponse.ok) throw new Error(`TMDb movie details API error: ${movieResponse.status}`);
-              const movieData = await movieResponse.json();
-              
-              const creditsResponse = await fetch(
-                `https://api.themoviedb.org/3/movie/${tmdbMovieId}/credits?api_key=${TMDB_API_KEY}`
-              );
-              if (!creditsResponse.ok) throw new Error(`TMDb credits API error: ${creditsResponse.status}`);
-              const creditsData = await creditsResponse.json();
-              
-              const movieInfo = {
-                rating: movieData.vote_average ? movieData.vote_average.toFixed(1) : movie.rating || 'N/A',
-                plot: movieData.overview || movie.plot || 'Plot not available',
-                director: creditsData.crew?.find(crew => crew.job === 'Director')?.name || movie.director || 'N/A',
-                actors: creditsData.cast?.slice(0, 5).map(actor => actor.name) || movie.actors || [],
-                genre: movieData.genre_ids?.length > 0
-                  ? movieData.genre_ids.map(id => genreMap[id] || 'Unknown').filter(Boolean).join(', ')
-                  : movieData.genres?.length > 0
-                    ? movieData.genres.map(genre => genre.name).join(', ')
-                    : movie.genre || 'Unknown',
-                release_year: movieData.release_date ? movieData.release_date.split('-')[0] : movie.release_year || 'N/A'
-              };
-              dataCache[cacheKey] = movieInfo;
-              await saveCache(dataCache, { lastUpdated: Date.now(), keys: Object.keys(dataCache) });
-              console.log(`Fetched TMDb data for ${movie.name}:`, movieInfo);
-              return movieInfo;
-            }
-          } catch (error) {
-            console.error(`TMDb Error for ${movie.name} (IMDb ID attempt ${attempt + 1}):`, error);
-            attempt++;
-            if (attempt === maxRetries) break;
-          }
-        }
-      }
-
-      try {
-        console.log(`Falling back to TMDb title search for: ${movie.name}`);
-        const searchQuery = movie.name.replace(/[^\w\s]/g, ' ').trim();
-        const searchResponse = await fetch(
-          `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(searchQuery)}&language=en-US`
-        );
-        if (!searchResponse.ok) throw new Error(`TMDb search API error: ${searchResponse.status}`);
-        const searchData = await searchResponse.json();
-        
-        if (searchData.results?.length > 0) {
-          const bestMatch = searchData.results[0];
-          console.log(`TMDb search found: ${bestMatch.title} (${bestMatch.id})`);
-          
-          const movieResponse = await fetch(
-            `https://api.themoviedb.org/3/movie/${bestMatch.id}?api_key=${TMDB_API_KEY}&language=en-US`
-          );
-          if (!movieResponse.ok) throw new Error(`TMDb movie details API error: ${movieResponse.status}`);
-          const fullMovieData = await movieResponse.json();
-          
-          const creditsResponse = await fetch(
-            `https://api.themoviedb.org/3/movie/${bestMatch.id}/credits?api_key=${TMDB_API_KEY}`
-          );
-          if (!creditsResponse.ok) throw new Error(`TMDb credits API error: ${creditsResponse.status}`);
-          const creditsData = await creditsResponse.json();
-          
-          const movieInfo = {
-            rating: fullMovieData.vote_average ? fullMovieData.vote_average.toFixed(1) : movie.rating || 'N/A',
-            plot: fullMovieData.overview || movie.plot || 'Plot not available',
-            director: creditsData.crew?.find(crew => crew.job === 'Director')?.name || movie.director || 'N/A',
-            actors: creditsData.cast?.slice(0, 5).map(actor => actor.name) || movie.actors || [],
-            genre: fullMovieData.genre_ids?.length > 0
-              ? fullMovieData.genre_ids.map(id => genreMap[id] || 'Unknown').filter(Boolean).join(', ')
-              : fullMovieData.genres?.length > 0
-                ? fullMovieData.genres.map(genre => genre.name).join(', ')
-                : movie.genre || 'Unknown',
-            release_year: fullMovieData.release_date ? fullMovieData.release_date.split('-')[0] : movie.release_year || 'N/A'
-          };
-          dataCache[cacheKey] = movieInfo;
-          await saveCache(dataCache, { lastUpdated: Date.now(), keys: Object.keys(dataCache) });
-          console.log(`Fetched TMDb search data for ${movie.name}:`, movieInfo);
-          return movieInfo;
-        }
-      } catch (error) {
-        console.error(`TMDb search error for ${movie.name}:`, error);
-      }
-
-      const movieData = {
+      let info = {
         rating: movie.rating || 'N/A',
         plot: movie.plot || 'Plot not available',
         director: movie.director || 'N/A',
         actors: movie.actors || [],
         genre: movie.genre || 'Unknown',
-        release_year: movie.release_year || 'N/A'
+        release_year: movie.release_year || 'N/A',
+        thumbnail: movie.thumbnail && movie.thumbnail.trim() ? movie.thumbnail : 'path/to/placeholder.jpg'
       };
-      dataCache[cacheKey] = movieData;
-      await saveCache(dataCache, { lastUpdated: Date.now(), keys: Object.keys(dataCache) });
-      console.log(`Using fallback data for ${movie.name}:`, movieData);
-      return movieData;
+
+      if (movie.imdbID) {
+        try {
+          const res = await fetch(`https://api.themoviedb.org/3/find/${movie.imdbID}?api_key=${TMDB_API_KEY}&external_source=imdb_id`);
+          const data = await res.json();
+          const m = data.movie_results?.[0] || data.tv_results?.[0];
+          if (m) {
+            const details = await fetch(`https://api.themoviedb.org/3/${m.media_type || 'movie'}/${m.id}?api_key=${TMDB_API_KEY}`);
+            const det = await details.json();
+            const credits = await fetch(`https://api.themoviedb.org/3/${m.media_type || 'movie'}/${m.id}/credits?api_key=${TMDB_API_KEY}`);
+            const cred = await credits.json();
+
+            info = {
+              rating: det.vote_average ? det.vote_average.toFixed(1) : info.rating,
+              plot: det.overview || info.plot,
+              director: cred.crew?.find(c => c.job === 'Director')?.name || info.director,
+              actors: cred.cast?.slice(0, 5).map(a => a.name) || info.actors,
+              genre: det.genre_ids?.map(id => genreMap[id]).filter(Boolean).join(', ') || det.genres?.map(g => g.name).join(', ') || info.genre,
+              release_year: (det.release_date || det.first_air_date || '').split('-')[0] || info.release_year,
+              thumbnail: det.poster_path ? `https://image.tmdb.org/t/p/w500${det.poster_path}` : info.thumbnail
+            };
+          }
+        } catch (e) { console.error(e); }
+      } else {
+        // Fallback: title search
+        try {
+          const q = encodeURIComponent(movie.name.replace(/[^\w\s]/g, ' ').trim());
+          const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${q}`);
+          const data = await res.json();
+          const m = data.results?.[0];
+          if (m && m.poster_path) {
+            const details = await fetch(`https://api.themoviedb.org/3/${m.media_type}/${m.id}?api_key=${TMDB_API_KEY}`);
+            const det = await details.json();
+            info.thumbnail = `https://image.tmdb.org/t/p/w500${det.poster_path}`;
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      movieDataCache[cacheKey] = info;
+      localStorage.setItem('movieDataCache', JSON.stringify(movieDataCache));
+      return info;
     }
 
-    function createSelectionButtons(container, items, itemKey, idKey, labelKey, clickHandler, activeId) {
+    function createSelectionButtons(container, items, labelKey, clickHandler, activeLabel) {
       container.innerHTML = "";
       container.style.display = items.length > 0 ? "block" : "none";
-      items.forEach((item, idx) => {
-        const button = document.createElement("div");
-        button.className = 'button';
-        button.innerHTML = `
-          <div class="button-outer">
-            <div class="button-inner">
-              <span>${item[labelKey] || `Source ${idx + 1}`}</span>
-            </div>
-          </div>
-        `;
-        button.dataset[idKey] = item[idKey] || item[labelKey] || idx;
-        button.onclick = () => {
+      items.forEach((item, i) => {
+        const btn = document.createElement("div");
+        btn.className = "button";
+        btn.innerHTML = `<div class="button-outer"><div class="button-inner"><span>${item[labelKey] || `Source ${i+1}`}</span></div></div>`;
+        btn.onclick = () => {
           clickHandler(item);
-          Array.from(container.getElementsByClassName("button")).forEach((btn) =>
-            btn.classList.remove("active")
-          );
-          button.classList.add("active");
+          container.querySelectorAll(".button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
         };
-        if (button.dataset[idKey] === activeId) {
-          button.classList.add("active");
-        }
-        container.appendChild(button);
+        if (item[labelKey] === activeLabel) btn.classList.add("active");
+        container.appendChild(btn);
       });
     }
 
     async function loadVideo(video) {
       if (!video) {
-        document.getElementById("video-title").innerText = "Video not found";
-        errorMessage.textContent = "No video data provided. Please select a valid movie.";
-        errorMessage.style.display = "block";
-        iframeContainer.style.display = "none";
-        sourceSelection.style.display = "none";
-        trailerContainer.style.display = "none";
-        trailerTitle.classList.remove("visible");
-        movieInfo.style.display = "none";
-        imdbRatingCircle.style.display = "none";
+        document.getElementById("video-title").textContent = "Video not found";
         return;
       }
 
-      document.getElementById("video-title").innerText = video.name || "Untitled";
-      document.title = video.name || "Video";
-      errorMessage.style.display = "none";
+      document.getElementById("video-title").textContent = video.name;
+      document.title = video.name;
 
-      let movieData;
-      try {
-        movieData = await fetchMovieData(video);
-      } catch (error) {
-        console.error(`Error fetching movie data for ${video.name}:`, error);
-        movieData = {
-          rating: video.rating || 'N/A',
-          plot: video.plot || 'Plot not available',
-          director: video.director || 'N/A',
-          actors: video.actors || [],
-          genre: video.genre || 'Unknown',
-          release_year: video.release_year || 'N/A'
-        };
-        errorMessage.textContent = "Failed to fetch movie details from TMDb. Displaying available data.";
-        errorMessage.style.display = "block";
-      }
+      const data = await fetchMovieData(video);
 
-      console.log(`movieData for ${video.name}:`, movieData); // Debug log
-
-      const rating = parseFloat(movieData.rating);
+      const rating = parseFloat(data.rating);
       if (!isNaN(rating) && rating > 0) {
-        const percentage = (rating / 10) * 100;
-        ratingCircle.style.setProperty('--percentage', `${percentage}%`);
-        ratingValue.textContent = movieData.rating;
+        ratingCircle.style.setProperty('--percentage', `${(rating / 10) * 100}%`);
+        ratingValue.textContent = data.rating;
         imdbRatingCircle.style.display = "flex";
       } else {
         imdbRatingCircle.style.display = "none";
       }
 
-      moviePlot.textContent = movieData.plot || 'Plot not available';
-
-      // Director rendering
-      director.innerHTML = '';
-      if (movieData.director && movieData.director !== 'N/A') {
-        const container = document.createElement('div');
-        container.className = 'container';
-        const button = document.createElement('div');
-        button.className = 'button';
-        button.innerHTML = `
-          <div class="button-outer">
-            <div class="button-inner">
-              <span><a href="search.html#director=${encodeURIComponent(movieData.director)}" class="info-link" target="_self">${movieData.director}</a></span>
-            </div>
-          </div>
-        `;
-        container.appendChild(button);
-        director.appendChild(container);
-      } else {
-        director.textContent = 'N/A';
-      }
-
-      // Main Cast rendering
-      mainCast.innerHTML = '';
-      if (Array.isArray(movieData.actors) && movieData.actors.length > 0) {
-        movieData.actors.forEach((actor) => {
-          const container = document.createElement('div');
-          container.className = 'container';
-          const button = document.createElement('div');
-          button.className = 'button';
-          button.innerHTML = `
-            <div class="button-outer">
-              <div class="button-inner">
-                <span><a href="search.html#actor=${encodeURIComponent(actor)}" class="info-link" target="_self">${actor}</a></span>
-              </div>
-            </div>
-          `;
-          container.appendChild(button);
-          mainCast.appendChild(container);
-        });
-      } else {
-        mainCast.textContent = 'N/A';
-      }
-
-      // Genres rendering
-      imdbCategories.innerHTML = '';
-      if (movieData.genre && movieData.genre !== 'Unknown') {
-        const genres = movieData.genre.split(', ');
-        genres.forEach((genre) => {
-          const container = document.createElement('div');
-          container.className = 'container';
-          const button = document.createElement('div');
-          button.className = 'button';
-          button.innerHTML = `
-            <div class="button-outer">
-            <div class="button-inner">
-              <span><a href="search.html#genre=${encodeURIComponent(genre)}" class="info-link" target="_self">${genre}</a></span>
-            </div>
-          </div>
-        `;
-          container.appendChild(button);
-          imdbCategories.appendChild(container);
-        });
-      } else {
-        imdbCategories.textContent = 'Unknown';
-      }
-
-      // Release Year rendering
-      releaseYear.innerHTML = '';
-      if (movieData.release_year && movieData.release_year !== 'N/A') {
-        const container = document.createElement('div');
-        container.className = 'container';
-        const button = document.createElement('div');
-        button.className = 'button';
-        button.innerHTML = `
-          <div class="button-outer">
-            <div class="button-inner">
-              <span><a href="search.html#year=${encodeURIComponent(movieData.release_year)}" class="info-link" target="_self">${movieData.release_year}</a></span>
-            </div>
-          </div>
-        `;
-        container.appendChild(button);
-        releaseYear.appendChild(container);
-      } else {
-        releaseYear.textContent = 'N/A';
-      }
-
+      moviePlot.textContent = data.plot;
+      director.textContent = data.director !== 'N/A' ? data.director : 'N/A';
+      mainCast.textContent = data.actors.length ? data.actors.join(', ') : 'N/A';
+      imdbCategories.textContent = data.genre !== 'Unknown' ? data.genre : 'Unknown';
+      releaseYear.textContent = data.release_year !== 'N/A' ? data.release_year : 'N/A';
       movieInfo.style.display = "block";
 
       const sources = Array.isArray(video.sources) ? video.sources : [];
-      createSelectionButtons(
-        sourceSelection,
-        sources,
-        "source",
-        "sourceId",
-        "label",
-        (source) => {
-          iframeContainer.innerHTML = source.embed_code || "";
-          iframeContainer.style.display = "block";
-        },
-        sources[0]?.label
-      );
+      createSelectionButtons(sourceSelection, sources, "label", src => {
+        iframeContainer.innerHTML = src.embed_code || "";
+        iframeContainer.style.display = "block";
+      }, sources[0]?.label);
 
       if (sources.length > 0) {
         iframeContainer.innerHTML = sources[0].embed_code || "";
         iframeContainer.style.display = "block";
       } else {
         iframeContainer.style.display = "none";
-        errorMessage.textContent = "No video sources available for this movie.";
-        errorMessage.style.display = "block";
       }
 
       if (video.trailer) {
         trailerIframeContainer.innerHTML = video.trailer;
         trailerContainer.style.display = "block";
-        setTimeout(() => {
-          trailerTitle.classList.add("visible");
-        }, 10);
+        setTimeout(() => trailerTitle.classList.add("visible"), 10);
       } else {
         trailerIframeContainer.innerHTML = '<p>No trailer available</p>';
         trailerContainer.style.display = "none";
@@ -614,149 +240,89 @@
     }
 
     async function loadCategories() {
-      const maxRetries = 3;
-      let attempt = 0;
-
-      while (attempt < maxRetries) {
-        try {
-          const data = await fetch("movies.json").then((res) => {
-            if (!res.ok) throw new Error(`Failed to fetch movies.json: ${res.status}`);
-            return res.json();
-          });
-          const categories = [...new Set(data.map((row) => row.category).filter(Boolean))];
-          categoryList.innerHTML = "";
-          if (categories.length === 0) {
-            categoryList.innerHTML = "<p>No categories available</p>";
-            errorMessage.textContent = "No categories found in movie data.";
-            errorMessage.style.display = "block";
-          } else {
-            categories.forEach((category) => {
-              const categoryItem = document.createElement("a");
-              categoryItem.textContent = category;
-              categoryItem.href = `category.html#${category.replace(/\s+/g, '')}`;
-              categoryItem.setAttribute("role", "option");
-              categoryList.appendChild(categoryItem);
-            });
-          }
-          return;
-        } catch (error) {
-          console.error(`Error loading categories (attempt ${attempt + 1}):`, error);
-          attempt++;
-          if (attempt === maxRetries) {
-            console.error("Max retries reached for loading categories");
-            errorMessage.textContent = "Failed to load categories. Please try again later.";
-            errorMessage.style.display = "block";
-          }
-          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-        }
-      }
+      try {
+        const data = await fetch("movies.json").then(r => r.ok ? r.json() : []);
+        const cats = [...new Set(data.map(r => r.category).filter(Boolean))];
+        categoryList.innerHTML = cats.map(c =>
+          `<a href="category.html#${encodeURIComponent(c.replace(/\s+/g,''))}">${c}</a>`
+        ).join('');
+      } catch (e) { console.error(e); }
     }
 
     async function loadMovie() {
-      const movieNameParam = decodeURIComponent(window.location.hash.substring(1));
-      if (!movieNameParam) {
-        document.getElementById("video-title").innerText = "Video name missing in URL";
-        errorMessage.textContent = "Please provide a valid movie name in the URL (e.g., movie.html#MovieName).";
-        errorMessage.style.display = "block";
+      const hash = window.location.hash.substring(1);
+      if (!hash) {
+        document.getElementById("video-title").textContent = "Video name missing in URL";
         return;
       }
 
-      const maxRetries = 3;
-      let attempt = 0;
-
-      while (attempt < maxRetries) {
-        try {
-          const moviesData = await fetch("movies.json").then((res) => {
-            if (!res.ok) throw new Error(`Failed to fetch movies.json: ${res.status}`);
-            return res.json();
-          });
-          const movie = moviesData.find((v) => normalize(v.name.replace(/\s+/g, '')) === normalize(movieNameParam));
-
-          if (movie) {
-            console.log("Movie found:", movie);
-            await loadVideo(movie);
-            return;
-          } else {
-            document.getElementById("video-title").innerText = "Video not found";
-            errorMessage.textContent = `Movie "${movieNameParam}" not found in the database.`;
-            errorMessage.style.display = "block";
-            return;
-          }
-        } catch (error) {
-          console.error(`Error loading movie data (attempt ${attempt + 1}):`, error);
-          attempt++;
-          if (attempt === maxRetries) {
-            console.error("Max retries reached for loading movie data");
-            document.getElementById("video-title").innerText = "Error loading video";
-            errorMessage.textContent = "Failed to load movie data. Please check your network or JSON file.";
-            errorMessage.style.display = "block";
-          }
-          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-        }
+      try {
+        const movies = await fetch("movies.json").then(r => r.ok ? r.json() : []);
+        const video = movies.find(v => normalize(v.name.replace(/\s+/g, '')) === normalize(hash));
+        if (video) await loadVideo(video);
+        else document.getElementById("video-title").textContent = "Video not found";
+      } catch (e) {
+        console.error(e);
+        document.getElementById("video-title").textContent = "Error loading video";
       }
     }
 
     async function handleSearch() {
-      const query = searchInput.value.toLowerCase();
+      const query = searchInput.value.trim().toLowerCase();
       if (!query) {
         searchResultsContainer.style.display = "none";
         searchResultsContainer.innerHTML = "";
         return;
       }
 
-      try {
-        const data = await fetch("movies.json").then((res) => {
-          if (!res.ok) throw new Error(`Failed to fetch movies.json: ${res.status}`);
-          return res.json();
-        }).catch(() => []);
-        const filteredVideos = data.filter(
-          (video) =>
-            normalize(video.name).includes(normalize(query)) &&
-            video.thumbnail &&
-            video.thumbnail.trim() !== ""
-        );
+      const [movies, series] = await Promise.all([
+        fetch("movies.json").then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch("series.json").then(r => r.ok ? r.json() : []).catch(() => [])
+      ]);
 
-        searchResultsContainer.style.display = "block";
-        searchResultsContainer.innerHTML = "";
+      const allVideos = [
+        ...movies.map(m => ({ ...m, type: 'movie' })),
+        ...series.map(s => ({ ...s, type: 'series' }))
+      ];
 
-        const searchResultsWithRatings = await Promise.all(
-          filteredVideos.slice(0, 5).map(async (video) => {
-            const movieData = await fetchMovieData(video);
-            return { ...video, rating: movieData.rating };
-          })
-        );
+      const matches = allVideos
+        .filter(v => v.name && v.name.toLowerCase().includes(query))
+        .slice(0, 5);
 
-        searchResultsWithRatings.forEach((video) => {
-          const suggestionItem = document.createElement("div");
-          suggestionItem.classList.add("search-suggestion");
-          suggestionItem.setAttribute("role", "option");
-          suggestionItem.innerHTML = `
-            <img src="${video.thumbnail}" alt="${video.name}" />
-            <span>${video.name} (TMDb: ${video.rating})</span>
+      searchResultsContainer.innerHTML = "";
+      if (matches.length === 0) {
+        searchResultsContainer.innerHTML = `<div class="no-results">No results found</div>`;
+      } else {
+        for (const video of matches) {
+          const cacheKey = normalize(video.name);
+          let thumb = 'path/to/placeholder.jpg';
+
+          if (movieDataCache[cacheKey]?.thumbnail) {
+            thumb = movieDataCache[cacheKey].thumbnail;
+          } else if (video.imdbID) {
+            const data = await fetchMovieData(video);
+            thumb = data.thumbnail;
+          } else if (video.thumbnail && video.thumbnail.trim()) {
+            thumb = video.thumbnail;
+          }
+
+          const div = document.createElement("div");
+          div.className = "search-suggestion";
+          div.innerHTML = `
+            <img src="${thumb}" alt="${video.name}" onerror="this.src='path/to/placeholder.jpg'">
+            <span>${video.name}</span>
           `;
-          suggestionItem.addEventListener("click", () => {
-            window.location.href = `movie.html#${video.name.replace(/\s+/g, '')}`;
-          });
-          searchResultsContainer.appendChild(suggestionItem);
-        });
-
-        if (filteredVideos.length === 0) {
-          searchResultsContainer.innerHTML = `<div class="no-results">No results found for "${query}"</div>`;
+          const page = video.type === 'movie' ? 'movie.html' : 'series.html';
+          div.onclick = () => location.href = `${page}#${encodeURIComponent(video.name.replace(/\s+/g, ''))}`;
+          searchResultsContainer.appendChild(div);
         }
-      } catch (error) {
-        console.error("Error during search:", error);
-        searchResultsContainer.innerHTML = `<div class="no-results">Error during search</div>`;
-        errorMessage.textContent = "Failed to perform search. Please try again.";
-        errorMessage.style.display = "block";
       }
+      searchResultsContainer.style.display = matches.length ? "block" : "none";
     }
 
-    function handleEnter(event) {
-      if (event.key === "Enter") {
-        const query = searchInput.value.trim();
-        if (query) {
-          window.location.href = `search.html#keyword=${encodeURIComponent(query)}`;
-        }
+    function handleEnter(e) {
+      if (e.key === "Enter" && searchInput.value.trim()) {
+        location.href = `search.html#keyword=${encodeURIComponent(searchInput.value.trim())}`;
       }
     }
 
@@ -768,31 +334,27 @@
     searchInput.addEventListener("input", debounce(handleSearch, 300));
     searchInput.addEventListener("keydown", handleEnter);
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", () => {
       const dropdown = document.querySelector(".dropdown");
       const dropdownContent = document.querySelector(".dropdown-content");
       const navbar = document.querySelector(".navbar");
-
       let lastScrollTop = 0;
-      window.addEventListener("scroll", function () {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop) {
-          navbar.classList.add("fixed");
-        } else {
-          navbar.classList.remove("fixed");
-        }
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+      window.addEventListener("scroll", () => {
+        const st = window.pageYOffset;
+        navbar.classList.toggle("fixed", st > lastScrollTop);
+        lastScrollTop = st <= 0 ? 0 : st;
       });
 
-      dropdown.addEventListener("click", function (event) {
-        event.stopPropagation();
-        dropdownContent.style.display =
-          dropdownContent.style.display === "block" ? "none" : "block";
-        dropdown.setAttribute("aria-expanded", dropdownContent.style.display === "block");
+      dropdown.addEventListener("click", e => {
+        e.stopPropagation();
+        const isOpen = dropdownContent.style.display === "block";
+        dropdownContent.style.display = isOpen ? "none" : "block";
+        dropdown.setAttribute("aria-expanded", !isOpen);
       });
 
-      document.addEventListener("click", function (event) {
-        if (!dropdown.contains(event.target)) {
+      document.addEventListener("click", e => {
+        if (!dropdown.contains(e.target)) {
           dropdownContent.style.display = "none";
           dropdown.setAttribute("aria-expanded", "false");
         }
