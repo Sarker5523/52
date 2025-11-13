@@ -2169,15 +2169,48 @@
     "trailer": "<iframe src='https://www.youtube.com/embed/c6jz7rc6Uag' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
-        "label": "Hindi (Source-1)",
+        "label": "Dual Audio (Source-1)",
         "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#heep3g' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       },
       {
-        "label": "Hindi (Source-2)",
+        "label": "Dual Audio (Source-2)",
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/1ecvjn1lhkes' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
+  },
+  {
+    "name": "The Fantastic 4: First Steps",
+    "imdbID": "tt10676052",
+    "category": "Hollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/b-WdRqzSJ9w' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Dual Audio (Source-1)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#8kou9w' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Dual Audio (Source-2)",
+        "embed_code": "<IFRAME SRC='https://cybervynx.com/e/aw000htewhnv' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
+  },
+  {
+    "name": "Ek Chatur Naar",
+    "imdbID": "tt37970307",
+    "category": "Bollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/t-WME4yy2Wo' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Hindi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#upi9nt' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://cybervynx.com/e/uxkn9rch7t80' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
   }
 ]
+
 
 
