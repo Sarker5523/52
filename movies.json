@@ -1337,6 +1337,7 @@
   {
     "name": "Stolen",
     "imdbID": "tt28494851",
+    "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/ALaTpllzI50' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
@@ -1400,6 +1401,7 @@
   {
     "name": "The Karate Kid",
     "imdbID": "tt0087538",
+    "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/r_8Rw16uscg' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
@@ -1430,7 +1432,8 @@
   },
   {
     "name": "The Karate Kid (2010)",
-   "imdbID": "tt1155076",
+    "imdbID": "tt1155076",
+    "category": "Hollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/XY8amUImEu0' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
@@ -1494,6 +1497,7 @@
   {
     "name": "KGF: Chapter 02",
     "imdbID": "tt10698680",
+    "category": "South Indian Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/JKa05nyUmuQ' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
@@ -2259,6 +2263,7 @@
     ]
   }
 ]
+
 
 
 
