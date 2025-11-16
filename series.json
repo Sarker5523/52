@@ -2,6 +2,7 @@
   {
     "name": "When Life Gives You Tangerines",
     "imdbID": "tt26471411",
+    "category": "Kdrama",
     "seasons": [
       {
         "season_name": "Season 01",
@@ -592,6 +593,7 @@
   {
     "name": "Squid Game",
     "imdbID": "tt10919420",
+    "category": "Kdrama",
     "seasons": [
       {
         "season_name": "Season-01",
@@ -1118,3 +1120,4 @@
     ]
   }
 ]
+
