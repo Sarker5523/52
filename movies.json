@@ -2261,9 +2261,72 @@
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/mgc190jjxlsd' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
+  },
+  {
+    "name": "Thamma",
+    "imdbID": "tt28102562",
+    "category": "Bollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/Mod_oXpftJA' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Hindi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#1cucuj' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://cybervynx.com/e/qrsbzy4s5nh6' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
+  },
+  {
+    "name": "The Girlfriend",
+    "imdbID": "tt29606526",
+    "category": "South Indian Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/TYiE5GwZUdE' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Hindi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#dnlnl6' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://cybervynx.com/e/xb02xt061whi' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
+  },
+  {
+    "name": "Kaantha",
+    "imdbID": "tt28508934",
+    "category": "South Indian Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/2j4iGBbDxsc' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Hindi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#zbqbob' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://cybervynx.com/e/iybyv9rdkhjn' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
+  },
+  {
+    "name": "Now You See Me: Now You Don’t ",
+    "imdbID": "tt4712810",
+    "category": "Hollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/-E3lMRx7HRQ' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Hindi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#w8a8pq' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://cybervynx.com/e/yrcimqojft5k' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
   }
 ]
-
 
 
 
