@@ -1161,6 +1161,41 @@
         ]
       }
     ]
+  },{"name": "Single Papa",
+    "imdbID": "tt37062070",
+    "category": "TV-Series",
+    "seasons": [
+      {
+        "season_name": "Season-01",
+        "trailer": "<iframe src='https://www.youtube.com/embed/WYhyxUbOLK8' frameborder='0' width='640' height='360' allowfullscreen> </iframe>",
+        "episodes": [
+          {
+            "episode_name": "Episode-01",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#fdtdli' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-02",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#bfyftu' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-03",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#asfsd8' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-04",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#qyvy91' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-05",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#j3k3hu' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-06",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#zbqbyu' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          }
+        ]
+      }
+    ]
   }
 ]
 
