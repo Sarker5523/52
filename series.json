@@ -1118,7 +1118,49 @@
         ]
       }
     ]
+  },{"name": "Stranger Things",
+    "imdbID": "tt4574334",
+    "category": "TV-Series",
+    "seasons": [
+      {
+        "season_name": "Season-05",
+        "trailer": "<iframe src='https://www.youtube.com/embed/AfQ13jsLDms' frameborder='0' width='640' height='360' allowfullscreen> </iframe>",
+        "episodes": [
+          {
+            "episode_name": "Episode-01",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#nqri5c' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-02",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#khv5j8' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-03",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#8kisrc' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-04",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#96hoy9' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-05",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#ea6bg8' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-06",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#gwteui' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-07",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#61extp' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-08",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#fdutaa' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          }
+        ]
+      }
+    ]
   }
 ]
-
 
