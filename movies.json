@@ -2341,8 +2341,28 @@
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/uhs45j5rqsbw' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
+  },
+  {
+    "name": "Heads Of State",
+    "imdbID": "tt13357520",
+    "category": "Hollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/f70LlXPC7VI' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Dual Audio (Source-1)",
+        "embed_code": "<IFRAME SRC='https://streamix.so/e/rBl9ZEzZ7LqR' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Dual Audio (Source-2)",
+        "embed_code": "<IFRAME SRC='https://cybervynx.com/e/uhs45j5rqsbw' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },{
+        "label": "Dual Audio (Source-3)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#8kjvhj' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
   }
 ]
+
 
 
 
