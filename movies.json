@@ -2350,7 +2350,7 @@
     "sources": [
       {
         "label": "Dual Audio (Source-1)",
-        "embed_code": "<IFRAME SRC='https://streamix.so/e/rBl9ZEzZ7LqR' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+        "embed_code": "<IFRAME SRC='https://vidara.to/e/rBl9ZEzZ7LqR' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       },
       {
         "label": "Dual Audio (Source-2)",
@@ -2358,6 +2358,25 @@
       },{
         "label": "Dual Audio (Source-3)",
         "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#8kjvhj' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
+  },
+  {
+    "name": "Mardaani 3",
+    "imdbID": "tt27673536",
+    "category": "Bollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/V4TJKSEftkU' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "HIndi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://vidara.to/e/Qz4Jq2vB85kJ' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#qy8f8c' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },{
+        "label": "Hindi (Source-3)",
+        "embed_code": "<IFRAME SRC='https://hgcloud.to/e/ktztln1b0g5y' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
   }
