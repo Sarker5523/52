@@ -1196,6 +1196,41 @@
         ]
       }
     ]
+  },{"name": "Chiraiya",
+    "imdbID": "tt40828245",
+    "category": "TV-Series",
+    "seasons": [
+      {
+        "season_name": "Season-01",
+        "trailer": "<iframe src='https://www.youtube.com/embed/xa2v0noUq9E' frameborder='0' width='640' height='360' allowfullscreen> </iframe>",
+        "episodes": [
+          {
+            "episode_name": "Episode-01",
+            "embed_code": "<IFRAME SRC='https://vidara.to/e/pol7eA5Yhjr9' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-02",
+            "embed_code": "<IFRAME SRC='https://vidara.to/e/UNqUlKxI06sc' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-03",
+            "embed_code": "<IFRAME SRC='https://vidara.to/e/ZHTBUXBuCrZu' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-04",
+            "embed_code": "<IFRAME SRC='https://vidara.to/e/kz3FrfUwDbdQ' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-05",
+            "embed_code": "<IFRAME SRC='https://vidara.to/e/kIdvj3udSTYB' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-06",
+            "embed_code": "<IFRAME SRC='https://vidara.to/e/2WX8HtdjTAIk' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          }
+        ]
+      }
+    ]
   }
 ]
 
