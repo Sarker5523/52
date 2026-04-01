@@ -384,7 +384,7 @@
                 searchBox.addEventListener("keydown", function (e) {
                     if (e.key === "Enter") {
                         const query = searchBox.value.trim();
-                        if (query) window.location.href = `search-result.html#${query.replace(/\s+/g, '')}`;
+                        if (query) window.location.href = `search.html#${query.replace(/\s+/g, '')}`;
                     }
                 });
             }).catch(error => {
