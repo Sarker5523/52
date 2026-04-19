@@ -780,7 +780,8 @@
       {
         "label": "Hindi (Source-1)",
         "embed_code": "<iframe src='https://mp.rpmhub.site/#dn86u5' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></iframe>"
-      },{
+      },
+      {
         "label": "Hindi (Source-2)",
         "embed_code": "<iframe src='https://hglink.to/e/hife7xviunhi' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></iframe>"
       }
@@ -1816,7 +1817,7 @@
   },
   {
     "name": "Housefull 5A",
-    "imdbID":"tt9104736",
+    "imdbID": "tt9104736",
     "thumbnail": "https://catimages.org/images/2025/07/18/Housefull-5A-2025-HDHub4u.Ms.jpg",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/xGQuT1wm2qk' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
@@ -1833,7 +1834,7 @@
   },
   {
     "name": "Housefull 5B",
-    "imdbID":"tt9104736",
+    "imdbID": "tt9104736",
     "thumbnail": "https://catimages.org/images/2025/07/18/Housefull-5B-2025-HDHub4u.Ms.jpg",
     "category": "Bollywood Movie",
     "trailer": "<iframe src='https://www.youtube.com/embed/xGQuT1wm2qk' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
@@ -1927,7 +1928,8 @@
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/nmco6fenieqz' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
-  },{
+  },
+  {
     "name": "Insaaf: Tale of Legends",
     "imdbID": "tt36831568",
     "category": "Bangla Movie",
@@ -2150,7 +2152,8 @@
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/4304pbi44ixg' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
-  },{
+  },
+  {
     "name": "Bhagwat Chapter One: Raakshas",
     "imdbID": "tt38525492",
     "category": "Bollywood Movie",
@@ -2355,7 +2358,8 @@
       {
         "label": "Dual Audio (Source-2)",
         "embed_code": "<IFRAME SRC='https://cybervynx.com/e/uhs45j5rqsbw' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
-      },{
+      },
+      {
         "label": "Dual Audio (Source-3)",
         "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#8kjvhj' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
@@ -2368,23 +2372,57 @@
     "trailer": "<iframe src='https://www.youtube.com/embed/V4TJKSEftkU' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
     "sources": [
       {
-        "label": "HIndi (Source-1)",
+        "label": "Hindi (Source-1)",
         "embed_code": "<IFRAME SRC='https://vidara.to/e/Qz4Jq2vB85kJ' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       },
       {
         "label": "Hindi (Source-2)",
         "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#qy8f8c' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
-      },{
+      },
+      {
         "label": "Hindi (Source-3)",
         "embed_code": "<IFRAME SRC='https://hgcloud.to/e/ktztln1b0g5y' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
+  },
+  {
+    "name": "Tu Yaa Main",
+    "imdbID": "tt36118360",
+    "category": "Bollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/7eJjGA2pTe4' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Hindi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://vidara.to/e/zfT5lewAFVvO' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#fd66kg' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-3)",
+        "embed_code": "<IFRAME SRC='https://hgcloud.to/e/znx74mpk9jp8' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
+  },
+  {
+    "name": "Assi",
+    "imdbID": "tt39392533",
+    "category": "Bollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/M_c9_GamLl4' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Hindi (Source-1)",
+        "embed_code": "<IFRAME SRC='https://vidara.to/e/96NuQe95YCgm' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-2)",
+        "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#qymmru' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Hindi (Source-3)",
+        "embed_code": "<IFRAME SRC='https://hgcloud.to/e/jazekwhymlb2' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
   }
 ]
-
-
-
-
-
-
-
