@@ -802,7 +802,8 @@
         ]
       }
     ]
-  },{
+  },
+  {
     "name": "Cobra Kai",
     "imdbID": "tt7221388",
     "category": "TV-Series",
@@ -1038,7 +1039,9 @@
         ]
       }
     ]
-  },{"name": "Wednesday",
+  },
+  {
+    "name": "Wednesday",
     "imdbID": "tt13443470",
     "category": "TV-Series",
     "seasons": [
@@ -1079,7 +1082,8 @@
             "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#hzc3s' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
           }
         ]
-      },{
+      },
+      {
         "season_name": "Season-02",
         "trailer": "",
         "episodes": [
@@ -1118,7 +1122,9 @@
         ]
       }
     ]
-  },{"name": "Stranger Things",
+  },
+  {
+    "name": "Stranger Things",
     "imdbID": "tt4574334",
     "category": "TV-Series",
     "seasons": [
@@ -1161,7 +1167,9 @@
         ]
       }
     ]
-  },{"name": "Single Papa",
+  },
+  {
+    "name": "Single Papa",
     "imdbID": "tt37062070",
     "category": "TV-Series",
     "seasons": [
@@ -1196,7 +1204,9 @@
         ]
       }
     ]
-  },{"name": "Chiraiya",
+  },
+  {
+    "name": "Chiraiya",
     "imdbID": "tt40828245",
     "category": "TV-Series",
     "seasons": [
@@ -1231,7 +1241,88 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Gen V",
+    "imdbID": "tt13159924",
+    "category": "TV-Series",
+    "seasons": [
+      {
+        "season_name": "Season-01",
+        "trailer": "<iframe src='https://www.youtube.com/embed/q2H-p8uZ8Rc' frameborder='0' width='640' height='360' allowfullscreen> </iframe>",
+        "episodes": [
+          {
+            "episode_name": "Episode-01",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#w8fft1' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-02",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#tlxx3y' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-03",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#3gzzqz' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-04",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#96jjkr' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-05",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#upeeby' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-06",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#xuhhzx' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-07",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com#bf99hf' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-08",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com#asttgi' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          }
+        ]
+      },
+      {
+        "season_name": "Season-02",
+        "trailer": "",
+        "episodes": [
+          {
+            "episode_name": "Episode-01",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#fd66ex' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-02",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#ytoo3u' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-03",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#dn11aa' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-04",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#w8fflc' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-05",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#fd66um' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-06",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#nqcci1' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-07",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com#3gzzh3' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-08",
+            "embed_code": "<IFRAME SRC='https://eng.rpmvip.com#xuhhbu' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          }
+        ]
+      }
+    ]
   }
 ]
-
-
