@@ -2444,5 +2444,25 @@
         "embed_code": "<IFRAME SRC='https://hgcloud.to/e/1ee5w0mtws4k' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
+  },
+  {
+    "name": "Pieces of a Woman",
+    "imdbID": "tt11161474",
+    "category": "Hollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/1zLKbMAZNGI' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "Dual Audio (Source-1)",
+        "embed_code": "<IFRAME SRC='https://vidara.to/e/dTFO7vKS2io3D' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Dual Audio (Source-2)",
+        "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#9ggycc' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "Dual Audio (Source-3)",
+        "embed_code": "<IFRAME SRC='https://hgcloud.to/e/znc6xoos2he0' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
   }
 ]
