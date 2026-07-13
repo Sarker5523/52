@@ -1324,5 +1324,65 @@
         ]
       }
     ]
+  },{
+    "name": "All Of Us Are Dead",
+    "imdbID": "tt14169960",
+    "category": "Kdrama",
+    "seasons": [
+      {
+        "season_name": "Season 01",
+        "trailer": "<iframe src='https://www.youtube.com/embed/mScYq7PzagY' frameborder='0' width='640' height='360' allowfullscreen> </iframe>",
+        "episodes": [
+          {
+            "episode_name": "Episode-1",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#z6mds6' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-2",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#htvs8u' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-3",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#ckax6o' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-4",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#wnth3q' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-5",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#usbjo3' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-6",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#9gkcin' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-7",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#noptft' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-8",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#8qlegt' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-9",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#ai6zhc' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-10",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#b1on5t' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-11",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#yujinb' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          },
+          {
+            "episode_name": "Episode-12",
+            "embed_code": "<IFRAME SRC='https://mp.rpmhub.site/#9gkcrm' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+          }
+        ]
+      }
+    ]
   }
 ]
