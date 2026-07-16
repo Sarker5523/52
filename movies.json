@@ -2464,5 +2464,25 @@
         "embed_code": "<IFRAME SRC='https://hgcloud.to/e/znc6xoos2he0' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
       }
     ]
+  },
+  {
+    "name": "Hercules",
+    "imdbID": "tt1267297",
+    "category": "Hollywood Movie",
+    "trailer": "<iframe src='https://www.youtube.com/embed/HydiAICZq6I' frameborder='0' width='640' height='360' allowfullscreen></iframe>",
+    "sources": [
+      {
+        "label": "English (Source-1)",
+        "embed_code": "<IFRAME SRC='https://vidara.to/e/EyHwv4ZmOtIXe' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "English (Source-2)",
+        "embed_code": "<IFRAME SRC='https://eng.rpmvip.com/#wntzfn' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      },
+      {
+        "label": "English (Source-3)",
+        "embed_code": "<IFRAME SRC='https://hgcloud.to/e/ap9qzqifup55' FRAMEBORDER=0 MARGINWIDTH=0 MARGINHEIGHT=0 SCROLLING=NO WIDTH=640 HEIGHT=360 allowfullscreen></IFRAME>"
+      }
+    ]
   }
 ]
